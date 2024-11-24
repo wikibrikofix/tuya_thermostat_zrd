@@ -70,7 +70,7 @@ void remote_smd_sys_mode(uint8_t mode);
 void remote_smd_heating_set(int16_t temp);
 void remote_smd_temp_calibration(int8_t temp);
 void set_run_state_bit(uint8_t bit_num, bool set);
-void thermostat_onoff_state(int32_t onoff);
+void thermostat_onoff_state(int8_t onoff);
 void thermostat_heatset_state(int32_t tempF);
 void remote_smd_display_mode(uint8_t mode);
 void remote_smd_keylock(uint8_t keylock);
