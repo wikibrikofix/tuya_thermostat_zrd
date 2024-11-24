@@ -202,7 +202,7 @@ void uart_cmd_handler() {
     uint8_t ch, complete = false;
     uint8_t answer_buff[DATA_MAX_LEN+24];
     pkt_tuya_t *pkt  = (pkt_tuya_t*)answer_buff;
-    data_point_t *data_point;
+    data_point_t *data_point = (data_point_t*)pkt->data;
 
     if (first_start == 1) {
         set_command(COMMAND01, seq_num, true);
@@ -267,8 +267,7 @@ void uart_cmd_handler() {
                 if (crc == answer_buff[pkt->pkt_len-1]) {
                     if (send_pkt->command == COMMAND04 && pkt->command == COMMAND06 && pkt->seq_num == send_pkt->seq_num) {
                         cmd_queue.cmd_queue[0].confirm_rec = true;
-                        data_point = (data_point_t*)pkt->data;
-                        if (data_point->dp_id == DP_ID_10) {
+                        if (data_point->dp_id == DP_ID_10 || DP_ID_01) {
                             set_default_answer(COMMAND06, reverse16(pkt->seq_num));
                         }
                     } else if (pkt->command == send_pkt->command && pkt->seq_num == send_pkt->seq_num) {
@@ -418,7 +417,6 @@ void uart_cmd_handler() {
 #endif
                     if (pkt->len >= 5) {
                         /* data point used */
-                        data_point = (data_point_t*)pkt->data;
                         data_point->dp_len = reverse16(data_point->dp_len);
 
                         switch(manuf_name) {
@@ -428,16 +426,8 @@ void uart_cmd_handler() {
                                     printf("data point 0x01\r\n");
 #endif
                                     set_default_answer(pkt->command, pkt->seq_num);
+                                    thermostat_onoff_state(data_point->data[0]);
 
-                                    if (data_point->data[0] == 0x01) {
-#if UART_PRINTF_MODE && DEBUG_CMD
-                                        printf("device is on\r\n");
-#endif
-                                    } else {
-#if UART_PRINTF_MODE && DEBUG_CMD
-                                        printf("device is off\r\n");
-#endif
-                                    }
                                 } else if (data_point->dp_id == DP_ID_02) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x02\r\n");
