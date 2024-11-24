@@ -163,24 +163,37 @@ void set_run_state_bit(uint8_t bit_num, bool set) {
     }
 }
 
-void thermostat_onoff_state(int32_t onoff) {
-    zcl_thermostatAttr_t *tempAttrs = zcl_thermostatAttrGet();
+void thermostat_onoff_state(int8_t onoff) {
+
+    uint8_t sys_mode, man_prog_mode;
+    uint16_t len, ocHeatSetpoint, localTemp;
 
     if (onoff == DEV_POWER_OFF) {
 #if UART_PRINTF_MODE && DEBUG_CMD
         printf("Power OFF\r\n");
 #endif
-        tempAttrs->systemMode = SYS_MODE_OFF;
+        sys_mode = SYS_MODE_OFF;
+        zcl_setAttrVal(APP_ENDPOINT1,
+                       ZCL_CLUSTER_HAVC_THERMOSTAT,
+                       ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE,
+                       (uint8_t*)&sys_mode);
         set_run_state_bit(RUN_STATE_HEAT_BIT, OFF);
     } else {
 #if UART_PRINTF_MODE && DEBUG_CMD
         printf("Power ON\r\n");
 #endif
-        tempAttrs->systemMode = SYS_MODE_HEAT;
-//        if (thermostat_mode == DEV_THERM_MODE_TEMP) {
-//
-//        }
-        if (tempAttrs->occupiedHeatingSetpoint > tempAttrs->localTemperature && thermostat_mode == DEV_THERM_MODE_TEMP) {
+        sys_mode = SYS_MODE_HEAT;
+        zcl_setAttrVal(APP_ENDPOINT1,
+                       ZCL_CLUSTER_HAVC_THERMOSTAT,
+                       ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE,
+                       (uint8_t*)&sys_mode);
+
+        zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMPERATURE, &len, (uint8_t*)&localTemp);
+        zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT, &len, (uint8_t*)&ocHeatSetpoint);
+        zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, &len, (uint8_t*)&man_prog_mode);
+
+
+        if (ocHeatSetpoint > localTemp && thermostat_mode == DEV_THERM_MODE_TEMP) {
             set_run_state_bit(RUN_STATE_HEAT_BIT, ON);
         } else {
             set_run_state_bit(RUN_STATE_HEAT_BIT, OFF);
