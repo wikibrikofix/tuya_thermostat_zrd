@@ -19,9 +19,9 @@
 #define DEV_PWR_ON_BEHAVIOR_OFF     0x02
 #define DEV_PWR_ON_BEHAVIOR_ON      0x03
 
-/* Thermostat mode - temperature or timer */
-#define DEV_THERM_MODE_TEMP         0x01
-#define DEV_THERM_MODE_TIMER        0x02
+/* Thermostat mode - setpoint or schedule */
+#define DEV_THERM_MODE_MANUAL       0x01
+#define DEV_THERM_MODE_PROGRAMMING  0x02
 
 /* Mode Celsius or Fahrenheit */
 #define DEV_DISPLAY_MODE_CELSIUS    0x01
@@ -63,7 +63,6 @@
 #define CLIENT_TEMP_CALIBRATION_MIN -90
 #define CLIENT_TEMP_CALIBRATION_MAX  90
 
-//extern uint8_t cmdTx[CMD_MAX][PKT_SIZE];
 extern uint8_t thermostat_mode;
 
 void remote_smd_sys_mode(uint8_t mode);
