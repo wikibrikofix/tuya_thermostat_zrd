@@ -20,6 +20,14 @@
 #define MANUAL_MODE             0x00
 #define PROG_MODE               0x01
 
+#define ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED  0xF000
+
+//typedef enum {
+//    SENSOR_IN   =   0x00,
+//    SENSOR_AL,
+//    SENSOR_OU
+//} sensor_used_t;
+
 typedef enum {
     DAY_SUN = 0x00, // Sunday
     DAY_MON = 0x01, // Monday
