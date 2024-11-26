@@ -226,6 +226,11 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 if (temp >= CLIENT_TEMP_CALIBRATION_MIN && temp <= CLIENT_TEMP_CALIBRATION_MAX) {
                     remote_smd_temp_calibration(temp);
                 }
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED) {
+                uint8_t sensor_used = attr->attrData[0];
+                if (sensor_used == SENSOR_IN || sensor_used == SENSOR_AL || sensor_used == SENSOR_OU) {
+                    remote_cmd_sensor_used(sensor_used);
+                }
             }
         }
     }
