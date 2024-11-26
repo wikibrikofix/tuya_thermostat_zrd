@@ -68,11 +68,12 @@ extern uint8_t thermostat_mode;
 void remote_smd_sys_mode(uint8_t mode);
 void remote_smd_heating_set(int16_t temp);
 void remote_smd_temp_calibration(int8_t temp);
+void remote_smd_display_mode(uint8_t mode);
+void remote_smd_keylock(uint8_t keylock);
+void remote_cmd_sensor_used(uint8_t sensor_used);
 void set_run_state_bit(uint8_t bit_num, bool set);
 void thermostat_onoff_state(int8_t onoff);
 void thermostat_heatset_state(int32_t tempF);
-void remote_smd_display_mode(uint8_t mode);
-void remote_smd_keylock(uint8_t keylock);
 
 
 #endif /* SRC_INCLUDE_APP_THERMOSTAT_H_ */
