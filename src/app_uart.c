@@ -7,26 +7,70 @@ uint8_t  ring_buff[RING_BUFF_SIZE];
 uint16_t ring_head, ring_tail;
 uint8_t uart_msg_err;
 
-void print_pkt(uint8_t *data, uint32_t len, uint8_t dir) {
-
 #if UART_PRINTF_MODE && DEBUG_PKT
+
+static void print_pkt(uint8_t *data, uint32_t len) {
 
     uint8_t ch;
 
-    printf("%spkt %s 0x", dir?"out_":"inp_", dir?"<==":"==>");
+    for (int i = 0; i < len; i++) {
+        ch = data[i];
+        if (ch < 0x10) {
+            printf("0%x", ch);
+        } else {
+            printf("%x", ch);
+        }
+    }
+    printf("\r\n");
+}
 
-     for (int i = 0; i < len; i++) {
-         ch = data[i];
-         if (ch < 0x10) {
-             printf("0%x", ch);
-         } else {
-             printf("%x", ch);
-         }
-     }
-     printf("\r\n");
+#endif
+
+static void print_pkt_inp(uint8_t *data, uint32_t len) {
+
+#if UART_PRINTF_MODE && DEBUG_PKT
+
+    static uint8_t command = 0;
+    static uint32_t time_pkt = 0;
+    pkt_tuya_t *pkt = (pkt_tuya_t*)data;
+
+    if (command != pkt->command) {
+        command = pkt->command;
+        time_pkt = clock_time();
+        printf("inp_pkt ==> 0x");
+        print_pkt(data, len);
+    } else {
+        if (clock_time_exceed(time_pkt, TIMEOUT_TICK_50MS)) {
+            printf("inp_pkt ==> 0x");
+            print_pkt(data, len);
+        }
+        time_pkt = clock_time();
+    }
 #endif
 }
 
+static void print_pkt_out(uint8_t *data, uint32_t len) {
+
+#if UART_PRINTF_MODE && DEBUG_PKT
+
+    static uint8_t command = 0;
+    static uint32_t time_pkt = 0;
+    pkt_tuya_t *pkt = (pkt_tuya_t*)data;
+
+    if (command != pkt->command) {
+        command = pkt->command;
+        time_pkt = clock_time();
+        printf("out_pkt <== 0x");
+        print_pkt(data, len);
+    } else {
+        if (clock_time_exceed(time_pkt, TIMEOUT_TICK_50MS)) {
+            printf("out_pkt <== 0x");
+            print_pkt(data, len);
+        }
+        time_pkt = clock_time();
+    }
+#endif
+}
 
 uint8_t available_ring_buff() {
     if (ring_head != ring_tail) {
@@ -102,7 +146,7 @@ static void app_uartRecvCb() {
 
     if (st == SUCCESS) {
 
-        print_pkt(rec_buff.data, rec_buff.dma_len, 0);
+        print_pkt_inp(rec_buff.data, rec_buff.dma_len);
 
         write_bytes_to_ring_buff(rec_buff.data, rec_buff.dma_len);
     }
@@ -117,7 +161,7 @@ static void app_uartRecvCb() {
 uartTx_err app_uart_txMsg(uint8_t *data, uint8_t len) {
 
 
-    print_pkt(data, len, 1);
+    print_pkt_out(data, len);
 
     if (drv_uart_tx_start(data, len)) return UART_TX_SUCCESS;
 
