@@ -1,6 +1,6 @@
 #include "app_main.h"
 
-uint8_t thermostat_mode = DEV_THERM_MODE_TEMP;
+uint8_t thermostat_mode = DEV_THERM_MODE_MANUAL;
 
 void remote_smd_sys_mode(uint8_t mode) {
 
@@ -149,7 +149,34 @@ void remote_smd_keylock(uint8_t keylock) {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+}
 
+void remote_cmd_sensor_used(uint8_t sensor_used) {
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(5);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = DP_ID_2B;
+    out_pkt->pkt_len++;
+    data_point->dp_type = DP_ENUM;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(1));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+    data_point->data[0] = sensor_used;
+    out_pkt->pkt_len ++;
+    data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, true);
+
+    set_seq_num(seq_num);
 }
 
 void set_run_state_bit(uint8_t bit_num, bool set) {
@@ -193,7 +220,7 @@ void thermostat_onoff_state(int8_t onoff) {
         zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, &len, (uint8_t*)&man_prog_mode);
 
 
-        if (ocHeatSetpoint > localTemp && thermostat_mode == DEV_THERM_MODE_TEMP) {
+        if (ocHeatSetpoint > localTemp && thermostat_mode == DEV_THERM_MODE_MANUAL) {
             set_run_state_bit(RUN_STATE_HEAT_BIT, ON);
         } else {
             set_run_state_bit(RUN_STATE_HEAT_BIT, OFF);
@@ -212,7 +239,7 @@ void thermostat_heatset_state(int32_t tempF) {
     printf("Heat set temperature: %d F, %d C, localTemperature: %d C\r\n", tempF, tempC, tempAttrs->localTemperature);
 #endif
     tempAttrs->occupiedHeatingSetpoint = tempC;
-    if (tempAttrs->systemMode == SYS_MODE_HEAT && thermostat_mode == DEV_THERM_MODE_TEMP) {
+    if (tempAttrs->systemMode == SYS_MODE_HEAT && thermostat_mode == DEV_THERM_MODE_MANUAL) {
         if (tempAttrs->occupiedHeatingSetpoint > tempAttrs->localTemperature) {
             set_run_state_bit(RUN_STATE_HEAT_BIT, ON);
         } else {
