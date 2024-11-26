@@ -233,6 +233,7 @@ zcl_thermostatAttr_t g_zcl_thermostatAttrs = {
     .manual_progMode = 0x00,                // 0x00 - manual mode, 0x01 - programming mode
     .temperatureDisplayMode = 0x00,         // 0x00 - °C, 0x01 - °F
     .keypadLockout = 0x00,                  // on off
+    .sensor_used = SENSOR_IN,               // IN, ALL, OU
 };
 
 const zclAttrInfo_t thermostat_attrTbl[] = {
@@ -245,6 +246,7 @@ const zclAttrInfo_t thermostat_attrTbl[] = {
         { ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE,                      ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.systemMode                 },
         {ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE,     ZCL_BITMAP8,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.manual_progMode            },
         { ZCL_ATTRID_HVAC_THERMOSTAT_RUNNING_STATE,                 ZCL_BITMAP16,   RR,     (uint8_t*)&g_zcl_thermostatAttrs.runningState               },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED,            ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.sensor_used                },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,                       ZCL_UINT16,     R,      (uint8_t*)&zcl_attr_global_clusterRevision                  },
 };
