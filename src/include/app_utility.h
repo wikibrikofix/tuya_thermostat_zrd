@@ -2,6 +2,7 @@
 #define SRC_INCLUDE_APP_UTILITY_H_
 
 /* for clock_time_exceed() */
+#define TIMEOUT_TICK_50MS   50*1000         /* timeout 50 ms    */
 #define TIMEOUT_TICK_100MS  100*1000        /* timeout 100 ms   */
 #define TIMEOUT_TICK_200MS  200*1000        /* timeout 200 ms   */
 #define TIMEOUT_TICK_250MS  250*1000        /* timeout 250 ms   */
