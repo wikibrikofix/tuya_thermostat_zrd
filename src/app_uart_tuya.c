@@ -497,7 +497,7 @@ void uart_cmd_handler() {
                                     printf("min temperature: %d\r\n", temp);
 
                                 } else if (data_point->dp_id == DP_ID_1B) {
-                                    int32_t temp = int32_from_str(data_point->data);
+                                    int32_t temp = int32_from_str(data_point->data)*10;
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x1B. calibration local temperature: %d\r\n", temp);
 #endif
@@ -532,13 +532,21 @@ void uart_cmd_handler() {
 #endif
                                     set_default_answer(pkt->command, pkt->seq_num);
 
-                                    if (data_point->data[0] == SENSOR_IN) {
+                                    uint8_t sensor_used = data_point->data[0];
+
+                                    if (sensor_used == SENSOR_IN) {
                                         printf("sensor IN\r\n");
-                                    } else if (data_point->data[0] == SENSOR_AL) {
-                                        printf("sensor IN\r\n");
+                                    } else if (sensor_used == SENSOR_AL) {
+                                        printf("sensor AL\r\n");
                                     } else {
                                         printf("sensor OU\r\n");
                                     }
+
+                                    zcl_setAttrVal(APP_ENDPOINT1,
+                                                   ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                                   ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED,
+                                                   (uint8_t*)&sensor_used);
+
 
                                 } else if (data_point->dp_id == DP_ID_65) {
 #if UART_PRINTF_MODE && DEBUG_DP
