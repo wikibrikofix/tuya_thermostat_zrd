@@ -15,8 +15,33 @@ static const char8_t *tuya_manuf_name1[] = {"cjbofhxw",
                                             NULL};
 
 static const char8_t **tuya_manuf_names[] = {tuya_manuf_name0, tuya_manuf_name1};
+static uint8_t manuf_name = MANUF_NAME_0;
 
-static manuf_name_t manuf_name = MANUF_NAME_0;
+static data_point_st_t data_point_type0[DP_IDX_MAXNUM] = {
+        {DP_TYPE0_ID_01, DP_BOOL, 1,    1},
+        {DP_TYPE0_ID_18, DP_VAL,  4,    10},
+        {DP_TYPE0_ID_10, DP_VAL,  4,    1},
+        {DP_TYPE0_ID_00, DP_VAL,  0,    0},
+        {DP_TYPE0_ID_13, DP_VAL,  4,    1},
+        {DP_TYPE0_ID_1A, DP_VAL,  4,    1},
+        {DP_TYPE0_ID_1B, DP_VAL,  4,    1},
+        {DP_TYPE0_ID_24, DP_BOOL, 1,    1},
+        {DP_TYPE0_ID_2B, DP_ENUM, 1,    1},
+        {DP_TYPE0_ID_02, DP_ENUM, 1,    1},
+        {DP_TYPE0_ID_28, DP_BOOL, 1,    1},
+        {DP_TYPE0_ID_65, DP_RAW,  0x24, 1},
+        {DP_TYPE0_ID_03, DP_BOOL, 1,    1},
+};
+
+static data_point_st_t data_point_type1[DP_IDX_MAXNUM] = {{0}};
+
+//static const data_point_st_t data_point_type1[DP_IDX_MAXNUM] = {{0}};
+//
+//static const data_point_st_t *data_point_type_arr[] = {data_point_type0, data_point_type1};
+//
+//static data_point_st_t *data_point_type = data_point_type_arr[MANUF_NAME_0];
+
+static data_point_st_t *data_point_type = data_point_type0;
 
 static uint8_t  pkt_buff[DATA_MAX_LEN*2];
 static uint8_t  answer_count = 0;
@@ -267,7 +292,8 @@ void uart_cmd_handler() {
                 if (crc == answer_buff[pkt->pkt_len-1]) {
                     if (send_pkt->command == COMMAND04 && pkt->command == COMMAND06 && pkt->seq_num == send_pkt->seq_num) {
                         cmd_queue.cmd_queue[0].confirm_rec = true;
-                        if (data_point->dp_id == DP_ID_10 || DP_ID_01) {
+                        if (data_point->dp_id == data_point_type[DP_IDX_SETPOINT].id/*DP_ID_10*/ ||
+                            data_point->dp_id == data_point_type[DP_IDX_ONOFF].id/*DP_ID_01*/) {
                             set_default_answer(COMMAND06, reverse16(pkt->seq_num));
                         }
                     } else if (pkt->command == send_pkt->command && pkt->seq_num == send_pkt->seq_num) {
@@ -311,6 +337,18 @@ void uart_cmd_handler() {
 
                                 if (manuf_name == MANUF_NAME_MAX) {
                                     manuf_name = MANUF_NAME_0;
+                                }
+
+                                switch(manuf_name) {
+                                    case MANUF_NAME_0:
+                                        data_point_type = data_point_type0;
+                                        break;
+                                    case MANUF_NAME_1:
+                                        data_point_type = data_point_type1;
+                                        break;
+                                    dafault:
+                                        data_point_type = data_point_type0;
+                                        break;
                                 }
 
                                 break;
@@ -399,8 +437,8 @@ void uart_cmd_handler() {
                     printf("command 0x03. Factory Reset\r\n");
 #endif
                     set_command(pkt->command, pkt->seq_num, false);
-                    zb_factoryReset();
-                    TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_3SEC);
+//                    zb_factoryReset();
+//                    TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_3SEC);
                 } else if (pkt->command == COMMAND24) {
 #if UART_PRINTF_MODE && DEBUG_CMD
                     printf("command 0x24. Sync Time\r\n");
@@ -419,16 +457,15 @@ void uart_cmd_handler() {
                         /* data point used */
                         data_point->dp_len = reverse16(data_point->dp_len);
 
-                        switch(manuf_name) {
-                            case MANUF_NAME_0: {
-                                if (data_point->dp_id == DP_ID_01) {
+
+                                if (data_point->dp_id == data_point_type[DP_IDX_ONOFF].id/*DP_ID_01*/) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x01\r\n");
 #endif
                                     set_default_answer(pkt->command, pkt->seq_num);
                                     thermostat_onoff_state(data_point->data[0]);
 
-                                } else if (data_point->dp_id == DP_ID_02) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_PROG].id/*DP_ID_02*/) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x02\r\n");
 #endif
@@ -444,13 +481,13 @@ void uart_cmd_handler() {
                                                    ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE,
                                                    (uint8_t*)&mode);
 
-                                } else if (data_point->dp_id == DP_ID_03) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_UNKNOWN].id/*DP_ID_03*/) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x03\r\n");
 #endif
                                     set_default_answer(pkt->command, pkt->seq_num);
 
-                                } else if (data_point->dp_id == DP_ID_10) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_SETPOINT].id/*DP_ID_10*/) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x10\r\n");
 #endif
@@ -459,7 +496,7 @@ void uart_cmd_handler() {
                                     uint32_t temp = int32_from_str(data_point->data);
                                     printf("heat setpoint: %d\r\n", temp);
 
-                                } else if (data_point->dp_id == DP_ID_13) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_MAX].id/*DP_ID_13*/) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x13\r\n");
 #endif
@@ -469,7 +506,7 @@ void uart_cmd_handler() {
 
                                     printf("max temperature: %d\r\n", temp);
 
-                                } else if (data_point->dp_id == DP_ID_18) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_TEMP].id/*DP_ID_18*/) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x18\r\n");
 #endif
@@ -486,7 +523,7 @@ void uart_cmd_handler() {
                                     printf("Local Temperature %d\r\n", temp);
 #endif
 
-                                } else if (data_point->dp_id == DP_ID_1A) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_HYSTERESIS].id/*DP_ID_1A*/) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x1A\r\n");
 #endif
@@ -557,11 +594,18 @@ void uart_cmd_handler() {
                                     printf("schedule\r\n");
                                 }
 
-                                break;
-                            }
-                            default:
-                                break;
-                        }
+
+
+
+
+
+//                        switch(manuf_name) {
+//                            case MANUF_NAME_0: {
+//                                break;
+//                            }
+//                            default:
+//                                break;
+//                        }
                     }
                 }
 
