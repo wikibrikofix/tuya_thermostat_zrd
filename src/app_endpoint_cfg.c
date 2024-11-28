@@ -225,28 +225,34 @@ zcl_thermostatAttr_t g_zcl_thermostatAttrs = {
     .localTemperature = 2200,               // 22°C * 100
     .absMinHeatSetpointLimit = 1000,        // min 10°C * 100 ( +5°C ... +15°C)
     .absMaxHeatSetpointLimit = 4500,        // max 45°C * 100 (+15°C ... +45°C)
+    .minHeatSetpointLimit = 1000,           // min 10°C * 100 ( +5°C ... +15°C)
+    .maxHeatSetpointLimit = 4500,           // max 45°C * 100 (+15°C ... +45°C)
     .localTemperatureCalibration = 0,       // in device -9°C...+9°C
     .occupiedHeatingSetpoint = 2200,        // set 22°C * 100
     .controlSequenceOfOperation = 0x02,     // 0x02 Heating
     .systemMode = SYS_MODE_OFF,             // see /src/zcl/zcl_app_thermostat.h
     .runningState = 0x00,                   // 0x00 - off, 0x01 - heat
     .manual_progMode = 0x00,                // 0x00 - manual mode, 0x01 - programming mode
-    .temperatureDisplayMode = 0x00,         // 0x00 - °C, 0x01 - °F
-    .keypadLockout = 0x00,                  // on off
     .sensor_used = SENSOR_IN,               // IN, ALL, OU
+    .hysteresis = HYSTERESIS_MIN,           // 1 ... 5 °C
+    .temperatureDisplayMode = 0x00,         // 0x00 - °C, 0x01 - °F (Not support)
+    .keypadLockout = 0x00,                  // on off
 };
 
 const zclAttrInfo_t thermostat_attrTbl[] = {
         { ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMPERATURE,             ZCL_INT16,      RR,     (uint8_t*)&g_zcl_thermostatAttrs.localTemperature           },
         { ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT,   ZCL_INT16,      R,      (uint8_t*)&g_zcl_thermostatAttrs.absMinHeatSetpointLimit    },
         { ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MAX_HEAT_SETPOINT_LIMIT,   ZCL_INT16,      R,      (uint8_t*)&g_zcl_thermostatAttrs.absMaxHeatSetpointLimit    },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION,        ZCL_INT8,       RRW,     (uint8_t*)&g_zcl_thermostatAttrs.localTemperatureCalibration},
+        { ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT,       ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.absMinHeatSetpointLimit    },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT,       ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.absMaxHeatSetpointLimit    },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION,        ZCL_INT8,       RRW,    (uint8_t*)&g_zcl_thermostatAttrs.localTemperatureCalibration},
         { ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT,     ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.occupiedHeatingSetpoint    },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CTRL_SEQUENCE_OF_OPERATION,    ZCL_ENUM8,      R,      (uint8_t*)&g_zcl_thermostatAttrs.controlSequenceOfOperation },
         { ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE,                      ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.systemMode                 },
         {ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE,     ZCL_BITMAP8,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.manual_progMode            },
         { ZCL_ATTRID_HVAC_THERMOSTAT_RUNNING_STATE,                 ZCL_BITMAP16,   RR,     (uint8_t*)&g_zcl_thermostatAttrs.runningState               },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED,            ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.sensor_used                },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HYSTERESIS,             ZCL_UINT8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.hysteresis                 },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,                       ZCL_UINT16,     R,      (uint8_t*)&zcl_attr_global_clusterRevision                  },
 };
