@@ -41,7 +41,7 @@ static data_point_st_t data_point_type1[DP_IDX_MAXNUM] = {{0}};
 //
 //static data_point_st_t *data_point_type = data_point_type_arr[MANUF_NAME_0];
 
-static data_point_st_t *data_point_type = data_point_type0;
+data_point_st_t *data_point_type = data_point_type0;
 
 static uint8_t  pkt_buff[DATA_MAX_LEN*2];
 static uint8_t  answer_count = 0;
@@ -346,7 +346,7 @@ void uart_cmd_handler() {
                                     case MANUF_NAME_1:
                                         data_point_type = data_point_type1;
                                         break;
-                                    dafault:
+                                    default:
                                         data_point_type = data_point_type0;
                                         break;
                                 }
@@ -533,7 +533,7 @@ void uart_cmd_handler() {
 
                                     printf("min temperature: %d\r\n", temp);
 
-                                } else if (data_point->dp_id == DP_ID_1B) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_CALIBRATION].id/*DP_ID_1B*/) {
                                     int32_t temp = int32_from_str(data_point->data)*10;
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x1B. calibration local temperature: %d\r\n", temp);
@@ -545,13 +545,13 @@ void uart_cmd_handler() {
                                                    ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION,
                                                    (uint8_t*)&temp);
 
-                                } else if (data_point->dp_id == DP_ID_24) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_RUNSTATE].id/*DP_ID_24*/) {
     #if UART_PRINTF_MODE && DEBUG_DP
                                         printf("data point 0x24\r\n");
     #endif
                                         set_default_answer(pkt->command, pkt->seq_num);
 
-                                } else if (data_point->dp_id == DP_ID_28) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_LOCKUNLOCK].id/*DP_ID_28*/) {
                                     uint8_t lock = data_point->data[0];
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x28. key %s\r\n", lock?"lock":"unlock");
@@ -563,7 +563,7 @@ void uart_cmd_handler() {
                                                    ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT,
                                                    (uint8_t*)&lock);
 
-                                } else if (data_point->dp_id == DP_ID_2B) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_SENSOR].id/*DP_ID_2B*/) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x2B\r\n");
 #endif
@@ -585,7 +585,7 @@ void uart_cmd_handler() {
                                                    (uint8_t*)&sensor_used);
 
 
-                                } else if (data_point->dp_id == DP_ID_65) {
+                                } else if (data_point->dp_id == data_point_type[DP_IDX_SCHEDULE].id/*DP_ID_65*/) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x65\r\n");
 #endif
