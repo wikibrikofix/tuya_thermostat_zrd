@@ -179,6 +179,75 @@ void remote_cmd_sensor_used(uint8_t sensor_used) {
     set_seq_num(seq_num);
 }
 
+void remote_cmd_hysteresis(uint32_t hysteresis) {
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(8);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = DP_ID_1A;
+    out_pkt->pkt_len++;
+    data_point->dp_type = DP_VAL;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(4));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+    data_point->data[0] = (hysteresis >> 24) & 0xFF;
+    data_point->data[1] = (hysteresis >> 16) & 0xFF;
+    data_point->data[2] = (hysteresis >> 8)  & 0xFF;
+    data_point->data[3] = hysteresis & 0xFF;
+    out_pkt->pkt_len += 4;
+    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, true);
+
+    set_seq_num(seq_num);
+}
+
+void remote_cmd_min_setpoint(uint32_t min_temp) {
+    printf("min_temp: %d\r\n", min_temp);
+
+    min_temp /= 10;
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(8);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = DP_ID_1A;
+    out_pkt->pkt_len++;
+    data_point->dp_type = DP_VAL;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(4));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+    data_point->data[0] = (min_temp >> 24) & 0xFF;
+    data_point->data[1] = (min_temp >> 16) & 0xFF;
+    data_point->data[2] = (min_temp >> 8)  & 0xFF;
+    data_point->data[3] = min_temp & 0xFF;
+    out_pkt->pkt_len += 4;
+    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, true);
+
+    set_seq_num(seq_num);
+}
+
+void remote_cmd_max_setpoint(uint32_t max_temp) {
+
+}
+
 void set_run_state_bit(uint8_t bit_num, bool set) {
 
     zcl_thermostatAttr_t *tempAttrs = zcl_thermostatAttrGet();
