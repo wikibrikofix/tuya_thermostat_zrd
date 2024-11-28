@@ -21,6 +21,7 @@
 #define PROG_MODE               0x01
 
 #define ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED  0xF000
+#define ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HYSTERESIS   0xF001
 
 //typedef enum {
 //    SENSOR_IN   =   0x00,
