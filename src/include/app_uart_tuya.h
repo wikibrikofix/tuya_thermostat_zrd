@@ -1,16 +1,46 @@
 #ifndef SRC_INCLUDE_APP_UART_TUYA_H_
 #define SRC_INCLUDE_APP_UART_TUYA_H_
 
-#define FLAG_START1     0x55
-#define FLAG_START2     0xAA
-#define SP_VERSION      0x02
-#define DATA_MAX_LEN    64          /* do not change!   */
+#define FLAG_START1         0x55
+#define FLAG_START2         0xAA
+#define SP_VERSION          0x02
+#define DATA_MAX_LEN        64          /* do not change!   */
+#define HYSTERESIS_MIN      1
+#define HYSTERESIS_MAX      5
+#define SET_POINT_MIN_MIN   5
+#define SET_POINT_MIN_MAX   15
+#define SET_POINT_MAX_MIN   15
+#define SET_POINT_MAX_MAX   45
 
 typedef enum {
     MANUF_NAME_0 = 0,
     MANUF_NAME_1,
     MANUF_NAME_MAX
 } manuf_name_t;
+
+typedef struct {
+    uint8_t     id;
+    uint8_t     type;
+    uint16_t    len;
+    uint16_t    devisor;
+} data_point_st_t;
+
+typedef enum {
+    DP_IDX_ONOFF    = 0,
+    DP_IDX_TEMP,
+    DP_IDX_SETPOINT,
+    DP_IDX_MIN,
+    DP_IDX_MAX,
+    DP_IDX_HYSTERESIS,
+    DP_IDX_CALIBRATION,
+    DP_IDX_RUNSTATE,
+    DP_IDX_SENSOR,
+    DP_IDX_PROG,
+    DP_IDX_LOCKUNLOCK,
+    DP_IDX_SCHEDULE,
+    DP_IDX_UNKNOWN,
+    DP_IDX_MAXNUM
+} data_point_idx_t;
 
 typedef enum {
     COMMAND00   =   0x00,
@@ -24,19 +54,20 @@ typedef enum {
 } command_t;
 
 typedef enum {
-    DP_ID_01    = 0x01,     // on off
-    DP_ID_02    = 0x02,     // manual / programming
-    DP_ID_03    = 0x03,     // unknown
-    DP_ID_10    = 0x10,     // heat setpoint
-    DP_ID_13    = 0x13,     // max heat
-    DP_ID_18    = 0x18,     // local temperature
-    DP_ID_1A    = 0x1A,     // min heat
-    DP_ID_1B    = 0x1B,     // calibration
-    DP_ID_24    = 0x24,     // unknown
-    DP_ID_28    = 0x28,     // lock / unlock keys
-    DP_ID_2B    = 0x2B,     // Sensor IN/AL/OU
-    DP_ID_65    = 0x65,     // schedule
-} dp_id_t;
+    DP_TYPE0_ID_00    = 0x00,     // heat min ?
+    DP_TYPE0_ID_01    = 0x01,     // on off
+    DP_TYPE0_ID_02    = 0x02,     // manual / programming
+    DP_TYPE0_ID_03    = 0x03,     // unknown
+    DP_TYPE0_ID_10    = 0x10,     // heat setpoint
+    DP_TYPE0_ID_13    = 0x13,     // max heat
+    DP_TYPE0_ID_18    = 0x18,     // local temperature
+    DP_TYPE0_ID_1A    = 0x1A,     // hysteresis
+    DP_TYPE0_ID_1B    = 0x1B,     // calibration
+    DP_TYPE0_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE0_ID_28    = 0x28,     // lock / unlock keys
+    DP_TYPE0_ID_2B    = 0x2B,     // Sensor IN/AL/OU
+    DP_TYPE0_ID_65    = 0x65,     // schedule
+} data_point_id_type0_t;
 
 /* Data Point
  *  Type    Data type   Data length     Description
