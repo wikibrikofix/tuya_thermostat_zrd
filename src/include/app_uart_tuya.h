@@ -133,6 +133,8 @@ typedef struct {
     cmd_queue_cell_t cmd_queue[5];
 } cmd_queue_t;
 
+extern data_point_st_t *data_point_type;
+
 uint8_t checksum(uint8_t *data, uint16_t length);
 void uart_cmd_handler();
 void set_status_net(status_net_t new_status);
