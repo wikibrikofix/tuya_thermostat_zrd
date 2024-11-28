@@ -231,6 +231,23 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 if (sensor_used == SENSOR_IN || sensor_used == SENSOR_AL || sensor_used == SENSOR_OU) {
                     remote_cmd_sensor_used(sensor_used);
                 }
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HYSTERESIS) {
+                uint8_t hysteresis = attr->attrData[0];
+                printf("hysteresys: 0x%x\r\n", hysteresis);
+                if (hysteresis >= HYSTERESIS_MIN && hysteresis <= HYSTERESIS_MAX) {
+                    remote_cmd_hysteresis(hysteresis);
+                }
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT) {
+                uint16_t min_temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                if (min_temp >= SET_POINT_MIN_MIN * 100 && min_temp <= SET_POINT_MIN_MAX * 100) {
+                    remote_cmd_min_setpoint(min_temp);
+                }
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT) {
+                uint16_t max_temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                printf("max_setpoimt: %d\r\n", max_temp);
+                if (max_temp >= SET_POINT_MAX_MIN * 100 && max_temp <= SET_POINT_MAX_MAX * 100) {
+                    remote_cmd_hysteresis(max_temp);
+                }
             }
         }
     }
