@@ -2,47 +2,6 @@
 
 #include "app_main.h"
 
-static const char8_t *tuya_manuf_name0[] = {"aoclfnxz",
-                                           "ztvwu4nk",
-                                           "5toc8efa",
-                                           "ye5jkfsb",
-                                           "u9bfwha0",
-                                            NULL};
-/* only test. for future */
-static const char8_t *tuya_manuf_name1[] = {"cjbofhxw",
-                                           "wbhaespm",
-                                           "mwomyz5n",
-                                            NULL};
-
-static const char8_t **tuya_manuf_names[] = {tuya_manuf_name0, tuya_manuf_name1};
-static uint8_t manuf_name = MANUF_NAME_0;
-
-static data_point_st_t data_point_type0[DP_IDX_MAXNUM] = {
-        {DP_TYPE0_ID_01, DP_BOOL, 1,    1},
-        {DP_TYPE0_ID_18, DP_VAL,  4,    10},
-        {DP_TYPE0_ID_10, DP_VAL,  4,    1},
-        {DP_TYPE0_ID_00, DP_VAL,  0,    0},
-        {DP_TYPE0_ID_13, DP_VAL,  4,    1},
-        {DP_TYPE0_ID_1A, DP_VAL,  4,    1},
-        {DP_TYPE0_ID_1B, DP_VAL,  4,    1},
-        {DP_TYPE0_ID_24, DP_BOOL, 1,    1},
-        {DP_TYPE0_ID_2B, DP_ENUM, 1,    1},
-        {DP_TYPE0_ID_02, DP_ENUM, 1,    1},
-        {DP_TYPE0_ID_28, DP_BOOL, 1,    1},
-        {DP_TYPE0_ID_65, DP_RAW,  0x24, 1},
-        {DP_TYPE0_ID_03, DP_BOOL, 1,    1},
-};
-
-static data_point_st_t data_point_type1[DP_IDX_MAXNUM] = {{0}};
-
-//static const data_point_st_t data_point_type1[DP_IDX_MAXNUM] = {{0}};
-//
-//static const data_point_st_t *data_point_type_arr[] = {data_point_type0, data_point_type1};
-//
-//data_point_st_t *data_point_type = (data_point_st_t*)data_point_type_arr[MANUF_NAME_0];
-
-data_point_st_t *data_point_type = data_point_type0;
-
 static uint8_t  pkt_buff[DATA_MAX_LEN*2];
 static uint8_t  answer_count = 0;
 static uint16_t seq_num = 0;
