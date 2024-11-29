@@ -22,7 +22,7 @@ typedef struct {
     uint8_t     id;
     uint8_t     type;
     uint16_t    len;
-    uint16_t    devisor;
+    uint16_t    divisor;
 } data_point_st_t;
 
 typedef enum {
