@@ -41,7 +41,11 @@ void remote_smd_sys_mode(uint8_t mode) {
 
 void remote_smd_heating_set(int16_t temp) {
 
-    temp /= 100;
+    if (data_point_type[DP_IDX_SETPOINT].divisor == 1) {
+        temp /= 100;
+    } else if (data_point_type[DP_IDX_SETPOINT].divisor == 10) {
+        temp /= 10;
+    }
 
     uint8_t pkt_buff[DATA_MAX_LEN+12];
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
@@ -250,13 +254,22 @@ void remote_cmd_max_setpoint(uint32_t max_temp) {
 
 void set_run_state_bit(uint8_t bit_num, bool set) {
 
-    zcl_thermostatAttr_t *tempAttrs = zcl_thermostatAttrGet();
+    uint8_t runState;
+    uint16_t len;
+
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_RUNNING_STATE, &len, (uint8_t*)&runState);
 
     if (set) {
-        tempAttrs->runningState |= (1 << bit_num);
+        runState |= (1 << bit_num);
     } else {
-        tempAttrs->runningState &= ~( 1 << bit_num);
+        runState &= ~( 1 << bit_num);
     }
+
+    zcl_setAttrVal(APP_ENDPOINT1,
+                   ZCL_CLUSTER_HAVC_THERMOSTAT,
+                   ZCL_ATTRID_HVAC_THERMOSTAT_RUNNING_STATE,
+                   (uint8_t*)&runState);
+
 }
 
 void thermostat_onoff_state(int8_t onoff) {
@@ -289,11 +302,11 @@ void thermostat_onoff_state(int8_t onoff) {
         zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, &len, (uint8_t*)&man_prog_mode);
 
 
-        if (ocHeatSetpoint > localTemp && thermostat_mode == DEV_THERM_MODE_MANUAL) {
-            set_run_state_bit(RUN_STATE_HEAT_BIT, ON);
-        } else {
-            set_run_state_bit(RUN_STATE_HEAT_BIT, OFF);
-        }
+//        if (ocHeatSetpoint > localTemp && thermostat_mode == DEV_THERM_MODE_MANUAL) {
+//            set_run_state_bit(RUN_STATE_HEAT_BIT, ON);
+//        } else {
+//            set_run_state_bit(RUN_STATE_HEAT_BIT, OFF);
+//        }
     }
 
 }
