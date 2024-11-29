@@ -39,7 +39,7 @@ static data_point_st_t data_point_type1[DP_IDX_MAXNUM] = {{0}};
 //
 //static const data_point_st_t *data_point_type_arr[] = {data_point_type0, data_point_type1};
 //
-//static data_point_st_t *data_point_type = data_point_type_arr[MANUF_NAME_0];
+//data_point_st_t *data_point_type = (data_point_st_t*)data_point_type_arr[MANUF_NAME_0];
 
 data_point_st_t *data_point_type = data_point_type0;
 
@@ -512,7 +512,15 @@ void uart_cmd_handler() {
 #endif
                                     set_default_answer(pkt->command, pkt->seq_num);
 
-                                    uint16_t temp = (int32_from_str(data_point->data)&0xFFFF)*10;
+                                    uint16_t divisor = 1;
+
+                                    if (data_point_type[DP_IDX_TEMP].divisor == 1) {
+                                        divisor = 100;
+                                    } else if (data_point_type[DP_IDX_TEMP].divisor == 10) {
+                                        divisor = 10;
+                                    }
+
+                                    uint16_t temp = (int32_from_str(data_point->data)&0xFFFF)*divisor;
 
                                     zcl_setAttrVal(APP_ENDPOINT1,
                                                    ZCL_CLUSTER_HAVC_THERMOSTAT,
@@ -550,6 +558,11 @@ void uart_cmd_handler() {
                                         printf("data point 0x24\r\n");
     #endif
                                         set_default_answer(pkt->command, pkt->seq_num);
+                                        if (data_point->data[0]) {
+                                            set_run_state_bit(RUN_STATE_HEAT_BIT, OFF);
+                                        } else {
+                                            set_run_state_bit(RUN_STATE_HEAT_BIT, ON);
+                                        }
 
                                 } else if (data_point->dp_id == data_point_type[DP_IDX_LOCKUNLOCK].id/*DP_ID_28*/) {
                                     uint8_t lock = data_point->data[0];
