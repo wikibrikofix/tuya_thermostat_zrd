@@ -9,6 +9,7 @@ $(OUT_PATH)/$(SRC_PATH)/common/main.o \
 $(OUT_PATH)/$(SRC_PATH)/zcl/zcl_thermostat_ui_cfg.o \
 $(OUT_PATH)/$(SRC_PATH)/zcl/zcl_app_thermostat.o \
 $(OUT_PATH)/$(SRC_PATH)/app_level.o \
+$(OUT_PATH)/$(SRC_PATH)/app_tuya_datapoint.o \
 $(OUT_PATH)/$(SRC_PATH)/app_uart_tuya.o \
 $(OUT_PATH)/$(SRC_PATH)/app_uart.o \
 $(OUT_PATH)/$(SRC_PATH)/app_thermostat.o \
