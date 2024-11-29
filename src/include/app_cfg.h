@@ -57,7 +57,7 @@ extern "C" {
 
 #define ZCL_BASIC_MFG_NAME     {10,'S','l','a','c','k','y','-','D','I','Y'}
 /* Tuya Custom Thermostat for Floor Heating */
-#define ZCL_BASIC_MODEL_ID     {17,'T','Z','E','2','0','4','_','u','9','b','f','w','h','a','0','_','S'}
+#define ZCL_BASIC_MODEL_ID     {13,'T','Z','E','2','0','4','_','C','u','s','t','o','m'}
 
 
 /**********************************************************************
