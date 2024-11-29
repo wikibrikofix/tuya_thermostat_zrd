@@ -10,7 +10,7 @@ data_point_st_t data_point_type0[DP_IDX_MAXNUM] = {
         {DP_TYPE0_ID_01, DP_BOOL, 1,    1},             // on off
         {DP_TYPE0_ID_18, DP_VAL,  4,    10},            // local temperature
         {DP_TYPE0_ID_10, DP_VAL,  4,    1},             // heat setpoint
-        {DP_TYPE0_ID_00, DP_VAL,  0,    0},             // heat min
+        {DP_TYPE0_ID_00, DP_VAL,  0,    0},             // heat min - not support
         {DP_TYPE0_ID_13, DP_VAL,  4,    1},             // max heat setpoint
         {DP_TYPE0_ID_1A, DP_VAL,  4,    1},             // hysteresis
         {DP_TYPE0_ID_1B, DP_VAL,  4,    1},             // local temperature calibration
