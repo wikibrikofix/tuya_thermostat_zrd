@@ -216,12 +216,14 @@ void user_init(bool isRetention) {
                             ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED, 0, 3600, (uint8_t *)&reportableChange);
     bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_THERMOSTAT,
                             ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HYSTERESIS, 0, 3600, (uint8_t *)&reportableChange);
-    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG,
-                            ZCL_ATTRID_HVAC_TEMPERATURE_DISPLAY_MODE, 0, 3600, (uint8_t *)&reportableChange);
+    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                            ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND, 0, 3600, (uint8_t *)&reportableChange);
+//    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG,
+//                            ZCL_ATTRID_HVAC_TEMPERATURE_DISPLAY_MODE, 0, 3600, (uint8_t *)&reportableChange);
     bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG,
                             ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, 0, 3600, (uint8_t *)&reportableChange);
-    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_GEN_LEVEL_CONTROL,
-                            ZCL_ATTRID_LEVEL_CURRENT_LEVEL, 0, 3600, (uint8_t *)&reportableChange);
+//    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_GEN_LEVEL_CONTROL,
+//                            ZCL_ATTRID_LEVEL_CURRENT_LEVEL, 0, 3600, (uint8_t *)&reportableChange);
 
     /* custom reporting application (non SDK) */
     app_reporting_init();
