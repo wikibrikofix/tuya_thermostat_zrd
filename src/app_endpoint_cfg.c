@@ -235,6 +235,7 @@ zcl_thermostatAttr_t g_zcl_thermostatAttrs = {
     .manual_progMode = 0x00,                // 0x00 - manual mode, 0x01 - programming mode
     .sensor_used = SENSOR_IN,               // IN, ALL, OU
     .hysteresis = HYSTERESIS_MIN,           // 1 ... 5 °C
+    .dead_band = HYSTERESIS_MIN,            // 1 ... 5 °C
     .temperatureDisplayMode = 0x00,         // 0x00 - °C, 0x01 - °F (Not support)
     .keypadLockout = 0x00,                  // on off
 };
@@ -253,6 +254,7 @@ const zclAttrInfo_t thermostat_attrTbl[] = {
         { ZCL_ATTRID_HVAC_THERMOSTAT_RUNNING_STATE,                 ZCL_BITMAP16,   RR,     (uint8_t*)&g_zcl_thermostatAttrs.runningState               },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED,            ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.sensor_used                },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HYSTERESIS,             ZCL_UINT8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.hysteresis                 },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND,        ZCL_INT8,       RRW,    (uint8_t*)&g_zcl_thermostatAttrs.dead_band                  },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,                       ZCL_UINT16,     R,      (uint8_t*)&zcl_attr_global_clusterRevision                  },
 };
