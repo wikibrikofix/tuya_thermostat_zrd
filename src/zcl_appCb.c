@@ -237,6 +237,11 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 if (hysteresis >= HYSTERESIS_MIN && hysteresis <= HYSTERESIS_MAX) {
                     remote_cmd_hysteresis(hysteresis);
                 }
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND) {
+                uint8_t dead_band = attr->attrData[0];
+                if (dead_band >= HYSTERESIS_MIN && dead_band <= HYSTERESIS_MAX) {
+                    remote_cmd_hysteresis(dead_band);
+                }
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT) {
                 uint16_t min_temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
                 if (min_temp >= SET_POINT_MIN_MIN * 100 && min_temp <= SET_POINT_MIN_MAX * 100) {
