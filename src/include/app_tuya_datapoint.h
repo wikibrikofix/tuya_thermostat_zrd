@@ -32,7 +32,7 @@ typedef enum {
 } data_point_idx_t;
 
 typedef enum {
-    DP_TYPE0_ID_00    = 0x00,     // heat min ?
+    DP_TYPE0_ID_00    = 0x00,     // heat min  - if 0 - not support
     DP_TYPE0_ID_01    = 0x01,     // on off
     DP_TYPE0_ID_02    = 0x02,     // manual / programming
     DP_TYPE0_ID_03    = 0x03,     // unknown
@@ -67,11 +67,12 @@ typedef enum {
 } dp_type_t;
 
 extern uint8_t manuf_name;
-extern data_point_st_t *data_point_type;
+extern data_point_st_t *data_point_model;
 extern const char8_t **tuya_manuf_names[];
 extern data_point_st_t data_point_type0[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_type1[DP_IDX_MAXNUM];
 
-
+void data_point_model_init();
+data_point_st_t *data_point_model_arr[MANUF_NAME_MAX];
 
 #endif /* SRC_INCLUDE_APP_TUYA_DATAPOINT_H_ */
