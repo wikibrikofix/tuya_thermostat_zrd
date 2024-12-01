@@ -86,12 +86,20 @@ typedef struct {
     uint8_t     dailyTransNum;
     uint8_t     manual_progMode;                // 0x00 - manual mode, 0x01 - programming mode
     uint8_t     sensor_used;                    // IN, ALL, OU - castom attribute
-    uint8_t     hysteresis;                     // 1 ... 5 °C
     uint8_t     dead_band;                      // 1 ... 5 °C
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off
 } zcl_thermostatAttr_t;
 
+typedef struct {
+    dp_schedule_t schedule_mon[6];
+    dp_schedule_t schedule_tue[6];
+    dp_schedule_t schedule_wed[6];
+    dp_schedule_t schedule_thu[6];
+    dp_schedule_t schedule_fri[6];
+    dp_schedule_t schedule_sat[6];
+    dp_schedule_t schedule_sun[6];
+} zcl_scheduleAttr_t;
 
 extern uint8_t APP_EP1_CB_CLUSTER_NUM;
 
