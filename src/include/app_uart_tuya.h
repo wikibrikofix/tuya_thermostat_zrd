@@ -22,6 +22,7 @@ typedef enum {
     COMMAND05,
     COMMAND06,
     COMMAND24   =   0x24,           /* Sync time                    */
+    COMMAND28   =   0x28,           /* Query DP data                */
 } command_t;
 
 
