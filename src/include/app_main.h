@@ -10,8 +10,8 @@
 
 #include "app_utility.h"
 #include "app_reporting.h"
-#include "app_endpoint_cfg.h"
 #include "app_tuya_datapoint.h"
+#include "app_endpoint_cfg.h"
 #include "app_uart_tuya.h"
 #include "app_uart.h"
 #include "app_thermostat.h"
