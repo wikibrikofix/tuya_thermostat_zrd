@@ -197,7 +197,7 @@ void remote_cmd_sensor_used(uint8_t sensor_used) {
 
 void remote_cmd_hysteresis(uint32_t hysteresis) {
 
-    if (data_point_model[DP_IDX_HYSTERESIS].id == 0) return;
+    if (data_point_model[DP_IDX_DEADZONE].id == 0) return;
 
     uint8_t pkt_buff[DATA_MAX_LEN+12];
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
@@ -205,9 +205,9 @@ void remote_cmd_hysteresis(uint32_t hysteresis) {
     seq_num++;
 
 
-    if (data_point_model[DP_IDX_HYSTERESIS].divisor == 10) {
+    if (data_point_model[DP_IDX_DEADZONE].divisor == 10) {
         hysteresis *= 10;
-    } else if (data_point_model[DP_IDX_HYSTERESIS].divisor == 100) {
+    } else if (data_point_model[DP_IDX_DEADZONE].divisor == 100) {
         hysteresis *= 100;
     }
 
@@ -218,9 +218,9 @@ void remote_cmd_hysteresis(uint32_t hysteresis) {
     out_pkt->pkt_len++;
 
     data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_HYSTERESIS].id;
+    data_point->dp_id = data_point_model[DP_IDX_DEADZONE].id;
     out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_HYSTERESIS].type;
+    data_point->dp_type = data_point_model[DP_IDX_DEADZONE].type;
     out_pkt->pkt_len++;
     data_point->dp_len = (reverse16(4));
     out_pkt->pkt_len++;
