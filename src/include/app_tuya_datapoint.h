@@ -66,6 +66,12 @@ typedef enum {
     DP_BITMAP
 } dp_type_t;
 
+typedef struct {
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t temperature;
+} dp_schedule_t;
+
 extern uint8_t manuf_name;
 extern data_point_st_t *data_point_model;
 extern const char8_t **tuya_manuf_names[];
