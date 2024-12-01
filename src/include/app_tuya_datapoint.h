@@ -20,7 +20,7 @@ typedef enum {
     DP_IDX_SETPOINT,
     DP_IDX_MIN,
     DP_IDX_MAX,
-    DP_IDX_HYSTERESIS,
+    DP_IDX_DEADZONE,
     DP_IDX_CALIBRATION,
     DP_IDX_RUNSTATE,
     DP_IDX_SENSOR,
@@ -65,6 +65,12 @@ typedef enum {
     DP_ENUM,
     DP_BITMAP
 } dp_type_t;
+
+typedef struct {
+    uint8_t     hour;
+    uint8_t     minute;
+    uint16_t    temperature;
+} dp_schedule_t;
 
 extern uint8_t manuf_name;
 extern data_point_st_t *data_point_model;
