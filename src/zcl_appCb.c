@@ -1080,9 +1080,27 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                 printf("CMD Set Weekly Schedule\r\n");
                 zcl_thermostat_setWeeklyScheduleCmd_t *cmd = (zcl_thermostat_setWeeklyScheduleCmd_t*)cmdPayload;
 
-                for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
-                    printf("i: %d, week: %d, time: %d\r\n", i, cmd->dayOfWeekForSequence, cmd->sequenceMode.pHeatMode[i].transTime);
+                switch(manuf_name) {
+                    case MANUF_NAME_0:
+                        for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
+                            if (i == 4) {
+                                break;
+                            }
+                            if ((cmd->dayOfWeekForSequence & DAY_SUN) ||
+                                (cmd->dayOfWeekForSequence & DAY_SAT) ||
+                                (cmd->dayOfWeekForSequence & DAY_MON)) {
+                                printf("i: %d, week: %d, time: %d\r\n", i, cmd->dayOfWeekForSequence, cmd->sequenceMode.pHeatMode[i].transTime);
+                                status = ZCL_STA_SUCCESS;
+                            } else {
+                                status = ZCL_STA_INVALID_VALUE;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
                 }
+
+
 
 //                if (cmd) {
 //                    printf("ofWeek: 0x%x, mode: 0x%x, trans: 0x%x, time: 0x%x\r\n", cmd->dayOfWeekForSequence, cmd->modeForSequence, cmd->numOfTransForSequence, cmd->sequenceMode.pHeatMode->transTime);
@@ -1099,6 +1117,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 //                else status = ZCL_STA_INVALID_VALUE;
                 break;
             default:
+                status = ZCL_STA_FAILURE;
                 break;
         }
     }
