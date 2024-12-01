@@ -44,13 +44,13 @@ typedef struct {
 } zcl_scheduleData_t;
 
 typedef enum {
-    DAY_SUN = 0x00, // Sunday
-    DAY_MON = 0x01, // Monday
-    DAY_TUE = 0x02, // Tuesday
-    DAY_WED = 0x03, // Wednesday
-    DAY_THU = 0x04, // Thursday
-    DAY_FRI = 0x05, // Friday
-    DAY_SAT = 0x06  // Saturday
+    DAY_SUN = 0x01, // Sunday
+    DAY_MON = 0x02, // Monday
+    DAY_TUE = 0x04, // Tuesday
+    DAY_WED = 0x08, // Wednesday
+    DAY_THU = 0x10, // Thursday
+    DAY_FRI = 0x20, // Friday
+    DAY_SAT = 0x40  // Saturday
 } day_of_week_t;
 
 extern zcl_scheduleData_t g_zcl_scheduleData;
