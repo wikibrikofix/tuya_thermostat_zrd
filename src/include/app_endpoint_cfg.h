@@ -91,16 +91,6 @@ typedef struct {
     uint8_t     keypadLockout;                  // on off
 } zcl_thermostatAttr_t;
 
-typedef struct {
-    dp_schedule_t schedule_mon[6];
-    dp_schedule_t schedule_tue[6];
-    dp_schedule_t schedule_wed[6];
-    dp_schedule_t schedule_thu[6];
-    dp_schedule_t schedule_fri[6];
-    dp_schedule_t schedule_sat[6];
-    dp_schedule_t schedule_sun[6];
-} zcl_scheduleAttr_t;
-
 extern uint8_t APP_EP1_CB_CLUSTER_NUM;
 
 /* Attributes */
