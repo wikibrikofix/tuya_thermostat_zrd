@@ -161,6 +161,13 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             add_cmd_queue(out_pkt, false);
 
             break;
+        case COMMAND28:
+            out_pkt->len = 0;
+            out_pkt->pkt_len++;
+            out_pkt->pkt_len++;
+            out_pkt->data[0] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+            add_cmd_queue(out_pkt, true);
+            break;
         default:
             break;
     }
@@ -180,6 +187,12 @@ static void set_default_answer(command_t command, uint16_t f_seq_num) {
 
 }
 
+static int32_t query_dp_dataCb(void *arg) {
+
+    set_command(COMMAND28, seq_num, true);
+    return -1;
+}
+
 void uart_cmd_handler() {
 
     size_t load_size = 0;
@@ -192,6 +205,7 @@ void uart_cmd_handler() {
         set_command(COMMAND01, seq_num, true);
         first_start = 0;
         data_point_model_init();
+        TL_ZB_TIMER_SCHEDULE(query_dp_dataCb, NULL, TIMEOUT_5SEC);
     }
 
     if (cmd_queue.cmd_num) {
@@ -312,6 +326,9 @@ void uart_cmd_handler() {
                             case COMMAND05:
                                 break;
                             case COMMAND06:
+                                break;
+                            case COMMAND28:
+                                cmd_queue.cmd_queue[0].confirm_rec = true;
                                 break;
                             default:
                                 break;
@@ -507,8 +524,8 @@ void uart_cmd_handler() {
                                     printf("Local Temperature %d\r\n", temp);
 #endif
 
-                        } else if (data_point->dp_id == data_point_model[DP_IDX_HYSTERESIS].id &&
-                                   data_point->dp_type == data_point_model[DP_IDX_HYSTERESIS].type) {
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_DEADZONE].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_DEADZONE].type) {
 #if UART_PRINTF_MODE && DEBUG_DP
                                     printf("data point 0x1A\r\n");
 #endif
@@ -516,14 +533,14 @@ void uart_cmd_handler() {
 
                             uint16_t temp = (int32_from_str(data_point->data) & 0xFFFF);
 
-                            if (data_point_model[DP_IDX_TEMP].divisor == 10) {
+                            if (data_point_model[DP_IDX_DEADZONE].divisor == 10) {
                                 temp /= 10;
-                            } else if (data_point_model[DP_IDX_TEMP].divisor == 100) {
+                            } else if (data_point_model[DP_IDX_DEADZONE].divisor == 100) {
                                 temp /= 100;
                             }
 
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
-                                           ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMPERATURE, (uint8_t*) &temp);
+                                           ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND, (uint8_t*) &temp);
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_CALIBRATION].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_CALIBRATION].type) {
