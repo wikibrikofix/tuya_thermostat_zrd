@@ -620,6 +620,40 @@ void uart_cmd_handler() {
 
                             //todo:
                             printf("schedule\r\n");
+
+                            if (manuf_name == MANUF_NAME_0) {
+                                uint16_t len = data_point->dp_len / 3;
+                                uint8_t *ptr = data_point->data;
+
+                                for(uint8_t i = 0; i < len ;) {
+                                    for(uint8_t ii = 0; ii < 4; ii++) {
+                                        if (i < 4) {
+                                            g_zcl_scheduleData.schedule_mon[ii].minute = *ptr++ * 60;
+                                            g_zcl_scheduleData.schedule_mon[ii].minute += *ptr++;
+                                            g_zcl_scheduleData.schedule_mon[ii].temperature = *ptr++ / 2;
+//                                            printf("mon. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_mon[ii].minute,
+//                                                    g_zcl_scheduleData.schedule_mon[ii].temperature);
+                                            i++;
+                                        } else if (i < 8) {
+                                            g_zcl_scheduleData.schedule_sat[ii].minute = *ptr++ * 60;
+                                            g_zcl_scheduleData.schedule_sat[ii].minute += *ptr++;
+                                            g_zcl_scheduleData.schedule_sat[ii].temperature = *ptr++ / 2;
+//                                            printf("sat. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sat[ii].minute,
+//                                                    g_zcl_scheduleData.schedule_sat[ii].temperature);
+                                            i++;
+                                        } else {
+                                            g_zcl_scheduleData.schedule_sun[ii].minute = *ptr++ * 60;
+                                            g_zcl_scheduleData.schedule_sun[ii].minute += *ptr++;
+                                            g_zcl_scheduleData.schedule_sun[ii].temperature = *ptr++ / 2;
+//                                            printf("sun. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sun[ii].minute,
+//                                                    g_zcl_scheduleData.schedule_sun[ii].temperature);
+                                            i++;
+                                        }
+                                    }
+                                }
+                            } else if (manuf_name == MANUF_NAME_1) {
+                                // to the future
+                            }
                         }
                     }
                 }
