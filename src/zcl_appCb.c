@@ -1076,10 +1076,19 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                 }
                 break;
             }
-            case ZCL_CMD_THERMOSTAT_SET_WEEKLY_SCHEDULE:
+            case ZCL_CMD_THERMOSTAT_SET_WEEKLY_SCHEDULE: {
                 printf("CMD Set Weekly Schedule\r\n");
-//                remote_cmd_ocs(pAddrInfo->dstEp, cmdId);
+                zcl_thermostat_setWeeklyScheduleCmd_t *cmd = (zcl_thermostat_setWeeklyScheduleCmd_t*)cmdPayload;
+
+                for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
+                    printf("i: %d, week: %d, time: %d\r\n", i, cmd->dayOfWeekForSequence, cmd->sequenceMode.pHeatMode[i].transTime);
+                }
+
+//                if (cmd) {
+//                    printf("ofWeek: 0x%x, mode: 0x%x, trans: 0x%x, time: 0x%x\r\n", cmd->dayOfWeekForSequence, cmd->modeForSequence, cmd->numOfTransForSequence, cmd->sequenceMode.pHeatMode->transTime);
+//                }
                 break;
+            }
             case ZCL_CMD_THERMOSTAT_GET_WEEKLY_SCHEDULE:
                 printf("CMD Get Weekly Schedule\r\n");
 //                remote_cmd_ocs(pAddrInfo->dstEp, cmdId);
