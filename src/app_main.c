@@ -215,8 +215,6 @@ void user_init(bool isRetention) {
     bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_THERMOSTAT,
                             ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED, 0, 3600, (uint8_t *)&reportableChange);
     bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_THERMOSTAT,
-                            ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HYSTERESIS, 0, 3600, (uint8_t *)&reportableChange);
-    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_THERMOSTAT,
                             ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND, 0, 3600, (uint8_t *)&reportableChange);
 //    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG,
 //                            ZCL_ATTRID_HVAC_TEMPERATURE_DISPLAY_MODE, 0, 3600, (uint8_t *)&reportableChange);
