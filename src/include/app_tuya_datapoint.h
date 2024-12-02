@@ -67,9 +67,9 @@ typedef enum {
 } dp_type_t;
 
 typedef struct {
-    uint8_t     hour;
-    uint8_t     minute;
-    uint16_t    temperature;
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t temperature;
 } dp_schedule_t;
 
 extern uint8_t manuf_name;

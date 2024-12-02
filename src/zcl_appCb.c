@@ -217,7 +217,6 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 }
             } else if (attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT) {
                 uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
-                printf("set_point: %d\r\n", temp);
                 if (temp >= tempAttrs->absMinHeatSetpointLimit && temp <= tempAttrs->absMaxHeatSetpointLimit) {
                     remote_smd_heating_set(temp);
                 }
@@ -1052,32 +1051,76 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
     printf("app_thermostatCb(). pAddrInfo->dirCluster: %0x%x, cmdId: 0x%x\r\n", pAddrInfo->dirCluster, cmdId);
 
 //    uint8_t *cmdData = (uint8_t*)cmdPayload;
+    uint16_t len;
+    int16_t  setpoint;
 
     status_t status = ZCL_STA_SUCCESS;
 
-//    if(pAddrInfo->dstEp == APP_ENDPOINT1) {
-//        switch(cmdId) {
-//            case ZCL_CMD_UP_OPEN:
-//                printf("CMD Open\r\n");
+    if(pAddrInfo->dstEp == APP_ENDPOINT1) {
+        switch(cmdId) {
+            case ZCL_CMD_THERMOSTAT_SETPOINT_RAISE_LOWER: {
+                printf("CMD Setpoint Raise Lower\r\n");
+                zcl_thermostat_setpointRaiseLowerCmd_t *cmd = (zcl_thermostat_setpointRaiseLowerCmd_t*)cmdPayload;
+                if (cmd->mode == ADJUST_HEAT_SETPOINT) {
+                    int8_t raise_lower = cmd->amount / 10;
+                    if (raise_lower >= -5 && raise_lower <= 5) {
+                        zcl_getAttrVal(APP_ENDPOINT1,
+                                       ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                       ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT,
+                                       &len, (uint8_t*)&setpoint);
+
+                        setpoint += raise_lower*100;
+                        remote_smd_heating_set(setpoint);
+                        printf("raise_lower: %d, setpoint: %d\r\n", raise_lower, setpoint);
+                    }
+                }
+                break;
+            }
+            case ZCL_CMD_THERMOSTAT_SET_WEEKLY_SCHEDULE: {
+                printf("CMD Set Weekly Schedule\r\n");
+                zcl_thermostat_setWeeklyScheduleCmd_t *cmd = (zcl_thermostat_setWeeklyScheduleCmd_t*)cmdPayload;
+
+                switch(manuf_name) {
+                    case MANUF_NAME_0:
+                        for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
+                            if (i == 4) {
+                                break;
+                            }
+                            if ((cmd->dayOfWeekForSequence & DAY_SUN) ||
+                                (cmd->dayOfWeekForSequence & DAY_SAT) ||
+                                (cmd->dayOfWeekForSequence & DAY_MON)) {
+                                printf("i: %d, week: %d, time: %d\r\n", i, cmd->dayOfWeekForSequence, cmd->sequenceMode.pHeatMode[i].transTime);
+                                status = ZCL_STA_SUCCESS;
+                            } else {
+                                status = ZCL_STA_INVALID_VALUE;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+
+
+//                if (cmd) {
+//                    printf("ofWeek: 0x%x, mode: 0x%x, trans: 0x%x, time: 0x%x\r\n", cmd->dayOfWeekForSequence, cmd->modeForSequence, cmd->numOfTransForSequence, cmd->sequenceMode.pHeatMode->transTime);
+//                }
+                break;
+            }
+            case ZCL_CMD_THERMOSTAT_GET_WEEKLY_SCHEDULE:
+                printf("CMD Get Weekly Schedule\r\n");
 //                remote_cmd_ocs(pAddrInfo->dstEp, cmdId);
-//                break;
-//            case ZCL_CMD_DOWN_CLOSE:
-//                printf("CMD Close\r\n");
-//                remote_cmd_ocs(pAddrInfo->dstEp, cmdId);
-//                break;
-//            case ZCL_CMD_STOP:
-//                printf("CMD Stop\r\n");
-//                remote_cmd_ocs(pAddrInfo->dstEp, cmdId);
-//                break;
-//            case ZCL_CMD_GO_TO_LIFT_PERCENTAGE:
-//                printf("CMD go to lift percentage. Payload: 0x%x\r\n", *cmdData);
+                break;
+            case ZCL_CMD_THERMOSTAT_CLEAR_WEEKLY_SCHEDULE:
+                printf("CMD Clear Weekly Schedule\r\n");
 //                if (*cmdData <= 100) remote_cmd_goToLiftPer(pAddrInfo->dstEp, *cmdData);
 //                else status = ZCL_STA_INVALID_VALUE;
-//                break;
-//            default:
-//                break;
-//        }
-//    }
+                break;
+            default:
+                status = ZCL_STA_FAILURE;
+                break;
+        }
+    }
 
 
     return status;

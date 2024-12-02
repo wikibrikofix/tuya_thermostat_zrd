@@ -80,7 +80,7 @@ typedef struct {
     int16_t     occupiedHeatingSetpoint;        // 0°C ... 50°C * 100
     uint8_t     controlSequenceOfOperation;     // 0x02 Heating
     uint8_t     systemMode;                     // see /src/zcl/zcl_app_thermostat.h
-    uint8_t     runningState;                   // 0x00 - off, 0x01 - heat
+    uint16_t    runningState;                   // 0x0000 - off, 0x0001 - heat
     uint8_t     startOfWeek;                    // see day_of_week_t in /src/zcl/zcl_app_thermostat.h
     uint8_t     weeklyTransNum;
     uint8_t     dailyTransNum;
@@ -90,16 +90,6 @@ typedef struct {
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off
 } zcl_thermostatAttr_t;
-
-typedef struct {
-    dp_schedule_t schedule_mon[6];
-    dp_schedule_t schedule_tue[6];
-    dp_schedule_t schedule_wed[6];
-    dp_schedule_t schedule_thu[6];
-    dp_schedule_t schedule_fri[6];
-    dp_schedule_t schedule_sat[6];
-    dp_schedule_t schedule_sun[6];
-} zcl_scheduleAttr_t;
 
 extern uint8_t APP_EP1_CB_CLUSTER_NUM;
 
