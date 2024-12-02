@@ -347,7 +347,7 @@ void remote_cmd_oper_mode(uint8_t oper_mode) {
 
 void set_run_state_bit(uint8_t bit_num, bool set) {
 
-    uint8_t runState;
+    uint16_t runState;
     uint16_t len;
 
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_RUNNING_STATE, &len, (uint8_t*)&runState);
