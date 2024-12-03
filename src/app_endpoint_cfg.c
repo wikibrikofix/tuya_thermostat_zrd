@@ -3,7 +3,6 @@
 
 #include "app_main.h"
 
-
 #ifndef ZCL_BASIC_MFG_NAME
 #define ZCL_BASIC_MFG_NAME          {6,'T','E','L','I','N','K'}
 #endif
