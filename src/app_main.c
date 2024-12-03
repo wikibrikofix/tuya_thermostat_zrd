@@ -115,7 +115,7 @@ void user_app_init(void)
     af_endpointRegister(APP_ENDPOINT1, (af_simple_descriptor_t *)&app_ep1Desc, zcl_rx_handler, NULL);
 
     zcl_reportingTabInit();
-    thermostat_schedule_restore();
+    thermostat_settings_restore();
 
     /* Register ZCL specific cluster information */
     zcl_register(APP_ENDPOINT1, APP_EP1_CB_CLUSTER_NUM, (zcl_specClusterInfo_t *)g_appEp1ClusterList);

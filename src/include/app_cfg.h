@@ -73,6 +73,7 @@ extern "C" {
 #define DEBUG_CMD                       OFF
 #define DEBUG_DP                        OFF
 #define DEBUG_TIME                      OFF
+#define DEBUG_SAVE                      ON
 #define DEBUG_PM                        OFF
 #define DEBUG_REPORTING                 OFF
 #define DEBUG_OTA                       OFF

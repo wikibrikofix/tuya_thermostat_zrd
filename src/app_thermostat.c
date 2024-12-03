@@ -75,6 +75,8 @@ void remote_smd_heating_set(int32_t temp) {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    thermostat_settings_save();
 }
 
 void remote_smd_temp_calibration(int8_t temp) {
@@ -117,6 +119,8 @@ void remote_smd_temp_calibration(int8_t temp) {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    thermostat_settings_save();
 }
 
 void remote_smd_display_mode(uint8_t mode) {
@@ -162,6 +166,8 @@ void remote_smd_keylock(uint8_t keylock) {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    thermostat_settings_save();
 }
 
 void remote_cmd_sensor_used(uint8_t sensor_used) {
@@ -193,9 +199,11 @@ void remote_cmd_sensor_used(uint8_t sensor_used) {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    thermostat_settings_save();
 }
 
-void remote_cmd_hysteresis(uint32_t hysteresis) {
+void remote_cmd_deadband(uint32_t hysteresis) {
 
     if (data_point_model[DP_IDX_DEADZONE].id == 0) return;
 
@@ -234,6 +242,8 @@ void remote_cmd_hysteresis(uint32_t hysteresis) {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    thermostat_settings_save();
 }
 
 void remote_cmd_min_setpoint(uint32_t min_temp) {
@@ -270,6 +280,8 @@ void remote_cmd_min_setpoint(uint32_t min_temp) {
 //    add_cmd_queue(out_pkt, true);
 //
 //    set_seq_num(seq_num);
+
+    thermostat_settings_save();
 }
 
 void remote_cmd_max_setpoint(uint32_t max_temp) {
@@ -312,6 +324,8 @@ void remote_cmd_max_setpoint(uint32_t max_temp) {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    thermostat_settings_save();
 }
 
 void remote_cmd_oper_mode(uint8_t oper_mode) {
@@ -343,6 +357,8 @@ void remote_cmd_oper_mode(uint8_t oper_mode) {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    thermostat_settings_save();
 }
 
 void remote_cmd_set_weekly_schedule() {
@@ -401,8 +417,9 @@ void remote_cmd_set_weekly_schedule() {
             break;
     }
 
-    thermostat_schedule_save();
     set_seq_num(seq_num);
+
+    thermostat_settings_save();
 }
 
 void set_run_state_bit(uint8_t bit_num, bool set) {
@@ -530,22 +547,105 @@ void thermostat_get_weekly_schedule(uint8_t day) {
 
 }
 
-nv_sts_t thermostat_schedule_save() {
+nv_sts_t thermostat_settings_save() {
     nv_sts_t st = NV_SUCC;
 
 #ifdef ZCL_THERMOSTAT
 #if NV_ENABLE
-    zcl_scheduleData_t schedule_data;
+    thermostat_settings_t thermostat_settings;
+    uint16_t len;
+    int16_t     minHeatSetpointLimit;
+    int16_t     maxHeatSetpointLimit;
+    int8_t      localTemperatureCalibration;
+    int16_t     occupiedHeatingSetpoint;
+    uint8_t     manual_progMode;
+    uint8_t     sensor_used;
+    uint8_t     dead_band;
+    uint8_t     keypadLockout;
 
-    st = nv_flashReadNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(zcl_scheduleData_t), (uint8_t*)&schedule_data);
+    st = nv_flashReadNew(1, NV_MODULE_APP, NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
+    bool save = false;
+
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&minHeatSetpointLimit);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&maxHeatSetpointLimit);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION, &len, (uint8_t*)&localTemperatureCalibration);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT, &len, (uint8_t*)&occupiedHeatingSetpoint);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, &len, (uint8_t*)&manual_progMode);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED, &len, (uint8_t*)&sensor_used);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND, &len, (uint8_t*)&dead_band);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG, ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, &len, (uint8_t*)&keypadLockout);
+
 
     if(st == NV_SUCC) {
-        if (memcmp(&schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t)) != 0) {
-            st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(zcl_scheduleData_t), (uint8_t*)&g_zcl_scheduleData);
+        if (memcmp(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t)) != 0) {
+            memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
+            save = true;
         }
-    } else if (st == NV_ITEM_NOT_FOUND){
 
-        st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(zcl_scheduleData_t), (uint8_t*)&g_zcl_scheduleData);
+        if (thermostat_settings.minHeatSetpointLimit != minHeatSetpointLimit) {
+            thermostat_settings.minHeatSetpointLimit = minHeatSetpointLimit;
+            save = true;
+        }
+
+        if (thermostat_settings.maxHeatSetpointLimit != maxHeatSetpointLimit) {
+            thermostat_settings.maxHeatSetpointLimit = maxHeatSetpointLimit;
+            save = true;
+        }
+
+        if (thermostat_settings.localTemperatureCalibration != localTemperatureCalibration) {
+            thermostat_settings.localTemperatureCalibration = localTemperatureCalibration;
+            save = true;
+        }
+
+        if (thermostat_settings.occupiedHeatingSetpoint != occupiedHeatingSetpoint) {
+            thermostat_settings.occupiedHeatingSetpoint = occupiedHeatingSetpoint;
+            save = true;
+        }
+
+        if (thermostat_settings.manual_progMode != manual_progMode) {
+            thermostat_settings.manual_progMode = manual_progMode;
+            save = true;
+        }
+
+        if (thermostat_settings.sensor_used != sensor_used) {
+            thermostat_settings.sensor_used = sensor_used;
+            save = true;
+        }
+
+        if (thermostat_settings.dead_band != dead_band) {
+            thermostat_settings.dead_band = dead_band;
+            save = true;
+        }
+
+        if (thermostat_settings.keypadLockout != keypadLockout) {
+            thermostat_settings.keypadLockout = keypadLockout;
+            save = true;
+        }
+
+        if (save) {
+#if UART_PRINTF_MODE && DEBUG_SAVE
+        printf("Settings saved\r\n");
+#endif
+        st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
+
+        }
+    } else if (st == NV_ITEM_NOT_FOUND) {
+
+#if UART_PRINTF_MODE && DEBUG_SAVE
+        printf("Settings saved\r\n");
+#endif
+
+        memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
+        thermostat_settings.minHeatSetpointLimit = minHeatSetpointLimit;
+        thermostat_settings.maxHeatSetpointLimit = maxHeatSetpointLimit;
+        thermostat_settings.localTemperatureCalibration = localTemperatureCalibration;
+        thermostat_settings.occupiedHeatingSetpoint = occupiedHeatingSetpoint;
+        thermostat_settings.occupiedHeatingSetpoint = occupiedHeatingSetpoint;
+        thermostat_settings.sensor_used = sensor_used;
+        thermostat_settings.dead_band = dead_band;
+        thermostat_settings.keypadLockout = keypadLockout;
+
+        st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
     }
 #else
     st = NV_ENABLE_PROTECT_ERROR;
@@ -555,13 +655,29 @@ nv_sts_t thermostat_schedule_save() {
     return st;
 }
 
-nv_sts_t thermostat_schedule_restore() {
+nv_sts_t thermostat_settings_restore() {
     nv_sts_t st = NV_SUCC;
+
+#if UART_PRINTF_MODE && DEBUG_SAVE
+        printf("Settings restored\r\n");
+#endif
 
 #ifdef ZCL_THERMOSTAT
 #if NV_ENABLE
 
-    st = nv_flashReadNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(zcl_scheduleData_t), (uint8_t*)&g_zcl_scheduleData);
+    thermostat_settings_t thermostat_settings;
+
+    st = nv_flashReadNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
+
+    memcpy(&g_zcl_scheduleData, &thermostat_settings.schedule_data, sizeof(zcl_scheduleData_t));
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*)&thermostat_settings.minHeatSetpointLimit);
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)&thermostat_settings.maxHeatSetpointLimit);
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION, (uint8_t*)&thermostat_settings.localTemperatureCalibration);
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT, (uint8_t*)&thermostat_settings.occupiedHeatingSetpoint);
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED, (uint8_t*)&thermostat_settings.sensor_used);
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND, (uint8_t*)&thermostat_settings.dead_band);
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG, ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, (uint8_t*)&thermostat_settings.keypadLockout);
+
 
 #else
     st = NV_ENABLE_PROTECT_ERROR;
