@@ -7,6 +7,9 @@ static uint8_t      answer_count = 0;
 static uint16_t     seq_num = 0;
 static status_net_t status_net = STATUS_NET_UNKNOWN;
 static uint8_t      no_answer = false;
+static uint8_t      factory_reset_cnt = 0;
+static uint8_t      factory_reset_status = 0;
+static ev_timer_event_t *factory_resetTimerEvt = NULL;
 
 cmd_queue_t cmd_queue = {0};
 
@@ -215,6 +218,17 @@ static int32_t check_answerCb(void *arg) {
     }
     return 0;
 }
+
+static int32_t factory_resetCb(void *arg) {
+
+    zb_resetDevice2FN();
+
+    factory_reset_status = 2;
+
+    factory_resetTimerEvt = NULL;
+    return -1;
+}
+
 
 void uart_cmd_handler() {
 
@@ -436,9 +450,25 @@ void uart_cmd_handler() {
 #if UART_PRINTF_MODE && DEBUG_CMD
                     printf("command 0x03. Factory Reset\r\n");
 #endif
+                    printf("command 0x03. Factory Reset\r\n");
+                    if (factory_reset_cnt == 0 && factory_reset_status != 2) {
+                        printf("FN1\r\n");
+                        zb_resetDevice2FN();
+                        factory_reset_cnt++;
+                        factory_reset_status = 1;
+                        factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(factory_resetCb, NULL, TIMEOUT_3SEC);
+                    } else {
+                        printf("FN2\r\n");
+                        if (factory_resetTimerEvt && factory_reset_status == 1) {
+                            TL_ZB_TIMER_CANCEL(&factory_resetTimerEvt);
+                        }
+                        if (factory_reset_status == 1) {
+                            factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(factory_resetCb, NULL, TIMEOUT_3SEC);
+                        }
+                    }
                     set_command(pkt->command, pkt->seq_num, false);
                     zb_factoryReset();
-                    TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_3SEC);
+//                    TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_3SEC);
                 } else if (pkt->command == COMMAND24) {
 #if UART_PRINTF_MODE && DEBUG_CMD
                     printf("command 0x24. Sync Time\r\n");
@@ -507,6 +537,7 @@ void uart_cmd_handler() {
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
                                            ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT, (uint8_t*) &temp);
 
+                            thermostat_settings_save();
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_MAX].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_MAX].type) {
@@ -527,6 +558,8 @@ void uart_cmd_handler() {
 
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
                                            ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*) &temp);
+
+                            thermostat_settings_save();
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_TEMP].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_TEMP].type) {
@@ -571,6 +604,8 @@ void uart_cmd_handler() {
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
                                            ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND, (uint8_t*) &temp);
 
+                            thermostat_settings_save();
+
                         } else if (data_point->dp_id == data_point_model[DP_IDX_CALIBRATION].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_CALIBRATION].type) {
 
@@ -587,6 +622,8 @@ void uart_cmd_handler() {
 
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
                                            ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION, (uint8_t*) &temp);
+
+                            thermostat_settings_save();
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_RUNSTATE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_RUNSTATE].type) {
@@ -610,6 +647,8 @@ void uart_cmd_handler() {
 
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG,
                                            ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, (uint8_t*) &lock);
+
+                            thermostat_settings_save();
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SENSOR].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SENSOR].type) {
@@ -674,7 +713,7 @@ void uart_cmd_handler() {
                                 // to the future
                             }
 
-                            thermostat_schedule_save();
+                            thermostat_settings_save();
                         }
                     }
                 }
@@ -688,6 +727,11 @@ void set_status_net(status_net_t new_status) {
     if (new_status != status_net) {
         status_net = new_status;
         set_command(COMMAND02, seq_num, true);
+    }
+
+    if (status_net == STATUS_NET_CONNECTED) {
+        factory_reset_cnt = 0;
+        factory_reset_status = 0;
     }
 
 }
