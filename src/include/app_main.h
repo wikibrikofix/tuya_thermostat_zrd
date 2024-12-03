@@ -14,9 +14,9 @@
 #include "app_tuya_datapoint.h"
 #include "app_endpoint_cfg.h"
 #include "app_uart.h"
+#include "zcl_app_thermostat.h"
 #include "app_thermostat.h"
 #include "zcl_thermostat_ui_cfg.h"
-#include "zcl_app_thermostat.h"
 #include "app_level.h"
 #include "app_time.h"
 
