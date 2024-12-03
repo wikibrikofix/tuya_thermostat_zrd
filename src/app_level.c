@@ -2,7 +2,7 @@
 
 static void remote_cmd_level(uint8_t level) {
 
-    printf("remote_cmd_level(). new level: %d\r\n", level);
+//    printf("remote_cmd_level(). new level: %d\r\n", level);
 
 //    pkt_output_t *pkt = (pkt_output_t*)cmdTx[CMD_BRIGHTNESS];
 //    pkt->cnt++;
