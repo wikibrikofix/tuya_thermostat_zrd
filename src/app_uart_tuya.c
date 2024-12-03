@@ -169,6 +169,23 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             out_pkt->data[0] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
             add_cmd_queue(out_pkt, true);
             break;
+        case COMMANDXX:
+//            printf("COMMMANDXX\r\n");
+            out_pkt->command = 0x06;
+            out_pkt->len = reverse16(4);
+            out_pkt->pkt_len++;
+            out_pkt->pkt_len++;
+            out_pkt->data[0] = 0x65;
+            out_pkt->pkt_len++;
+            out_pkt->data[1] = 0x00;
+            out_pkt->pkt_len++;
+            out_pkt->data[2] = 0x00;
+            out_pkt->pkt_len++;
+            out_pkt->data[3] = 0x00;
+            out_pkt->pkt_len++;
+            out_pkt->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+            add_cmd_queue(out_pkt, true);
+            break;
         default:
             break;
     }
@@ -211,7 +228,10 @@ void uart_cmd_handler() {
         set_command(COMMAND01, seq_num, true);
         first_start = 0;
         data_point_model_init();
-        TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_1SEC);
+        TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_15SEC);
+
+        //only for test!!!
+//        set_command(COMMANDXX, seq_num, true);
     }
 
     if (cmd_queue.cmd_num) {
@@ -417,8 +437,8 @@ void uart_cmd_handler() {
                     printf("command 0x03. Factory Reset\r\n");
 #endif
                     set_command(pkt->command, pkt->seq_num, false);
-//                    zb_factoryReset();
-//                    TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_3SEC);
+                    zb_factoryReset();
+                    TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_3SEC);
                 } else if (pkt->command == COMMAND24) {
 #if UART_PRINTF_MODE && DEBUG_CMD
                     printf("command 0x24. Sync Time\r\n");
@@ -601,11 +621,11 @@ void uart_cmd_handler() {
                             uint8_t sensor_used = data_point->data[0];
 
                             if (sensor_used == SENSOR_IN) {
-                                printf("sensor IN\r\n");
+//                                printf("sensor IN\r\n");
                             } else if (sensor_used == SENSOR_AL) {
-                                printf("sensor AL\r\n");
+//                                printf("sensor AL\r\n");
                             } else {
-                                printf("sensor OU\r\n");
+//                                printf("sensor OU\r\n");
                             }
 
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
@@ -618,8 +638,7 @@ void uart_cmd_handler() {
 #endif
                             set_default_answer(pkt->command, pkt->seq_num);
 
-                            //todo:
-                            printf("schedule\r\n");
+//                            printf("schedule\r\n");
 
                             if (manuf_name == MANUF_NAME_0) {
                                 uint16_t len = data_point->dp_len / 3;
@@ -628,25 +647,25 @@ void uart_cmd_handler() {
                                 for(uint8_t i = 0; i < len ;) {
                                     for(uint8_t ii = 0; ii < 4; ii++) {
                                         if (i < 4) {
-                                            g_zcl_scheduleData.schedule_mon[ii].minute = *ptr++ * 60;
-                                            g_zcl_scheduleData.schedule_mon[ii].minute += *ptr++;
-                                            g_zcl_scheduleData.schedule_mon[ii].temperature = *ptr++ / 2;
-//                                            printf("mon. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_mon[ii].minute,
-//                                                    g_zcl_scheduleData.schedule_mon[ii].temperature);
+                                            g_zcl_scheduleData.schedule_mon[ii].transTime = *ptr++ * 60;
+                                            g_zcl_scheduleData.schedule_mon[ii].transTime += *ptr++;
+                                            g_zcl_scheduleData.schedule_mon[ii].heatSetpoint = *ptr++/2*100;
+//                                            printf("mon. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_mon[ii].transTime,
+//                                                    g_zcl_scheduleData.schedule_mon[ii].heatSetpoint);
                                             i++;
                                         } else if (i < 8) {
-                                            g_zcl_scheduleData.schedule_sat[ii].minute = *ptr++ * 60;
-                                            g_zcl_scheduleData.schedule_sat[ii].minute += *ptr++;
-                                            g_zcl_scheduleData.schedule_sat[ii].temperature = *ptr++ / 2;
-//                                            printf("sat. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sat[ii].minute,
-//                                                    g_zcl_scheduleData.schedule_sat[ii].temperature);
+                                            g_zcl_scheduleData.schedule_sat[ii].transTime = *ptr++ * 60;
+                                            g_zcl_scheduleData.schedule_sat[ii].transTime += *ptr++;
+                                            g_zcl_scheduleData.schedule_sat[ii].heatSetpoint = *ptr++/2*100;
+//                                            printf("sat. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sat[ii].transTime,
+//                                                    g_zcl_scheduleData.schedule_sat[ii].heatSetpoint);
                                             i++;
                                         } else {
-                                            g_zcl_scheduleData.schedule_sun[ii].minute = *ptr++ * 60;
-                                            g_zcl_scheduleData.schedule_sun[ii].minute += *ptr++;
-                                            g_zcl_scheduleData.schedule_sun[ii].temperature = *ptr++ / 2;
-//                                            printf("sun. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sun[ii].minute,
-//                                                    g_zcl_scheduleData.schedule_sun[ii].temperature);
+                                            g_zcl_scheduleData.schedule_sun[ii].transTime = *ptr++ * 60;
+                                            g_zcl_scheduleData.schedule_sun[ii].transTime += *ptr++;
+                                            g_zcl_scheduleData.schedule_sun[ii].heatSetpoint = *ptr++/2*100;
+//                                            printf("sun. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sun[ii].transTime,
+//                                                    g_zcl_scheduleData.schedule_sun[ii].heatSetpoint);
                                             i++;
                                         }
                                     }
@@ -654,6 +673,8 @@ void uart_cmd_handler() {
                             } else if (manuf_name == MANUF_NAME_1) {
                                 // to the future
                             }
+
+                            thermostat_schedule_save();
                         }
                     }
                 }

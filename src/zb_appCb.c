@@ -111,7 +111,7 @@ int32_t app_rejoinBacckoff(void *arg) {
  * @return  None
  */
 void zb_bdbInitCb(uint8_t status, uint8_t joinedNetwork) {
-    printf("bdbInitCb: sta = %x, joined = %x\r\n", status, joinedNetwork);
+//    printf("bdbInitCb: sta = %x, joined = %x\r\n", status, joinedNetwork);
 
     if (status == BDB_INIT_STATUS_SUCCESS) {
         /*
@@ -199,7 +199,7 @@ const static uint8_t bdb_commission_sta_status[][64] = {
  * @return  None
  */
 void zb_bdbCommissioningCb(uint8_t status, void *arg) {
-    printf("zb_bdbCommissioningCb: sta = %x\r\n", status);
+//    printf("zb_bdbCommissioningCb: sta = %x\r\n", status);
 
     uint16_t jitter = 0;
 

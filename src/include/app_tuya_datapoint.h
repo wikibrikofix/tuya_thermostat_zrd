@@ -7,6 +7,14 @@ typedef enum {
     MANUF_NAME_MAX
 } manuf_name_t;
 
+typedef struct __attribute__((packed)) {
+    uint8_t  dp_id;
+    uint8_t  dp_type;
+    uint16_t dp_len;
+    uint8_t  data[DATA_MAX_LEN-8];
+} data_point_t;
+
+
 typedef struct {
     uint8_t     id;
     uint8_t     type;

@@ -27,39 +27,6 @@
 #define DEV_DISPLAY_MODE_CELSIUS    0x01
 #define DEV_DISPLAY_MODE_FAHRENHEIT 0x02
 
-/* Display brightness */
-#define DEV_DYSPLAY_LEVEL0          0x00
-#define DEV_DYSPLAY_LEVEL1          0x01
-#define DEV_DYSPLAY_LEVEL2          0x02
-#define DEV_DYSPLAY_LEVEL3          0x03
-#define DEV_DYSPLAY_LEVEL4          0x04
-#define DEV_DYSPLAY_LEVEL5          0x05
-#define DEV_DYSPLAY_LEVEL6          0x06
-#define DEV_DYSPLAY_LEVEL7          0x07
-#define DEV_DYSPLAY_LEVEL8          0x08
-#define DEV_DYSPLAY_LEVEL9          0x09
-
-/* Local Temperature Calibration */
-#define DEV_TEMP_CALIBRATION_N9     0xFFFFFFF7  // -9°C
-#define DEV_TEMP_CALIBRATION_N8     0xFFFFFFF8  // -8°C
-#define DEV_TEMP_CALIBRATION_N7     0xFFFFFFF9  // -7°C
-#define DEV_TEMP_CALIBRATION_N6     0xFFFFFFFA  // -6°C
-#define DEV_TEMP_CALIBRATION_N5     0xFFFFFFFB  // -5°C
-#define DEV_TEMP_CALIBRATION_N4     0xFFFFFFFC  // -4°C
-#define DEV_TEMP_CALIBRATION_N3     0xFFFFFFFD  // -3°C
-#define DEV_TEMP_CALIBRATION_N2     0xFFFFFFFE  // -3°C
-#define DEV_TEMP_CALIBRATION_N1     0xFFFFFFFF  // -2°C
-#define DEV_TEMP_CALIBRATION_0      0x00000000  //  0°C
-#define DEV_TEMP_CALIBRATION_P1     0x00000001  //  1°C
-#define DEV_TEMP_CALIBRATION_P2     0x00000002  //  2°C
-#define DEV_TEMP_CALIBRATION_P3     0x00000003  //  3°C
-#define DEV_TEMP_CALIBRATION_P4     0x00000004  //  4°C
-#define DEV_TEMP_CALIBRATION_P5     0x00000005  //  5°C
-#define DEV_TEMP_CALIBRATION_P6     0x00000006  //  6°C
-#define DEV_TEMP_CALIBRATION_P7     0x00000007  //  7°C
-#define DEV_TEMP_CALIBRATION_P8     0x00000008  //  8°C
-#define DEV_TEMP_CALIBRATION_P9     0x00000009  //  9°C
-
 #define CLIENT_TEMP_CALIBRATION_MIN -90
 #define CLIENT_TEMP_CALIBRATION_MAX  90
 
@@ -75,9 +42,11 @@ void remote_cmd_hysteresis(uint32_t hysteresis);
 void remote_cmd_min_setpoint(uint32_t min_temp);
 void remote_cmd_max_setpoint(uint32_t max_temp);
 void remote_cmd_oper_mode(uint8_t oper_mode);
+void remote_cmd_set_weekly_schedule();
 void set_run_state_bit(uint8_t bit_num, bool set);
 void thermostat_onoff_state(int8_t onoff);
-//void thermostat_heatset_state(int32_t tempF);
-
+void thermostat_get_weekly_schedule(uint8_t day);
+nv_sts_t thermostat_schedule_save();
+nv_sts_t thermostat_schedule_restore();
 
 #endif /* SRC_INCLUDE_APP_THERMOSTAT_H_ */

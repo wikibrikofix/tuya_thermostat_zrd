@@ -33,14 +33,14 @@ typedef struct {
     uint16_t    temperature;
 } zcl_schedule_t;
 
-typedef struct {
-    zcl_schedule_t schedule_mon[6];
-    zcl_schedule_t schedule_tue[6];
-    zcl_schedule_t schedule_wed[6];
-    zcl_schedule_t schedule_thu[6];
-    zcl_schedule_t schedule_fri[6];
-    zcl_schedule_t schedule_sat[6];
-    zcl_schedule_t schedule_sun[6];
+typedef struct __attribute__((packed)) {
+    heatMode_t schedule_mon[6];
+    heatMode_t schedule_tue[6];
+    heatMode_t schedule_wed[6];
+    heatMode_t schedule_thu[6];
+    heatMode_t schedule_fri[6];
+    heatMode_t schedule_sat[6];
+    heatMode_t schedule_sun[6];
 } zcl_scheduleData_t;
 
 typedef enum {

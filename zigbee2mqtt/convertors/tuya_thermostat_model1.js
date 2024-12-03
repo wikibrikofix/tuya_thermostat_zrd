@@ -12,11 +12,6 @@ const e = exposes.presets;
 const ea = exposes.access;
 
 const switchSensorUsed = ['IN', 'AL', 'OU'];
-const exposesLocal = {
-    hour: (name) => e.numeric(name, ea.STATE_SET).withUnit('h').withValueMin(0).withValueMax(23),
-    minute: (name) => e.numeric(name, ea.STATE_SET).withUnit('m').withValueMin(0).withValueMax(59),
-    program_temperature: (name) => e.numeric(name, ea.STATE_SET).withUnit('°C').withValueMin(5).withValueMax(35).withValueStep(0.5),
-};
 
 const fzLocal = {
   thermostat_child_lock: {
@@ -218,7 +213,8 @@ const definition = {
       .withValueMin(-5)
       .withValueMax(5)
       .withValueStep(1),
-    e.climate().withWeeklySchedule(['heat']),
+    e.climate()
+      .withWeeklySchedule(['heat']),
   ],
               
   ota: ota.zigbeeOTA,

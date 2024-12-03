@@ -23,6 +23,7 @@ typedef enum {
     COMMAND06,
     COMMAND24   =   0x24,           /* Sync time                    */
     COMMAND28   =   0x28,           /* Query DP data                */
+    COMMANDXX   =   0xFF,           /* For test                     */
 } command_t;
 
 
@@ -50,15 +51,6 @@ typedef struct __attribute__((packed)) {
     uint8_t  data[DATA_MAX_LEN];
     uint16_t pkt_len;
 } pkt_tuya_t;
-
-typedef struct __attribute__((packed)) {
-    uint8_t  dp_id;
-    uint8_t  dp_type;
-    uint16_t dp_len;
-    uint8_t  data[DATA_MAX_LEN-8];
-    uint16_t len;
-} data_point_t;
-
 
 typedef struct {
     uint8_t    confirm_need;

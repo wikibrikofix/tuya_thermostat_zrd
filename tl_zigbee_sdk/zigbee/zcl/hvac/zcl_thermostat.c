@@ -390,8 +390,6 @@ _CODE_ZCL_ static status_t zcl_thermostat_clientCmdHandler(zclIncoming_t *pInMsg
 {
 	u8 status = ZCL_STA_SUCCESS;
 
-	printf("zcl_thermostat_clientCmdHandler\r\n");
-
 	switch(pInMsg->hdr.cmd)
 	{
 		case ZCL_CMD_THERMOSTAT_SETPOINT_RAISE_LOWER:
@@ -420,8 +418,6 @@ _CODE_ZCL_ static status_t zcl_thermostat_clientCmdHandler(zclIncoming_t *pInMsg
 _CODE_ZCL_ static status_t zcl_thermostat_serverCmdHandler(zclIncoming_t *pInMsg)
 {
 	u8 status = ZCL_STA_SUCCESS;
-
-	printf("zcl_thermostat_serverCmdHandler\r\n");
 
 	switch(pInMsg->hdr.cmd)
 	{
