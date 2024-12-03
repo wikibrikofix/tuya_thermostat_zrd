@@ -1044,13 +1044,14 @@ status_t app_pollCtrlCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *c
 }
 #endif	/* ZCL_POLL_CTRL */
 
-//#ifdef ZCL_THERMOSTAT
+#ifdef ZCL_THERMOSTAT
+
+static uint8_t getWeeklyDay = 0;
 
 status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload) {
 
-    printf("app_thermostatCb(). pAddrInfo->dirCluster: %0x%x, cmdId: 0x%x\r\n", pAddrInfo->dirCluster, cmdId);
+//    printf("app_thermostatCb(). pAddrInfo->dirCluster: %0x%x, cmdId: 0x%x\r\n", pAddrInfo->dirCluster, cmdId);
 
-//    uint8_t *cmdData = (uint8_t*)cmdPayload;
     uint16_t len;
     int16_t  setpoint;
 
@@ -1059,7 +1060,9 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
     if(pAddrInfo->dstEp == APP_ENDPOINT1) {
         switch(cmdId) {
             case ZCL_CMD_THERMOSTAT_SETPOINT_RAISE_LOWER: {
+#if UART_PRINTF_MODE
                 printf("CMD Setpoint Raise Lower\r\n");
+#endif
                 zcl_thermostat_setpointRaiseLowerCmd_t *cmd = (zcl_thermostat_setpointRaiseLowerCmd_t*)cmdPayload;
                 if (cmd->mode == ADJUST_HEAT_SETPOINT) {
                     int8_t raise_lower = cmd->amount / 10;
@@ -1071,53 +1074,75 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 
                         setpoint += raise_lower*100;
                         remote_smd_heating_set(setpoint);
-                        printf("raise_lower: %d, setpoint: %d\r\n", raise_lower, setpoint);
+//                        printf("raise_lower: %d, setpoint: %d\r\n", raise_lower, setpoint);
                     }
                 }
                 break;
             }
             case ZCL_CMD_THERMOSTAT_SET_WEEKLY_SCHEDULE: {
+#if UART_PRINTF_MODE
                 printf("CMD Set Weekly Schedule\r\n");
+#endif
                 zcl_thermostat_setWeeklyScheduleCmd_t *cmd = (zcl_thermostat_setWeeklyScheduleCmd_t*)cmdPayload;
+
+                heatMode_t *heat_mode;
+                bool save = false;
 
                 switch(manuf_name) {
                     case MANUF_NAME_0:
+#if UART_PRINTF_MODE
+                        printf("Days other than Monday, Saturday and Sunday are not supported\r\n");
+#endif
                         for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
                             if (i == 4) {
                                 break;
                             }
-                            if ((cmd->dayOfWeekForSequence & DAY_SUN) ||
-                                (cmd->dayOfWeekForSequence & DAY_SAT) ||
-                                (cmd->dayOfWeekForSequence & DAY_MON)) {
-                                printf("i: %d, week: %d, time: %d\r\n", i, cmd->dayOfWeekForSequence, cmd->sequenceMode.pHeatMode[i].transTime);
-                                status = ZCL_STA_SUCCESS;
-                            } else {
-                                status = ZCL_STA_INVALID_VALUE;
+                            if (cmd->dayOfWeekForSequence & DAY_SUN) {
+                                heat_mode =  g_zcl_scheduleData.schedule_sun;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                save = true;
+//                                printf("i: %d, weekday: sun, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
                             }
+                            if (cmd->dayOfWeekForSequence & DAY_MON) {
+                                heat_mode =  g_zcl_scheduleData.schedule_mon;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                save = true;
+//                                printf("i: %d, weekday: mon, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                            if (cmd->dayOfWeekForSequence & DAY_SAT) {
+                                heat_mode =  g_zcl_scheduleData.schedule_sat;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                save = true;
+//                                printf("i: %d, weekday: sat, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                        }
+
+                        if (save) {
+                            remote_cmd_set_weekly_schedule();
                         }
                         break;
                     default:
                         break;
                 }
-
-
-
-//                if (cmd) {
-//                    printf("ofWeek: 0x%x, mode: 0x%x, trans: 0x%x, time: 0x%x\r\n", cmd->dayOfWeekForSequence, cmd->modeForSequence, cmd->numOfTransForSequence, cmd->sequenceMode.pHeatMode->transTime);
-//                }
                 break;
             }
             case ZCL_CMD_THERMOSTAT_GET_WEEKLY_SCHEDULE:
+#if UART_PRINTF_MODE
                 printf("CMD Get Weekly Schedule\r\n");
-//                remote_cmd_ocs(pAddrInfo->dstEp, cmdId);
+#endif
+                thermostat_get_weekly_schedule(getWeeklyDay);
+                getWeeklyDay++;
+                if (getWeeklyDay == 3) getWeeklyDay = 0;
                 break;
             case ZCL_CMD_THERMOSTAT_CLEAR_WEEKLY_SCHEDULE:
+#if UART_PRINTF_MODE
                 printf("CMD Clear Weekly Schedule\r\n");
-//                if (*cmdData <= 100) remote_cmd_goToLiftPer(pAddrInfo->dstEp, *cmdData);
-//                else status = ZCL_STA_INVALID_VALUE;
+#endif
                 break;
             default:
-                status = ZCL_STA_FAILURE;
                 break;
         }
     }
@@ -1128,7 +1153,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 
 status_t app_thermostat_uicCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload) {
 
-    printf("app_thermostatCb(). pAddrInfo->dirCluster: %0x%x, cmdId: 0x%x\r\n", pAddrInfo->dirCluster, cmdId);
+//    printf("app_thermostatCb(). pAddrInfo->dirCluster: %0x%x, cmdId: 0x%x\r\n", pAddrInfo->dirCluster, cmdId);
 
 //    uint8_t *cmdData = (uint8_t*)cmdPayload;
 
@@ -1162,7 +1187,7 @@ status_t app_thermostat_uicCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, v
     return status;
 }
 
-//#endif /* ZCL_THERMOSTAT */
+#endif /* ZCL_THERMOSTAT */
 
 /*********************************************************************
  * @fn      app_timeCb
@@ -1177,7 +1202,7 @@ status_t app_thermostat_uicCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, v
  */
 status_t app_timeCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload) {
 
-    printf("app_timeCb. cmd: 0x%x\r\n", cmdId);
+//    printf("app_timeCb. cmd: 0x%x\r\n", cmdId);
 
     return ZCL_STA_SUCCESS;
 }
