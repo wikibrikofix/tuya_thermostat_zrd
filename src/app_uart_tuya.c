@@ -450,15 +450,14 @@ void uart_cmd_handler() {
 #if UART_PRINTF_MODE && DEBUG_CMD
                     printf("command 0x03. Factory Reset\r\n");
 #endif
-                    printf("command 0x03. Factory Reset\r\n");
                     if (factory_reset_cnt == 0 && factory_reset_status != 2) {
-                        printf("FN1\r\n");
+//                        printf("FN1\r\n");
                         zb_resetDevice2FN();
                         factory_reset_cnt++;
                         factory_reset_status = 1;
                         factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(factory_resetCb, NULL, TIMEOUT_3SEC);
                     } else {
-                        printf("FN2\r\n");
+//                        printf("FN2\r\n");
                         if (factory_resetTimerEvt && factory_reset_status == 1) {
                             TL_ZB_TIMER_CANCEL(&factory_resetTimerEvt);
                         }
