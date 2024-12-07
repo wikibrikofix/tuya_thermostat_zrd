@@ -152,6 +152,9 @@ erase-flash-fimware:
 erase-flash-bootloader:
 	@python3 $(TOOLS_PATH)/TlsrPgm.py -p$(DOWNLOAD_PORT) -z11 -a-100 -s es 0x0 0x8000
 
+erase-flash-macaddr:
+	@python3 $(TOOLS_PATH)/TlsrPgm.py -p$(DOWNLOAD_PORT) -z11 -a-100 -s es 0xFF000 0x1000
+
 flash-bootloader:
 	@python3 $(TOOLS_PATH)/TlsrPgm.py -p$(DOWNLOAD_PORT) -z11 -a-100 -s -m we 0 $(BOOTLOADER)
 	
