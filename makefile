@@ -25,6 +25,7 @@ BOOT_FLAG = -DMCU_CORE_8258 -DMCU_STARTUP_8258
 SDK_PATH := ./tl_zigbee_sdk
 SRC_PATH := ./src
 OUT_PATH := ./out
+BIN_PATH := ./bin
 MAKE_INCLUDES := ./make
 TOOLS_PATH := ./tools
 BOOT_FILE := $(OUT_PATH)/bootloader.bin
@@ -188,10 +189,10 @@ $(BIN_FILE): $(ELF_FILE)
 	@python3 $(TL_CHECK) $(BIN_FILE)
 	@$(OBJCOPY) -v -O binary $(ELF_FILE)  $(BIN_FILE)
 	@cat $(BIN_FILE) $(BOOT_FILE) > $(FW_FILE)
-	@cp $(BIN_FILE) $(PROJECT_NAME)_$(VERSION_RELEASE).$(VERSION_BUILD).bin
+	@cp $(BIN_FILE) $(BIN_PATH)/$(PROJECT_NAME)_$(VERSION_RELEASE).$(VERSION_BUILD).bin
 	@echo 'Create zigbee OTA file'
-	@python3 $(MAKE_OTA) -ot $(PROJECT_NAME) $(PROJECT_NAME)_$(VERSION_RELEASE).$(VERSION_BUILD).bin
-	python3 $(MAKE_OTA_TUYA) -m 4417 -t 54179 -o 1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee $(BIN_FILE) $(BOOT_FILE)
+	@python3 $(MAKE_OTA) -ot $(PROJECT_NAME) $(BIN_PATH)/$(PROJECT_NAME)_$(VERSION_RELEASE).$(VERSION_BUILD).bin
+	python3 $(MAKE_OTA_TUYA) -m 4417 -t 54179 -o $(BIN_PATH)/1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee $(BIN_FILE) $(BOOT_FILE)
 	@echo ' '
 	@echo 'Finished building: $@'
 	@echo ' '
