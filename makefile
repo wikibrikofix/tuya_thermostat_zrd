@@ -27,13 +27,16 @@ SRC_PATH := ./src
 OUT_PATH := ./out
 MAKE_INCLUDES := ./make
 TOOLS_PATH := ./tools
+BOOT_FILE := $(OUT_PATH)/bootloader.bin
 VERSION_RELEASE := V$(shell awk -F " " '/APP_RELEASE/ {gsub("0x",""); printf "%.1f", $$3/10.0; exit}' $(SRC_PATH)/include/version_cfg.h)
 VERSION_BUILD := $(shell awk -F " " '/APP_BUILD/ {gsub("0x",""); printf "%02d", $$3; exit}' ./src/include/version_cfg.h)
 ZCL_VERSION_FILE := $(shell git log -1 --format=%cd --date=format:%Y%m%d -- src |  sed -e "'s/./\'&\',/g'" -e "'s/.$$//'")
+BOOT_SIZE := $(shell ls -l $(BOOT_FILE) | awk '{print $$5}')
 
 
 TL_CHECK = $(TOOLS_PATH)/tl_check_fw.py
 MAKE_OTA = $(TOOLS_PATH)/make_ota.py
+MAKE_OTA_TUYA = $(TOOLS_PATH)/make_ota_tuya.py
 
 INCLUDE_PATHS := \
 -I$(SDK_PATH)/platform \
@@ -77,7 +80,8 @@ endif
   
 GCC_FLAGS += \
 $(DEVICE_TYPE) \
-$(MCU_TYPE)
+$(MCU_TYPE) \
+-DBOOT_SIZE=$(BOOT_SIZE)
 
 OBJ_SRCS := 
 S_SRCS := 
@@ -117,6 +121,8 @@ RM := rm -rf
 LST_FILE := $(OUT_PATH)/$(PROJECT_NAME).lst
 BIN_FILE := $(OUT_PATH)/$(PROJECT_NAME).bin
 ELF_FILE := $(OUT_PATH)/$(PROJECT_NAME).elf
+FW_FILE  := $(OUT_PATH)/firmware.bin
+BOOT_FILE := $(OUT_PATH)/bootloader.bin
 
 SIZEDUMMY += \
 sizedummy \
@@ -143,6 +149,9 @@ erase-flash:
 erase-flash-fimware:
 	@python3 $(TOOLS_PATH)/TlsrPgm.py -p$(DOWNLOAD_PORT) -z11 -a-100 -s es 0x8000 0xF8000
 
+erase-flash-bootloader:
+	@python3 $(TOOLS_PATH)/TlsrPgm.py -p$(DOWNLOAD_PORT) -z11 -a-100 -s es 0x0 0x8000
+
 flash-bootloader:
 	@python3 $(TOOLS_PATH)/TlsrPgm.py -p$(DOWNLOAD_PORT) -z11 -a-100 -s -m we 0 $(BOOTLOADER)
 	
@@ -159,7 +168,7 @@ main-build: clean-project $(ELF_FILE) secondary-outputs
 $(ELF_FILE): $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: TC32 C Linker'
-	$(LD) --gc-sections -L $(SDK_PATH)/zigbee/lib/tc32 -L $(SDK_PATH)/platform/lib -L $(SDK_PATH)/platform/tc32 -T $(LS_FLAGS) -o "$(ELF_FILE)" $(OBJS) $(USER_OBJS) $(LIBS)
+	$(LD) --gc-sections -L $(SDK_PATH)/zigbee/lib/tc32 -L $(SDK_PATH)/platform/lib -L $(SDK_PATH)/platform/tc32 -T $(LS_FLAGS) -o "$(ELF_FILE)" "$(BOOT_FILE).o" $(OBJS) $(USER_OBJS) $(LIBS) 
 	@echo 'Finished building target: $@'
 	@echo ' '
 	
@@ -169,18 +178,23 @@ $(LST_FILE): $(ELF_FILE)
 	$(OBJDUMP) -x -D -l -S $(ELF_FILE)  > $(LST_FILE)
 	@echo 'Finished building: $@'
 	@echo ' '
+	
 
 $(BIN_FILE): $(ELF_FILE)
 	@echo 'Create Flash image (binary format)'
-	@$(OBJCOPY) -v -O binary $(ELF_FILE)  $(BIN_FILE)
 	@python3 $(TL_CHECK) $(BIN_FILE)
+	@$(OBJCOPY) -v -O binary $(ELF_FILE)  $(BIN_FILE)
+	@cat $(BIN_FILE) $(BOOT_FILE) > $(FW_FILE)
 	@cp $(BIN_FILE) $(PROJECT_NAME)_$(VERSION_RELEASE).$(VERSION_BUILD).bin
 	@echo 'Create zigbee OTA file'
 	@python3 $(MAKE_OTA) -ot $(PROJECT_NAME) $(PROJECT_NAME)_$(VERSION_RELEASE).$(VERSION_BUILD).bin
+	python3 $(MAKE_OTA_TUYA) -m 4417 -t 54179 -o 1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee $(BIN_FILE) $(BOOT_FILE)
 	@echo ' '
 	@echo 'Finished building: $@'
 	@echo ' '
-	 
+
+$(OBJ_DIR)/bin_updater.o: $(OBJ_DIR)
+    @objcopy -I binary --output-target elf32-littlearm --rename-section .data=.bin_files ./updater.bin $@	 
 
 sizedummy: $(ELF_FILE)
 	@echo 'Invoking: Print Size'
@@ -212,4 +226,3 @@ secondary-outputs: $(BIN_FILE) $(LST_FILE) $(FLASH_IMAGE) $(SIZEDUMMY)
 
 .PHONY: all clean dependents pre-build
 .SECONDARY: main-build pre-build post-build
-
