@@ -32,7 +32,7 @@
 
 Далее нужно добавить локальное хранилище обновлений. 
 
-Созадем директорию z2m `images` и кладем туда файл `1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee`.
+Создаем директорию в директории z2m `images` и кладем туда файл `1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee`.
 
 Создаем файл в директории z2m, например с именем `local_ota_index.json`. Добавляем в в него вот такую запись
 
@@ -58,7 +58,7 @@ ota:
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_tuya_1.jpg"/>
 
-Далее идем в раздел OTA. И видим там свое утсройство. Жмем проверить обновления.
+Далее идем в раздел OTA. И видим там свое устройство. Жмем проверить обновления.
 	
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_tuya_update_1.jpg"/>
 
@@ -83,4 +83,7 @@ ota:
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_joined.jpg"/>
 
 Все.
+
+P.S. В реальной работе не проверялось, требует всестороннего тестирования.
+
 
