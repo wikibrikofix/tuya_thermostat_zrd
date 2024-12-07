@@ -75,7 +75,7 @@ void bootloader_check() {
 
     flash_write(BOOTLOAD_MARKER_ADDR, marker[0], marker+1);
 #if UART_PRINTF_MODE
-    printf("Bootloader copied. Reset\r\n");
+    printf("Bootloader is overwritten. Reset\r\n");
 #endif
     zb_resetDevice();
 }
