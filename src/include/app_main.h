@@ -19,6 +19,7 @@
 #include "zcl_thermostat_ui_cfg.h"
 #include "app_level.h"
 #include "app_time.h"
+#include "app_bootloader.h"
 
 
 typedef struct {
