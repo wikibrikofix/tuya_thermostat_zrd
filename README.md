@@ -80,7 +80,7 @@ ota:
 
 И перегружаем z2m. Далее ждем, пока он загрузится и спариваем термостат по-новой - при выключенном устройстве, зажимаем стрелочку вниз до появления мигающего значка сети.
 
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_tuya_joined.jpg"/>
+<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_joined.jpg"/>
 
 Все.
 
