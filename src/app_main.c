@@ -178,6 +178,8 @@ void user_init(bool isRetention) {
 
     (void)isRetention;
 
+    bootloader_check();
+
     /* Initialize Stack */
     stack_init();
 
