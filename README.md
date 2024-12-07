@@ -44,7 +44,7 @@
       }
 	]
 ```
-Далее добавляем это все в конфиг z2m (configuration.yaml). Долно получиться что-то в этом роде.
+Далее добавляем это все в конфиг z2m (configuration.yaml). Должно получиться что-то в этом роде.
 
 ```
 external_converters:
@@ -54,7 +54,7 @@ ota:
   zigbee_ota_override_index_location: local_ota_index.json
 ```
 
-Далее перегружаем z2m. И видим у нас новое устройство (надеюсь до все этого термостат уже был в сети и виден в z2m).
+Далее перегружаем z2m. И видим у нас новое устройство (надеюсь до всего этого термостат уже был в сети и виден в z2m).
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_tuya_1.jpg"/>
 
@@ -72,7 +72,7 @@ ota:
 
 Далее ждем окончания. После этого мы в OTA видим наш термостат со старым именем, но уже с новыми `Firmware build date` и `Firmware version`.
 
-Далее идем в радел `Devices` и жме на нашем термостате "Корзинку", т.е. удаляем его из сети.
+Далее идем в радел `Devices` и жмем на нашем термостате "Корзинку", т.е. удаляем его из сети.
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_tuya_remove_1.jpg"/>
 
