@@ -32,6 +32,7 @@ SRC_PATH := ./src
 OUT_PATH := ./out
 MAKE_INCLUDES := ./make
 TOOLS_PATH := ./tools
+BIN_PATH := ./bin
 
 TL_Check = $(TOOLS_PATH)/tl_check_fw.py
 
@@ -93,6 +94,7 @@ RM := rm -rf
 LST_FILE := $(OUT_PATH)/$(PROJECT_NAME).lst
 BIN_FILE := $(OUT_PATH)/$(PROJECT_NAME).bin
 ELF_FILE := $(OUT_PATH)/$(PROJECT_NAME).elf
+MARKER_BIN := $(BIN_PATH)/marker.bin
 
 
 SIZEDUMMY += \
@@ -103,7 +105,8 @@ sizedummy \
 bootloader: pre-build main-build
 
 bootloader-flash: $(BIN_FILE)
-	@python3 $(TOOLS_PATH)/TlsrPgm.py -b921600 -p$(DOWNLOAD_PORT) -t50 -a2550 -m -w we 0 $(BIN_FILE)
+	@python3 $(TOOLS_PATH)/TlsrPgm.py -p$(DOWNLOAD_PORT) -z11 -a 100 -s -m we 0 $(BIN_FILE)
+	@python3 $(TOOLS_PATH)/TlsrPgm.py -p$(DOWNLOAD_PORT) -z11 -a 100 -s -m we 0x7ff0 $(MARKER_BIN)
 
 # Main-build Target
 main-build: clean $(ELF_FILE) secondary-outputs
