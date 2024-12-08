@@ -174,19 +174,21 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             break;
         case COMMANDXX:
 //            printf("COMMMANDXX\r\n");
-            out_pkt->command = 0x06;
-            out_pkt->len = reverse16(4);
+            out_pkt->command = 0x04;
+            out_pkt->len = reverse16(5);
             out_pkt->pkt_len++;
             out_pkt->pkt_len++;
-            out_pkt->data[0] = 0x65;
+            out_pkt->data[0] = 0x03;
             out_pkt->pkt_len++;
-            out_pkt->data[1] = 0x00;
+            out_pkt->data[1] = 0x04;
             out_pkt->pkt_len++;
             out_pkt->data[2] = 0x00;
             out_pkt->pkt_len++;
-            out_pkt->data[3] = 0x00;
+            out_pkt->data[3] = 0x01;
             out_pkt->pkt_len++;
-            out_pkt->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+            out_pkt->data[4] = 0x01;
+            out_pkt->pkt_len++;
+            out_pkt->data[5] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
             add_cmd_queue(out_pkt, true);
             break;
         default:
@@ -337,9 +339,12 @@ void uart_cmd_handler() {
 
                                 *p = 0;
 
+                                manuf_name = MANUF_NAME_MAX;
+
                                 for (uint8_t ii = 0; ii < MANUF_NAME_MAX; ii++) {
                                     for (uint8_t i = 0; i < 255; i++) {
                                         if (tuya_manuf_names[ii][i] == NULL) break;
+//                                        printf("tuya_manuf_names[%d][%d]: %s\r\n", ii, i, tuya_manuf_names[ii][i]);
                                         if (strcmp(tuya_manuf_names[ii][i], (char8_t*)ptr) == 0) {
                                             manuf_name = ii;
                                             ii = MANUF_NAME_MAX;
@@ -348,10 +353,15 @@ void uart_cmd_handler() {
                                     }
                                 }
 
-//                                printf("manuf_name: %d, %s is find\r\n", manuf_name, ptr);
-
                                 if (manuf_name == MANUF_NAME_MAX) {
+#if UART_PRINTF_MODE
+                                    printf("Known Tuya signature not found. Use default\r\n");
+#endif
                                     manuf_name = MANUF_NAME_0;
+                                } else {
+#if UART_PRINTF_MODE
+                                    printf("Tuya signature found: \"%s\"\r\n", ptr);
+#endif
                                 }
 
                                 data_point_model = data_point_model_arr[manuf_name];

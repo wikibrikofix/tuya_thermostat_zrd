@@ -11,7 +11,7 @@ const { postfixWithEndpointName, precisionRound } = require('zigbee-herdsman-con
 const e = exposes.presets;
 const ea = exposes.access;
 
-const switchSensorUsed = ['IN', 'AL', 'OU'];
+const switchSensorUsed = ['Inner (IN)', 'All (AL)', 'Outer (OU)'];
 
 const fzLocal = {
   thermostat_child_lock: {
@@ -33,7 +33,7 @@ const fzLocal = {
         const result = {};
         const data = msg.data;
         if (data[0xF000] !== undefined) {
-            const lookup = {0: 'IN', 1: 'AL', 2: 'OU'};
+            const lookup = {0: 'Inner (IN)', 1: 'All (AL)', 2: 'Outer (OU)'};
             result.sensor = lookup[data[0xF000]];
         }
         return result;
@@ -214,7 +214,7 @@ const definition = {
       .withValueMax(5)
       .withValueStep(1),
     e.climate()
-      .withWeeklySchedule(['heat']),
+      .withWeeklySchedule(['heat'], ea.STATE_ALL),
   ],
               
   ota: ota.zigbeeOTA,
