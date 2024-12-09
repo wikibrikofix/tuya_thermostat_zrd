@@ -208,7 +208,7 @@ const definition = {
       .withValueStep(1),
     e
       .numeric('setpoint_raise_lower', ea.STATE_ALL)
-      .withDescription('Increased (or decreased) heating setpoint')
+      .withDescription('Increased (or decreased) heating setpoint in one step')
       .withUnit('°C')
       .withValueMin(-5)
       .withValueMax(5)
