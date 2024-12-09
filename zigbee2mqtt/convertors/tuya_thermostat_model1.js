@@ -200,6 +200,13 @@ const definition = {
       .withValueMax(5)
       .withValueStep(1),
     e
+      .numeric('min_heat_setpoint_limit', ea.ALL)
+      .withUnit('°C')
+      .withDescription('Minimum Heating set point limit')
+      .withValueMin(5)
+      .withValueMax(15)
+      .withValueStep(1),
+    e
       .numeric('max_heat_setpoint_limit', ea.ALL)
       .withDescription('Maximum Heating set point limit')
       .withUnit('°C')
