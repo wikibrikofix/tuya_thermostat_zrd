@@ -83,8 +83,6 @@ typedef struct {
 extern uint8_t manuf_name;
 extern data_point_st_t *data_point_model;
 extern const char8_t **tuya_manuf_names[];
-extern data_point_st_t data_point_type0[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_type1[DP_IDX_MAXNUM];
 
 void data_point_model_init();
 data_point_st_t *data_point_model_arr[MANUF_NAME_MAX];

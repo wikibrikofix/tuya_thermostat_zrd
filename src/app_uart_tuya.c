@@ -257,6 +257,7 @@ void uart_cmd_handler() {
         if (cmd_queue.cmd_queue[0].confirm_need) {
             /* trying to read for 1 seconds */
             for(uint8_t i = 0; i < 100; i++ ) {
+                load_size = 0;
                 if (available_ring_buff() && get_queue_len_ring_buff() >= 8) {
                     while (available_ring_buff() && load_size < (DATA_MAX_LEN + 8)) {
                         ch = read_byte_from_ring_buff();
@@ -280,18 +281,15 @@ void uart_cmd_handler() {
 
                             if (load_size == 8) {
                                 pkt->len = reverse16(pkt->len);
-                                load_size += read_bytes_from_buff(answer_buff+load_size, pkt->len);
+                                load_size += read_bytes_from_buff(answer_buff+load_size, pkt->len+1);
+                                i = 100;
+                                complete = true;
+                                break;
                             } else {
                                 load_size = 0;
                                 continue;
                             }
 
-                        }
-
-                        if (load_size == pkt->len + 9) {
-                            i = 100;
-                            complete = true;
-                            break;
                         }
                     }
                 }
@@ -413,6 +411,7 @@ void uart_cmd_handler() {
     move_cmd_queue();
 
     if (available_ring_buff() && get_queue_len_ring_buff() >= 8) {
+        load_size = 0;
         while (available_ring_buff() && load_size < (DATA_MAX_LEN + 8)) {
             ch = read_byte_from_ring_buff();
 
@@ -435,16 +434,13 @@ void uart_cmd_handler() {
 
                 if (load_size == 8) {
                     pkt->len = reverse16(pkt->len);
-                    load_size += read_bytes_from_buff(answer_buff+load_size, pkt->len);
+                    load_size += read_bytes_from_buff(answer_buff+load_size, pkt->len+1);
+                    break;
                 } else {
                     load_size = 0;
                     continue;
                 }
 
-            }
-
-            if (load_size == pkt->len + 9) {
-                break;
             }
         }
 
@@ -482,6 +478,7 @@ void uart_cmd_handler() {
 #if UART_PRINTF_MODE && DEBUG_CMD
                     printf("command 0x24. Sync Time\r\n");
 #endif
+                    printf("command 0x24. Sync Time\r\n");
                     if (get_time_sent()) {
                         set_command(pkt->command, pkt->seq_num, false);
                     } else {
