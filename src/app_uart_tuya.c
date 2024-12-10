@@ -553,6 +553,11 @@ void uart_cmd_handler() {
                             set_default_answer(pkt->command, pkt->seq_num);
 
                             uint16_t divisor = 1;
+                            int16_t  absMinHeatSet;
+                            int16_t  absMaxHeatSet;
+                            uint16_t len;
+                            bool set_attr = false;
+
 
                             if (data_point_model[DP_IDX_MAX].divisor == 1) {
                                 divisor = 100;
@@ -562,10 +567,29 @@ void uart_cmd_handler() {
 
                             uint32_t temp = (int32_from_str(data_point->data) & 0xFFFF) * divisor;
 
+                            zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                           ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&absMinHeatSet);
+                            zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                           ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MAX_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&absMaxHeatSet);
+
+//                            printf("temp: %d, absMinHeatSet: %d, absMaxHeatSet: %d\r\n", temp, absMinHeatSet, absMaxHeatSet);
+                            if (temp > absMaxHeatSet) {
+                                temp = absMaxHeatSet;
+                                set_attr = true;
+                            }
+                            if (temp < absMinHeatSet) {
+                                temp = absMinHeatSet;
+                                set_attr = true;
+                            }
+
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
                                            ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*) &temp);
 
                             thermostat_settings_save();
+
+                            if (set_attr) {
+                                data_point_model[DP_IDX_MAX].remote_smd(&temp);
+                            }
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_TEMP].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_TEMP].type) {
