@@ -129,6 +129,7 @@ $(BIN_FILE): $(ELF_FILE)
 	@echo 'Create Flash image (binary format)'
 	@$(OBJCOPY) -v -O binary $(ELF_FILE)  $(BIN_FILE)
 	@python3 $(TL_Check) $(BIN_FILE)
+	@cp $(BIN_FILE) $(BIN_PATH)/$(PROJECT_NAME).bin
 	@echo 'Finished building: $@'
 	@echo ' '
 
