@@ -203,7 +203,6 @@ static void app_zclWriteRspCmd(uint16_t clusterId, zclWriteRspCmd_t *pWriteRspCm
 static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd_t *pWriteReqCmd) {
     uint8_t numAttr = pWriteReqCmd->numAttr;
     zclWriteRec_t *attr = pWriteReqCmd->attrList;
-    zcl_thermostatAttr_t *tempAttrs = zcl_thermostatAttrGet();
 
 
 //    printf("app_zclWriteReqCmd\r\n");
@@ -212,44 +211,28 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
         for (uint32_t i = 0; i < numAttr; i++) {
             if (attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE) {
                 uint8_t sys_mode = attr->attrData[0];
-                if (sys_mode == SYS_MODE_OFF || sys_mode == SYS_MODE_HEAT) {
-                    remote_smd_sys_mode(sys_mode);
-                }
+                data_point_model[DP_IDX_ONOFF].remote_smd(&sys_mode);
             } else if (attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT) {
                 uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
-                if (temp >= tempAttrs->absMinHeatSetpointLimit && temp <= tempAttrs->absMaxHeatSetpointLimit) {
-                    remote_smd_heating_set(temp);
-                }
+                data_point_model[DP_IDX_SETPOINT].remote_smd(&temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION) {
                 int8_t temp = (int8_t)attr->attrData[0];
-
-                if (temp >= CLIENT_TEMP_CALIBRATION_MIN && temp <= CLIENT_TEMP_CALIBRATION_MAX) {
-                    remote_smd_temp_calibration(temp);
-                }
+                data_point_model[DP_IDX_CALIBRATION].remote_smd(&temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED) {
                 uint8_t sensor_used = attr->attrData[0];
-                if (sensor_used == SENSOR_IN || sensor_used == SENSOR_AL || sensor_used == SENSOR_OU) {
-                    remote_cmd_sensor_used(sensor_used);
-                }
+                data_point_model[DP_IDX_SENSOR].remote_smd(&sensor_used);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND) {
                 uint8_t dead_band = attr->attrData[0];
-                if (dead_band >= HYSTERESIS_MIN && dead_band <= HYSTERESIS_MAX) {
-                    remote_cmd_deadband(dead_band);
-                }
+                data_point_model[DP_IDX_DEADZONE].remote_smd(&dead_band);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT) {
                 uint16_t min_temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
-                if (min_temp >= SET_POINT_MIN_MIN * 100 && min_temp <= SET_POINT_MIN_MAX * 100) {
-                    remote_cmd_min_setpoint(min_temp);
-                }
+                data_point_model[DP_IDX_MIN].remote_smd(&min_temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT) {
                 uint16_t max_temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
-                if (max_temp >= SET_POINT_MAX_MIN * 100 && max_temp <= SET_POINT_MAX_MAX * 100) {
-                    remote_cmd_max_setpoint(max_temp);
-                }
+                data_point_model[DP_IDX_MAX].remote_smd(&max_temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE) {
                 uint8_t oper_mode = attr->attrData[0];
-                if (oper_mode > 1) return;
-                remote_cmd_oper_mode(oper_mode);
+                data_point_model[DP_IDX_PROG].remote_smd(&oper_mode);
             }
         }
     }
@@ -257,11 +240,11 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
     if (clusterId == ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG) {
         for (uint32_t i = 0; i < numAttr; i++) {
             if (attr[i].attrID == ZCL_ATTRID_HVAC_TEMPERATURE_DISPLAY_MODE) {
-                uint8_t display_mode = attr->attrData[0];
-                remote_smd_display_mode(display_mode);
+//                uint8_t display_mode = attr->attrData[0];
+//                remote_smd_display_mode(display_mode);
             } else if (attr[i].attrID == ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT) {
                 uint8_t keylock = attr->attrData[0];
-                remote_smd_keylock(keylock);
+                data_point_model[DP_IDX_LOCKUNLOCK].remote_smd(&keylock);
             }
         }
 
@@ -1073,7 +1056,8 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                                        &len, (uint8_t*)&setpoint);
 
                         setpoint += raise_lower*100;
-                        remote_smd_heating_set(setpoint);
+
+                        data_point_model[DP_IDX_SETPOINT].remote_smd(&setpoint);
 //                        printf("raise_lower: %d, setpoint: %d\r\n", raise_lower, setpoint);
                     }
                 }
@@ -1121,7 +1105,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                         }
 
                         if (save) {
-                            remote_cmd_set_weekly_schedule();
+                            data_point_model[DP_IDX_SCHEDULE].remote_smd(NULL);
                         }
                         break;
                     default:

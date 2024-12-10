@@ -14,12 +14,14 @@ typedef struct __attribute__((packed)) {
     uint8_t  data[DATA_MAX_LEN-8];
 } data_point_t;
 
+typedef void (*remote_smd_t)(void *arg);
 
 typedef struct {
-    uint8_t     id;
-    uint8_t     type;
-    uint16_t    len;
-    uint16_t    divisor;
+    uint8_t         id;
+    uint8_t         type;
+    uint16_t        len;
+    uint16_t        divisor;
+    remote_smd_t    remote_smd;
 } data_point_st_t;
 
 typedef enum {
