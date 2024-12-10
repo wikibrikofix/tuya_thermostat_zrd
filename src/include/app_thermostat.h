@@ -45,6 +45,18 @@ typedef struct __attribute__((packed)) {
 
 extern uint8_t thermostat_mode;
 
+void remote_smd_sys_mode_0(void *args);
+void remote_smd_heating_set_0(void *args);
+void remote_smd_temp_calibration_0(void *args);
+void remote_smd_display_mode_0(void *args);
+void remote_smd_keylock_0(void *args);
+void remote_cmd_sensor_used_0(void *args);
+void remote_cmd_deadband_0(void *args);
+void remote_cmd_min_setpoint_0(void *args);
+void remote_cmd_max_setpoint_0(void *args);
+void remote_cmd_oper_mode_0(void *args);
+void remote_cmd_set_weekly_schedule_0(void *args);
+
 void remote_smd_sys_mode(uint8_t mode);
 void remote_smd_heating_set(int32_t temp);
 void remote_smd_temp_calibration(int8_t temp);
