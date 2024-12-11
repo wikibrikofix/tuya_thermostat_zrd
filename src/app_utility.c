@@ -7,6 +7,7 @@ uint8_t mcuBootAddrGet(void);
 //uint32_t mcuBootAddrGet(void);
 
 void start_message() {
+    const uint8_t version[] = ZCL_BASIC_SW_BUILD_ID;
 #ifdef ZCL_OTA
     if (mcuBootAddrGet()) {
 #if UART_PRINTF_MODE
@@ -21,8 +22,9 @@ void start_message() {
 #if UART_PRINTF_MODE
     printf("OTA mode desabled. MCU boot from address: 0x%x\r\n", FLASH_ADDR_OF_APP_FW);
 #endif /* UART_PRINTF_MODE */
-
 #endif
+
+    printf("Firmware version: %s\r\n", version+1);
 }
 
 

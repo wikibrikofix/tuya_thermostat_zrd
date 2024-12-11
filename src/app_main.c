@@ -130,8 +130,6 @@ void user_app_init(void)
 #endif
 
 
-    start_message();
-
     app_uart_init();
 
     TL_ZB_TIMER_SCHEDULE(app_time_cmdCb, NULL, TIMEOUT_10SEC);
@@ -178,6 +176,7 @@ void user_init(bool isRetention) {
 
     (void)isRetention;
 
+    start_message();
     bootloader_check();
 
     /* Initialize Stack */
