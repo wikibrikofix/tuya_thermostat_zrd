@@ -1,5 +1,7 @@
 # Tuya Thermostat for Floor Heating Zigbee with custom firmware
 
+# Убрал пока бинарники. Нашел косяк. Новая прошивка не обновляется по OTA. Точнее обновляется, но не копируется и работать остается старая.
+
 **Tuya Thermostat model**
 
 	"_TZE204_u9bfwha0"
