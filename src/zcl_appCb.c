@@ -1046,6 +1046,8 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 #if UART_PRINTF_MODE
                 printf("CMD Setpoint Raise Lower\r\n");
 #endif
+                return status;
+
                 zcl_thermostat_setpointRaiseLowerCmd_t *cmd = (zcl_thermostat_setpointRaiseLowerCmd_t*)cmdPayload;
                 if (cmd->mode == ADJUST_HEAT_SETPOINT) {
                     int8_t raise_lower = cmd->amount / 10;
