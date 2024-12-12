@@ -1,4 +1,6 @@
-// Convertor for Tuya Thermostat model "_TZE204_u9bfwha0"
+// Convertor for Tuya Thermostat model 
+//	"_TZE204_u9bfwha0"
+//	"_TZE204_aoclfnxz"
 //
 const fz = require('zigbee-herdsman-converters/converters/fromZigbee');
 const tz = require('zigbee-herdsman-converters/converters/toZigbee');
@@ -206,13 +208,6 @@ const definition = {
       .withUnit('°C')
       .withValueMin(15)
       .withValueMax(45)
-      .withValueStep(1),
-    e
-      .numeric('setpoint_raise_lower', ea.STATE_ALL)
-      .withDescription('Increased (or decreased) heating setpoint in one step')
-      .withUnit('°C')
-      .withValueMin(-5)
-      .withValueMax(5)
       .withValueStep(1),
     e.climate()
       .withLocalTemperature()
