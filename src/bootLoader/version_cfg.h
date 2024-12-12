@@ -34,7 +34,7 @@
 		#define CHIP_TYPE					TLSR_8267
 	#endif
 #elif defined(MCU_CORE_8258)
-		#define CHIP_TYPE					TLSR_8258_512K//TLSR_8258_1M
+		#define CHIP_TYPE					TLSR_8258_1M // TLSR_8258_512K//
 #elif defined(MCU_CORE_8278)
 		#define CHIP_TYPE					TLSR_8278
 #elif defined(MCU_CORE_B91)
@@ -42,7 +42,7 @@
 #endif
 
 #define APP_RELEASE							0x10//app release 1.0
-#define APP_BUILD							0x01//app build 01
+#define APP_BUILD							0x02//app build 01
 #define STACK_RELEASE						0x30//stack release 3.0
 #define STACK_BUILD							0x01//stack build 01
 
