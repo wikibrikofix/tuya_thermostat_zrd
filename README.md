@@ -15,7 +15,7 @@
 
 ## Зачем. 
 
-Чтобы не спамил в сеть. Именно этот экземпляр посылал 25 пакетов каждые 8 секунд.
+Чтобы не спамил в сеть. Первый экземпляр (см. выше) посылал 25 пакетов каждые 8 секунд.
 
 ## Что получилось. 
 
@@ -32,6 +32,26 @@
 ## Как обновить.
 
 Сначала подключаем к z2m два внешних [конвертора](https://github.com/slacky1965/tuya_thermostat_zrd/tree/main/zigbee2mqtt/convertors) `tuya_thermostat_orig.js` и `tuya_thermostat_model1.js`. Первый активирует OTA в z2m для термостата с прошивкой от Tuya. Второй - для термостата с кастомной прошивкой.
+
+В `tuya_thermostat_orig.js` меняем сигнатуру на свою, если не совпадает. Т.е. везде, где встречается `_TZE204_u9bfwha0` меняем на `_TZE204_xxxxxxx`
+
+```const {identify, reporting, ota} = require('zigbee-herdsman-converters/lib/modernExtend');
+
+const definition = {
+    fingerprint: [{modelID: 'TS0601', manufacturerName: '_TZE204_u9bfwha0'}],
+    zigbeeModel: ['TS0601'],
+    model: 'TS0601',
+    vendor: '_TZE204_u9bfwha0',
+    description: 'Automatically generated definition',
+    extend: [
+      identify(),
+      ota(),
+    ],
+    meta: {},
+};
+
+module.exports = definition;
+```
 
 Далее нужно добавить локальное хранилище обновлений. 
 
@@ -57,7 +77,7 @@ ota:
   zigbee_ota_override_index_location: local_ota_index.json
 ```
 
-Далее перегружаем z2m. И видим у нас новое устройство (надеюсь до всего этого термостат уже был в сети и виден в z2m).
+Далее перегружаем z2m. И видим у нас новое устройство (если термостат уже был в сети и виден в z2m).
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_tuya_1.jpg"/>
 
