@@ -23,7 +23,7 @@
  *
  *******************************************************************************************************/
 
-#if (__PROJECT_TL_BOOT_LOADER__)
+//#if (__PROJECT_TL_BOOT_LOADER__)
 
 #include "tl_common.h"
 #include "bootloader.h"
@@ -123,15 +123,21 @@ static bool is_valid_fw_bootloader(u32 addr_fw){
 	u32 startup_flag = 0;
     flash_read(addr_fw + FLASH_TLNK_FLAG_OFFSET, 4, (u8 *)&startup_flag);
 
+//    printf("startup_flag: 0x%x, FW_START_UP_FLAG_WHOLE: 0x%x\r\n", startup_flag, FW_START_UP_FLAG_WHOLE);
+
     return ((startup_flag == FW_START_UP_FLAG_WHOLE) ? TRUE : FALSE);
 }
 
 void bootloader_with_ota_check(u32 addr_load, u32 new_image_addr){
+
+//    printf("bootloader_with_ota_check\r\n");
 	drv_disable_irq();
 
 	if(new_image_addr != addr_load){
+//	    printf("new_image_addr: 0x%x != addr_load: 0x%x\r\n", new_image_addr, addr_load);
 		if(is_valid_fw_bootloader(new_image_addr)){
 			bool isNewImageValid = FALSE;
+//			printf("Have new image at:0x%x\r\n", new_image_addr);
 
 			u32 bufCache[256/4];  //align-4
 			u8 *buf = (u8 *)bufCache;
@@ -143,6 +149,7 @@ void bootloader_with_ota_check(u32 addr_load, u32 new_image_addr){
 				s32 totalLen = fw_size - 4;
 				u32 wLen = 0;
 				u32 sAddr = new_image_addr;
+//				 printf("New image size 0x%x, maxsize 0x%x\n", fw_size, FLASH_OTA_IMAGE_MAX_SIZE);
 
 				u32 crcVal = 0;
 				flash_read(new_image_addr + fw_size - 4, 4, (u8 *)&crcVal);
@@ -161,6 +168,7 @@ void bootloader_with_ota_check(u32 addr_load, u32 new_image_addr){
 				if(curCRC == crcVal){
 					isNewImageValid = TRUE;
 				}
+//				printf("CRC valid:%d, crc: 0x%x, expected crc: 0x%x\n", isNewImageValid, curCRC, crcVal);
 			}
 
 			if(isNewImageValid){
@@ -545,6 +553,7 @@ void bootloader_keyPressProc(void){
 
 
 void bootloader_init(bool isBoot){
+    printf("bootloader_init\r\n");
 	if(isBoot){
 		drv_gpio_write(LED_POWER, 1);
 		drv_gpio_write(LED_PERMIT, 1);
@@ -580,4 +589,4 @@ void bootloader_loop(void){
 	}
 }
 
-#endif	/* __PROJECT_TL_BOOT_LOADER__ */
+//#endif	/* __PROJECT_TL_BOOT_LOADER__ */
