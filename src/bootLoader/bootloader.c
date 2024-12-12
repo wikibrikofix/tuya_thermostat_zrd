@@ -553,7 +553,7 @@ void bootloader_keyPressProc(void){
 
 
 void bootloader_init(bool isBoot){
-    printf("bootloader_init\r\n");
+//    printf("bootloader_init\r\n");
 	if(isBoot){
 		drv_gpio_write(LED_POWER, 1);
 		drv_gpio_write(LED_PERMIT, 1);
