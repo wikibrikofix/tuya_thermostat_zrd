@@ -1177,9 +1177,16 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 #if UART_PRINTF_MODE
                 printf("CMD Get Weekly Schedule\r\n");
 #endif
+//                if (manuf_name == MANUF_NAME_0) {
+//
+//                }
                 thermostat_get_weekly_schedule(getWeeklyDay);
                 getWeeklyDay++;
-                if (getWeeklyDay == 3) getWeeklyDay = 0;
+                if (manuf_name == MANUF_NAME_0) {
+                    if (getWeeklyDay == 3) getWeeklyDay = 0;
+                } else if (manuf_name == MANUF_NAME_1) {
+                    if (getWeeklyDay == 7) getWeeklyDay = 0;
+                }
                 break;
             case ZCL_CMD_THERMOSTAT_CLEAR_WEEKLY_SCHEDULE:
 #if UART_PRINTF_MODE

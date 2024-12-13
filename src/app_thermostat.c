@@ -1611,6 +1611,45 @@ void thermostat_get_weekly_schedule(uint8_t day) {
 //        }
 
     } else if (manuf_name == MANUF_NAME_1) {
+        if (day == 0) {
+            //mon
+            heat_mode =  g_zcl_scheduleData.schedule_mon;
+            cmd.dayOfWeekForSequence = DAY_MON;
+        } else if (day == 1) {
+            //tue
+            heat_mode =  g_zcl_scheduleData.schedule_tue;
+            cmd.dayOfWeekForSequence = DAY_TUE;
+        } else if (day == 2) {
+            //wed
+            heat_mode =  g_zcl_scheduleData.schedule_wed;
+            cmd.dayOfWeekForSequence = DAY_WED;
+        } else if (day == 3) {
+            //thu
+            heat_mode =  g_zcl_scheduleData.schedule_thu;
+            cmd.dayOfWeekForSequence = DAY_THU;
+        } else if (day == 4) {
+            //fri
+            heat_mode =  g_zcl_scheduleData.schedule_fri;
+            cmd.dayOfWeekForSequence = DAY_FRI;
+        } else if (day == 5) {
+            //sat
+            heat_mode =  g_zcl_scheduleData.schedule_sat;
+            cmd.dayOfWeekForSequence = DAY_SAT;
+        } else if (day == 6) {
+            //sun
+            heat_mode =  g_zcl_scheduleData.schedule_sun;
+            cmd.dayOfWeekForSequence = DAY_SUN;
+        } else {
+            return;
+        }
+
+        cmd.numOfTransForSequence = 4;
+        cmd.sequenceMode.pHeatMode = heat_mode;
+        cmd.modeForSequence = HEAT_SERPOINT_FIELD_PRESENT;
+
+//        for (uint8_t i = 0; i < cmd.numOfTransForSequence; i++) {
+//            printf("i: %d, time: %d, temp: %d\r\n", i, cmd.sequenceMode.pHeatMode[i].transTime, cmd.sequenceMode.pHeatMode[i].heatSetpoint);
+//        }
     } else {
         return;
     }

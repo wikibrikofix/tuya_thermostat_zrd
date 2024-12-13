@@ -855,14 +855,16 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_MON].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_MON].type) {
 
-                            dp_schedule_type1_t *schedule = (dp_schedule_type1_t*)data_point->data+1;
+                            uint8_t *ptr = data_point->data;
+                            ptr++;
+                            dp_schedule_type1_t *schedule = (dp_schedule_type1_t*)ptr;
 
                             printf("Schedule mon\r\n");
 
                             for (uint8_t i = 0; i < 4; i++) {
                                 g_zcl_scheduleData.schedule_mon[i].transTime = schedule->hour * 60;
                                 g_zcl_scheduleData.schedule_mon[i].transTime += schedule->minute;
-                                g_zcl_scheduleData.schedule_mon[i].heatSetpoint = reverse16(schedule->temperature) * 100;
+                                g_zcl_scheduleData.schedule_mon[i].heatSetpoint = reverse16(schedule->temperature)/data_point_model[DP_IDX_SCHEDULE_MON].divisor * 100;
                                 schedule++;
                                 printf("mon. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_mon[i].transTime,
                                         g_zcl_scheduleData.schedule_mon[i].heatSetpoint);
@@ -872,27 +874,106 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_TUE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_TUE].type) {
 
+                            uint8_t *ptr = data_point->data;
+                            ptr++;
+                            dp_schedule_type1_t *schedule = (dp_schedule_type1_t*)ptr;
+
                             printf("Schedule tue\r\n");
+
+                            for (uint8_t i = 0; i < 4; i++) {
+                                g_zcl_scheduleData.schedule_tue[i].transTime = schedule->hour * 60;
+                                g_zcl_scheduleData.schedule_tue[i].transTime += schedule->minute;
+                                g_zcl_scheduleData.schedule_tue[i].heatSetpoint = reverse16(schedule->temperature)/data_point_model[DP_IDX_SCHEDULE_TUE].divisor * 100;
+                                schedule++;
+                                printf("tue. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_tue[i].transTime,
+                                        g_zcl_scheduleData.schedule_tue[i].heatSetpoint);
+                            }
+
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_WED].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_WED].type) {
 
+                            uint8_t *ptr = data_point->data;
+                            ptr++;
+                            dp_schedule_type1_t *schedule = (dp_schedule_type1_t*)ptr;
+
                             printf("Schedule wed\r\n");
+
+                            for (uint8_t i = 0; i < 4; i++) {
+                                g_zcl_scheduleData.schedule_wed[i].transTime = schedule->hour * 60;
+                                g_zcl_scheduleData.schedule_wed[i].transTime += schedule->minute;
+                                g_zcl_scheduleData.schedule_wed[i].heatSetpoint = reverse16(schedule->temperature)/data_point_model[DP_IDX_SCHEDULE_WED].divisor * 100;
+                                schedule++;
+                                printf("wed. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_wed[i].transTime,
+                                        g_zcl_scheduleData.schedule_wed[i].heatSetpoint);
+                            }
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_THU].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_THU].type) {
 
+                            uint8_t *ptr = data_point->data;
+                            ptr++;
+                            dp_schedule_type1_t *schedule = (dp_schedule_type1_t*)ptr;
+
                             printf("Schedule thu\r\n");
+
+                            for (uint8_t i = 0; i < 4; i++) {
+                                g_zcl_scheduleData.schedule_thu[i].transTime = schedule->hour * 60;
+                                g_zcl_scheduleData.schedule_thu[i].transTime += schedule->minute;
+                                g_zcl_scheduleData.schedule_thu[i].heatSetpoint = reverse16(schedule->temperature)/data_point_model[DP_IDX_SCHEDULE_THU].divisor * 100;
+                                schedule++;
+                                printf("thu. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_thu[i].transTime,
+                                        g_zcl_scheduleData.schedule_thu[i].heatSetpoint);
+                            }
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_FRI].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_FRI].type) {
 
+                            uint8_t *ptr = data_point->data;
+                            ptr++;
+                            dp_schedule_type1_t *schedule = (dp_schedule_type1_t*)ptr;
+
                             printf("Schedule fri\r\n");
+
+                            for (uint8_t i = 0; i < 4; i++) {
+                                g_zcl_scheduleData.schedule_fri[i].transTime = schedule->hour * 60;
+                                g_zcl_scheduleData.schedule_fri[i].transTime += schedule->minute;
+                                g_zcl_scheduleData.schedule_fri[i].heatSetpoint = reverse16(schedule->temperature)/data_point_model[DP_IDX_SCHEDULE_FRI].divisor * 100;
+                                schedule++;
+                                printf("fri. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_fri[i].transTime,
+                                        g_zcl_scheduleData.schedule_fri[i].heatSetpoint);
+                            }
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_SAT].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_SAT].type) {
 
+                            uint8_t *ptr = data_point->data;
+                            ptr++;
+                            dp_schedule_type1_t *schedule = (dp_schedule_type1_t*)ptr;
+
                             printf("Schedule sat\r\n");
+
+                            for (uint8_t i = 0; i < 4; i++) {
+                                g_zcl_scheduleData.schedule_sat[i].transTime = schedule->hour * 60;
+                                g_zcl_scheduleData.schedule_sat[i].transTime += schedule->minute;
+                                g_zcl_scheduleData.schedule_sat[i].heatSetpoint = reverse16(schedule->temperature)/data_point_model[DP_IDX_SCHEDULE_SAT].divisor * 100;
+                                schedule++;
+                                printf("sat. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sat[i].transTime,
+                                        g_zcl_scheduleData.schedule_sat[i].heatSetpoint);
+                            }
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_SUN].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_SUN].type) {
 
+                            uint8_t *ptr = data_point->data;
+                            ptr++;
+                            dp_schedule_type1_t *schedule = (dp_schedule_type1_t*)ptr;
+
                             printf("Schedule sun\r\n");
+
+                            for (uint8_t i = 0; i < 4; i++) {
+                                g_zcl_scheduleData.schedule_sun[i].transTime = schedule->hour * 60;
+                                g_zcl_scheduleData.schedule_sun[i].transTime += schedule->minute;
+                                g_zcl_scheduleData.schedule_sun[i].heatSetpoint = reverse16(schedule->temperature)/data_point_model[DP_IDX_SCHEDULE_SUN].divisor * 100;
+                                schedule++;
+                                printf("sat. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sun[i].transTime,
+                                        g_zcl_scheduleData.schedule_sun[i].heatSetpoint);
+                            }
                         }
                     }
                 }
