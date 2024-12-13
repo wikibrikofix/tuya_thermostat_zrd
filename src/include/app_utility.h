@@ -45,5 +45,6 @@ uint32_t reverse32(uint32_t in);
 uint16_t reverse16(uint16_t in);
 int32_t int32_from_str(uint8_t *data);
 char * mystrstr(char * mainStr, char * subStr);
+uint8_t set_zcl_str(uint8_t *str_in, uint8_t *str_out, uint8_t len);
 
 #endif /* SRC_INCLUDE_APP_UTILITY_H_ */

@@ -72,6 +72,7 @@ typedef struct {
  */
 typedef struct {
     int16_t     localTemperature;               // 22°C * 100
+    int16_t     outDoorTemperature;             // 24°C * 100
     int16_t     absMinHeatSetpointLimit;        // min 5°C * 100
     int16_t     absMaxHeatSetpointLimit;        // max 45°C * 100
     int16_t     minHeatSetpointLimit;           // min 5°C * 100
@@ -84,8 +85,10 @@ typedef struct {
     uint8_t     startOfWeek;                    // see day_of_week_t in /src/zcl/zcl_app_thermostat.h
     uint8_t     weeklyTransNum;
     uint8_t     dailyTransNum;
-    uint8_t     manual_progMode;                // 0x00 - manual mode, 0x01 - programming mode
+    uint8_t     manual_progMode;                // 0x00 - manual mode, 0x01 - programming mode or invert :))
     uint8_t     sensor_used;                    // IN, ALL, OU - castom attribute
+    int16_t     frostProtect;
+    int16_t     heatProtect;
     uint8_t     dead_band;                      // 1 ... 5 °C
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off

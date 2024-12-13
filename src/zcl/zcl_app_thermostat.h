@@ -21,6 +21,8 @@
 #define PROG_MODE               0x01
 
 #define ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED                   0xF000
+#define ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT                 0xF001
+#define ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT                  0xF002
 
 //typedef enum {
 //    SENSOR_IN   =   0x00,

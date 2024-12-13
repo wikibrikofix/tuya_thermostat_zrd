@@ -211,28 +211,34 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
         for (uint32_t i = 0; i < numAttr; i++) {
             if (attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE) {
                 uint8_t sys_mode = attr->attrData[0];
-                data_point_model[DP_IDX_ONOFF].remote_smd(&sys_mode);
+                data_point_model[DP_IDX_ONOFF].remote_cmd(&sys_mode);
             } else if (attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT) {
                 uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
-                data_point_model[DP_IDX_SETPOINT].remote_smd(&temp);
+                data_point_model[DP_IDX_SETPOINT].remote_cmd(&temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION) {
                 int8_t temp = (int8_t)attr->attrData[0];
-                data_point_model[DP_IDX_CALIBRATION].remote_smd(&temp);
+                data_point_model[DP_IDX_CALIBRATION].remote_cmd(&temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED) {
                 uint8_t sensor_used = attr->attrData[0];
-                data_point_model[DP_IDX_SENSOR].remote_smd(&sensor_used);
+                data_point_model[DP_IDX_SENSOR].remote_cmd(&sensor_used);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND) {
                 uint8_t dead_band = attr->attrData[0];
-                data_point_model[DP_IDX_DEADZONE].remote_smd(&dead_band);
+                data_point_model[DP_IDX_DEADZONE].remote_cmd(&dead_band);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT) {
                 uint16_t min_temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
-                data_point_model[DP_IDX_MIN].remote_smd(&min_temp);
+                data_point_model[DP_IDX_MIN].remote_cmd(&min_temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT) {
                 uint16_t max_temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
-                data_point_model[DP_IDX_MAX].remote_smd(&max_temp);
+                data_point_model[DP_IDX_MAX].remote_cmd(&max_temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE) {
                 uint8_t oper_mode = attr->attrData[0];
-                data_point_model[DP_IDX_PROG].remote_smd(&oper_mode);
+                data_point_model[DP_IDX_PROG].remote_cmd(&oper_mode);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT) {
+                uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                data_point_model[DP_IDX_FROST_PROTECT].remote_cmd(&temp);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT) {
+                uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                data_point_model[DP_IDX_HEAT_PROTECT].remote_cmd(&temp);
             }
         }
     }
@@ -241,10 +247,10 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
         for (uint32_t i = 0; i < numAttr; i++) {
             if (attr[i].attrID == ZCL_ATTRID_HVAC_TEMPERATURE_DISPLAY_MODE) {
 //                uint8_t display_mode = attr->attrData[0];
-//                remote_smd_display_mode(display_mode);
+//                remote_cmd_display_mode(display_mode);
             } else if (attr[i].attrID == ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT) {
                 uint8_t keylock = attr->attrData[0];
-                data_point_model[DP_IDX_LOCKUNLOCK].remote_smd(&keylock);
+                data_point_model[DP_IDX_LOCKUNLOCK].remote_cmd(&keylock);
             }
         }
 
@@ -1059,7 +1065,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 
                         setpoint += raise_lower*100;
 
-                        data_point_model[DP_IDX_SETPOINT].remote_smd(&setpoint);
+                        data_point_model[DP_IDX_SETPOINT].remote_cmd(&setpoint);
 //                        printf("raise_lower: %d, setpoint: %d\r\n", raise_lower, setpoint);
                     }
                 }
@@ -1107,8 +1113,60 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                         }
 
                         if (save) {
-                            data_point_model[DP_IDX_SCHEDULE].remote_smd(NULL);
+                            data_point_model[DP_IDX_SCHEDULE].remote_cmd(NULL);
                         }
+                        break;
+                    case MANUF_NAME_1:
+                        for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
+                            if (i == 4) {
+                                break;
+                            }
+                            if (cmd->dayOfWeekForSequence & DAY_SUN) {
+                                heat_mode =  g_zcl_scheduleData.schedule_sun;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                printf("i: %d, weekday: sun, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                            if (cmd->dayOfWeekForSequence & DAY_MON) {
+                                heat_mode =  g_zcl_scheduleData.schedule_mon;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                printf("i: %d, weekday: mon, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                            if (cmd->dayOfWeekForSequence & DAY_TUE) {
+                                heat_mode =  g_zcl_scheduleData.schedule_tue;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                printf("i: %d, weekday: tue, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                            if (cmd->dayOfWeekForSequence & DAY_WED) {
+                                heat_mode =  g_zcl_scheduleData.schedule_wed;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                printf("i: %d, weekday: wed, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                            if (cmd->dayOfWeekForSequence & DAY_THU) {
+                                heat_mode =  g_zcl_scheduleData.schedule_thu;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                printf("i: %d, weekday: thu, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                            if (cmd->dayOfWeekForSequence & DAY_FRI) {
+                                heat_mode =  g_zcl_scheduleData.schedule_fri;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                printf("i: %d, weekday: fri, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                            if (cmd->dayOfWeekForSequence & DAY_SAT) {
+                                heat_mode =  g_zcl_scheduleData.schedule_sat;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                printf("i: %d, weekday: sat, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                        }
+
+                        data_point_model[DP_IDX_SCHEDULE].remote_cmd(&cmd->dayOfWeekForSequence);
+
                         break;
                     default:
                         break;

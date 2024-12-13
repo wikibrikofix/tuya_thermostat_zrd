@@ -356,10 +356,13 @@ void uart_cmd_handler() {
                                     printf("Known Tuya signature not found. Use default\r\n");
 #endif
                                     manuf_name = MANUF_NAME_0;
+                                    uint8_t signature[] = "u9bfwha0";
+                                    set_zcl_modelId(signature);
                                 } else {
 #if UART_PRINTF_MODE
                                     printf("Tuya signature found: \"%s\"\r\n", ptr);
 #endif
+                                    set_zcl_modelId(ptr);
                                 }
 
                                 data_point_model = data_point_model_arr[manuf_name];
@@ -493,41 +496,47 @@ void uart_cmd_handler() {
                         /* data point used */
                         data_point->dp_len = reverse16(data_point->dp_len);
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                                    printf("data point id: 0x%x\r\n", data_point->dp_id);
+#endif
+
+
                         if (data_point->dp_id == data_point_model[DP_IDX_ONOFF].id &&
                                 data_point->dp_type == data_point_model[DP_IDX_ONOFF].type) {
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x01\r\n");
-#endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
                             thermostat_onoff_state(data_point->data[0]);
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_PROG].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_PROG].type) {
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x02\r\n");
-#endif
                             set_default_answer(pkt->command, pkt->seq_num);
 
                             uint8_t mode = data_point->data[0];
+
+                            if (manuf_name == MANUF_NAME_1) {
+                                if (mode) {
+                                    mode = 0;
+                                } else {
+                                    mode = 1;
+                                }
+                            }
 #if UART_PRINTF_MODE && DEBUG_CMD
                                     printf("Thermostat mode %s\r\n", mode?"programming":"manual");
 #endif
+
+
 
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
                                            ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, (uint8_t*) &mode);
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_UNKNOWN].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_UNKNOWN].type) {
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x03\r\n");
-#endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SETPOINT].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SETPOINT].type) {
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x10\r\n");
-#endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
 
                             uint16_t divisor = 1;
@@ -545,11 +554,40 @@ void uart_cmd_handler() {
 
                             thermostat_settings_save();
 
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_MIN].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_MIN].type) {
+
+                            set_default_answer(pkt->command, pkt->seq_num);
+
+                            uint16_t divisor = 1;
+                            int16_t  old_min;
+                            uint16_t len;
+
+                            if (data_point_model[DP_IDX_MIN].divisor == 1) {
+                                divisor = 100;
+                            } else if (data_point_model[DP_IDX_MIN].divisor == 10) {
+                                divisor = 10;
+                            }
+
+                            uint32_t temp = (int32_from_str(data_point->data) & 0xFFFF) * divisor;
+
+                            zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                           ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&old_min);
+
+//                            printf("temp: %d, old_min: %d", temp, old_min);
+
+                            if (old_min != temp) {
+
+                                zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                               ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*) &temp);
+
+                                thermostat_settings_save();
+                            }
+
+
                         } else if (data_point->dp_id == data_point_model[DP_IDX_MAX].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_MAX].type) {
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x13\r\n");
-#endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
 
                             uint16_t divisor = 1;
@@ -588,22 +626,103 @@ void uart_cmd_handler() {
                             thermostat_settings_save();
 
                             if (set_attr) {
-                                data_point_model[DP_IDX_MAX].remote_smd(&temp);
+                                data_point_model[DP_IDX_MAX].remote_cmd(&temp);
                             }
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_FROST_PROTECT].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_FROST_PROTECT].type) {
+
+                            set_default_answer(pkt->command, pkt->seq_num);
+
+                            uint16_t divisor = 1;
+                            int16_t  old_temp;
+                            uint16_t len;
+
+                            if (data_point_model[DP_IDX_FROST_PROTECT].divisor == 1) {
+                                divisor = 100;
+                            } else if (data_point_model[DP_IDX_FROST_PROTECT].divisor == 10) {
+                                divisor = 10;
+                            }
+
+                            uint32_t temp = (int32_from_str(data_point->data) & 0xFFFF) * divisor;
+
+                            zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                           ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT, &len, (uint8_t*)&old_temp);
+
+                            printf("frost prottect. temp: %d, old_temp: %d", temp, old_temp);
+
+                            if (old_temp != temp) {
+
+                                zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                               ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT, (uint8_t*) &temp);
+
+                                thermostat_settings_save();
+                            }
+
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_HEAT_PROTECT].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_HEAT_PROTECT].type) {
+
+                            set_default_answer(pkt->command, pkt->seq_num);
+
+                            uint16_t divisor = 1;
+                            int16_t  old_temp;
+                            uint16_t len;
+
+                            if (data_point_model[DP_IDX_HEAT_PROTECT].divisor == 1) {
+                                divisor = 100;
+                            } else if (data_point_model[DP_IDX_HEAT_PROTECT].divisor == 10) {
+                                divisor = 10;
+                            }
+
+                            uint32_t temp = (int32_from_str(data_point->data) & 0xFFFF) * divisor;
+
+                            zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                           ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT, &len, (uint8_t*)&old_temp);
+
+                            printf("heat prottect. temp: %d, old_temp: %d", temp, old_temp);
+
+                            if (old_temp != temp) {
+
+                                zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                               ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT, (uint8_t*) &temp);
+
+                                thermostat_settings_save();
+                            }
+
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_TEMP_OUT].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_TEMP_OUT].type) {
+
+                            set_default_answer(pkt->command, pkt->seq_num);
+
+                            uint16_t divisor = 1;
+
+                            if (data_point_model[DP_IDX_TEMP_OUT].divisor == 1) {
+                                divisor = 100;
+                            } else if (data_point_model[DP_IDX_TEMP_OUT].divisor == 10) {
+                                divisor = 10;
+                            }
+
+                            uint16_t temp = (int32_from_str(data_point->data) & 0xFFFF) * divisor;
+
+                            zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                                           ZCL_ATTRID_HVAC_THERMOSTAT_OUTDOOR_TEMPERATURE, (uint8_t*) &temp);
+
+#if UART_PRINTF_MODE && DEBUG_CMD
+                                    printf("OutDoor Temperature: %d\r\n", temp);
+#endif
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_TEMP].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_TEMP].type) {
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x18\r\n");
-#endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
 
                             uint16_t divisor = 1;
 
                             if (data_point_model[DP_IDX_TEMP].divisor == 1) {
                                 divisor = 100;
-                            } else if (data_point_model[DP_IDX_TEMP].divisor
-                                    == 10) {
+                            } else if (data_point_model[DP_IDX_TEMP].divisor == 10) {
                                 divisor = 10;
                             }
 
@@ -613,14 +732,12 @@ void uart_cmd_handler() {
                                            ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMPERATURE, (uint8_t*) &temp);
 
 #if UART_PRINTF_MODE && DEBUG_CMD
-                                    printf("Local Temperature %d\r\n", temp);
+                                    printf("Local Temperature: %d\r\n", temp);
 #endif
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_DEADZONE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_DEADZONE].type) {
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x1A\r\n");
-#endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
 
                             uint16_t temp = (int32_from_str(data_point->data) & 0xFFFF);
@@ -645,9 +762,7 @@ void uart_cmd_handler() {
                             } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 100) {
                                 temp /= 10;
                             }
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x1B. calibration local temperature: %d\r\n", temp);
-#endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
 
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
@@ -657,9 +772,7 @@ void uart_cmd_handler() {
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_RUNSTATE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_RUNSTATE].type) {
-#if UART_PRINTF_MODE && DEBUG_DP
-                                        printf("data point 0x24\r\n");
-    #endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
                             if (data_point->data[0]) {
                                 set_run_state_bit(RUN_STATE_HEAT_BIT, OFF);
@@ -670,9 +783,7 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_LOCKUNLOCK].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_LOCKUNLOCK].type) {
                             uint8_t lock = data_point->data[0];
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x28. key %s\r\n", lock?"lock":"unlock");
-#endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
 
                             zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG,
@@ -682,9 +793,7 @@ void uart_cmd_handler() {
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SENSOR].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SENSOR].type) {
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x2B\r\n");
-#endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
 
                             uint8_t sensor_used = data_point->data[0];
@@ -702,9 +811,7 @@ void uart_cmd_handler() {
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE].type) {
-#if UART_PRINTF_MODE && DEBUG_DP
-                                    printf("data point 0x65\r\n");
-#endif
+
                             set_default_answer(pkt->command, pkt->seq_num);
 
 //                            printf("schedule\r\n");
@@ -744,6 +851,48 @@ void uart_cmd_handler() {
                             }
 
                             thermostat_settings_save();
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_MON].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_MON].type) {
+
+                            dp_schedule_type1_t *schedule = (dp_schedule_type1_t*)data_point->data+1;
+
+                            printf("Schedule mon\r\n");
+
+                            for (uint8_t i = 0; i < 4; i++) {
+                                g_zcl_scheduleData.schedule_mon[i].transTime = schedule->hour * 60;
+                                g_zcl_scheduleData.schedule_mon[i].transTime += schedule->minute;
+                                g_zcl_scheduleData.schedule_mon[i].heatSetpoint = reverse16(schedule->temperature) * 100;
+                                schedule++;
+                                printf("mon. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_mon[i].transTime,
+                                        g_zcl_scheduleData.schedule_mon[i].heatSetpoint);
+
+                            }
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_TUE].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_TUE].type) {
+
+                            printf("Schedule tue\r\n");
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_WED].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_WED].type) {
+
+                            printf("Schedule wed\r\n");
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_THU].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_THU].type) {
+
+                            printf("Schedule thu\r\n");
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_FRI].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_FRI].type) {
+
+                            printf("Schedule fri\r\n");
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_SAT].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_SAT].type) {
+
+                            printf("Schedule sat\r\n");
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_SUN].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_SUN].type) {
+
+                            printf("Schedule sun\r\n");
                         }
                     }
                 }

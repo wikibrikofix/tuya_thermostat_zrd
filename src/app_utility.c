@@ -111,6 +111,19 @@ int32_t int32_from_str(uint8_t *data) {
     return val;
 }
 
+uint8_t set_zcl_str(uint8_t *str_in, uint8_t *str_out, uint8_t len) {
+    uint8_t *data = str_out;
+    uint8_t *str_len = data;
+    uint8_t *str_data = data+1;
+
+    for (uint8_t i = 0; *(str_in+i) != 0 && i < (len-1); i++) {
+        *(str_data+i) = *(str_in+i);
+        (*str_len)++;
+    }
+
+    return *str_len;
+}
+
 //char * mystrstr(char * mainStr, char * subStr) {
 //    char *s1, *s2;
 //

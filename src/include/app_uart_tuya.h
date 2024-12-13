@@ -5,13 +5,6 @@
 #define FLAG_START2         0xAA
 #define SP_VERSION          0x02
 #define DATA_MAX_LEN        64          /* do not change!   */
-#define HYSTERESIS_MIN      1
-#define HYSTERESIS_MAX      5
-#define SET_POINT_MIN_MIN   5
-#define SET_POINT_MIN_MAX   15
-#define SET_POINT_MAX_MIN   15
-#define SET_POINT_MAX_MAX   45
-
 
 typedef enum {
     COMMAND00   =   0x00,

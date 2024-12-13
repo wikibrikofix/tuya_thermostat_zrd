@@ -7,7 +7,7 @@
  *  "u9bfwha0"
  *  "aoclfnxz"
  */
-void remote_smd_sys_mode_0(void *args) {
+void remote_cmd_sys_mode_0(void *args) {
 
     uint8_t *mode = (uint8_t*)args;
 
@@ -52,7 +52,7 @@ void remote_smd_sys_mode_0(void *args) {
     }
 }
 
-void remote_smd_heating_set_0(void *args) {
+void remote_cmd_heating_set_0(void *args) {
 
     int16_t *arg = (int16_t*)args;
     int32_t temp = *arg;
@@ -113,7 +113,7 @@ void remote_smd_heating_set_0(void *args) {
     thermostat_settings_save();
 }
 
-void remote_smd_temp_calibration_0(void *args) {
+void remote_cmd_temp_calibration_0(void *args) {
 
     int8_t *arg = (int8_t*)args;
     int8_t temp = *arg;
@@ -164,7 +164,7 @@ void remote_smd_temp_calibration_0(void *args) {
     thermostat_settings_save();
 }
 
-void remote_smd_display_mode_0(void *args) {
+void remote_cmd_display_mode_0(void *args) {
 
 //    uint8_t *mode = (uint8_t*)args;
 
@@ -180,7 +180,7 @@ void remote_smd_display_mode_0(void *args) {
 //    }
 }
 
-void remote_smd_keylock_0(void *args) {
+void remote_cmd_keylock_0(void *args) {
 
     uint8_t *keylock = (uint8_t*)args;
 
@@ -495,7 +495,586 @@ void remote_cmd_set_weekly_schedule_0(void *args) {
 
 /*****************************************************************************************************/
 
-void remote_smd_sys_mode(uint8_t mode) {
+void remote_cmd_min_setpoint_1(void *args) {
+
+    uint16_t *arg = (uint16_t*)args;
+    uint32_t min_temp = *arg;
+
+    printf("min_temp: %d\r\n", min_temp);
+
+    if (data_point_model[DP_IDX_MIN].id == 0) return;
+
+    if (min_temp < SET_POINT_MIN_MIN * 100 || min_temp > SET_POINT_MIN_MAX * 100) {
+        return;
+    }
+
+    min_temp /= 100; // 1500 -> 15°C
+
+    if (data_point_model[DP_IDX_MAX].divisor == 10) {
+        min_temp *= 10;
+    } else if (data_point_model[DP_IDX_MAX].divisor == 100) {
+        min_temp *= 100;
+    }
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(8);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_MIN].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_MIN].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(4));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+    data_point->data[0] = (min_temp >> 24) & 0xFF;
+    data_point->data[1] = (min_temp >> 16) & 0xFF;
+    data_point->data[2] = (min_temp >> 8)  & 0xFF;
+    data_point->data[3] = min_temp & 0xFF;
+    out_pkt->pkt_len += 4;
+    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, true);
+
+    set_seq_num(seq_num);
+
+    thermostat_settings_save();
+}
+
+void remote_cmd_oper_mode_1(void *args) {
+
+    uint8_t oper_mode;
+    uint8_t *arg = (uint8_t*)args;
+
+    if (*arg) {
+        oper_mode = 0;
+    } else {
+        oper_mode = 1;
+    }
+
+    if (data_point_model[DP_IDX_PROG].id == 0) return;
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(5);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_PROG].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_PROG].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(1));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+    data_point->data[0] = oper_mode;
+    out_pkt->pkt_len ++;
+    data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, true);
+
+    set_seq_num(seq_num);
+
+    thermostat_settings_save();
+}
+
+void remote_cmd_frost_protect_1(void *args) {
+
+    int16_t *arg = (int16_t*)args;
+    uint32_t frost_protect = *arg;
+
+    printf("1. frost protect: %d\r\n", frost_protect);
+
+    if (data_point_model[DP_IDX_FROST_PROTECT].id == 0) return;
+
+    if (frost_protect < FROST_PROTECT_MIN * 100 || frost_protect > FROST_PROTECT_MAX * 100) {
+        return;
+    }
+
+    printf("2. frost protect: %d\r\n", frost_protect);
+
+
+    frost_protect /= 100; // 1500 -> 15°C
+
+    if (data_point_model[DP_IDX_FROST_PROTECT].divisor == 10) {
+        frost_protect *= 10;
+    } else if (data_point_model[DP_IDX_FROST_PROTECT].divisor == 100) {
+        frost_protect *= 100;
+    }
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(8);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_FROST_PROTECT].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_FROST_PROTECT].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(4));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+    data_point->data[0] = (frost_protect >> 24) & 0xFF;
+    data_point->data[1] = (frost_protect >> 16) & 0xFF;
+    data_point->data[2] = (frost_protect >> 8)  & 0xFF;
+    data_point->data[3] = frost_protect & 0xFF;
+    out_pkt->pkt_len += 4;
+    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, true);
+
+    set_seq_num(seq_num);
+
+    thermostat_settings_save();
+
+}
+
+void remote_cmd_heat_protect_1(void *args) {
+
+    int16_t *arg = (int16_t*)args;
+    uint32_t heat_protect = *arg;
+
+    printf("1. heat protect: %d\r\n", heat_protect);
+
+    if (data_point_model[DP_IDX_HEAT_PROTECT].id == 0) return;
+
+    if (heat_protect < HEAT_PROTECT_MIN * 100 || heat_protect > HEAT_PROTECT_MAX * 100) {
+        return;
+    }
+
+    printf("2. heat protect: %d\r\n", heat_protect);
+
+
+    heat_protect /= 100; // 1500 -> 15°C
+
+    if (data_point_model[DP_IDX_HEAT_PROTECT].divisor == 10) {
+        heat_protect *= 10;
+    } else if (data_point_model[DP_IDX_HEAT_PROTECT].divisor == 100) {
+        heat_protect *= 100;
+    }
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(8);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_HEAT_PROTECT].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_HEAT_PROTECT].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(4));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+    data_point->data[0] = (heat_protect >> 24) & 0xFF;
+    data_point->data[1] = (heat_protect >> 16) & 0xFF;
+    data_point->data[2] = (heat_protect >> 8)  & 0xFF;
+    data_point->data[3] = heat_protect & 0xFF;
+    out_pkt->pkt_len += 4;
+    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, true);
+
+    set_seq_num(seq_num);
+
+    thermostat_settings_save();
+
+}
+
+static void remote_cmd_set_schedule_mon_1() {
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(21);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_MON].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_MON].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_MON].len));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    uint8_t *pstrd = data_point->data;
+    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_mon;
+    uint16_t temp;
+
+    *pstrd++ = 1;
+    out_pkt->pkt_len++;
+
+    for (uint8_t i = 0; i < 4; i++) {
+        *pstrd++ = heat_mode[i].transTime / 60;
+        out_pkt->pkt_len++;
+        *pstrd++ = heat_mode[i].transTime % 60;
+        out_pkt->pkt_len++;
+        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_MON].divisor;
+        *pstrd++ = (temp >> 8)  & 0xFF;
+        *pstrd++ = temp & 0xFF;
+        out_pkt->pkt_len += 2;
+    }
+
+    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, false);
+
+    set_seq_num(seq_num);
+}
+
+static void remote_cmd_set_schedule_tue_1() {
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(21);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_TUE].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_TUE].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_TUE].len));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    uint8_t *pstrd = data_point->data;
+    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_tue;
+    uint16_t temp;
+
+    *pstrd++ = 1;
+    out_pkt->pkt_len++;
+
+    for (uint8_t i = 0; i < 4; i++) {
+        *pstrd++ = heat_mode[i].transTime / 60;
+        out_pkt->pkt_len++;
+        *pstrd++ = heat_mode[i].transTime % 60;
+        out_pkt->pkt_len++;
+        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_TUE].divisor;
+        *pstrd++ = (temp >> 8)  & 0xFF;
+        *pstrd++ = temp & 0xFF;
+        out_pkt->pkt_len += 2;
+    }
+
+    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, false);
+
+    set_seq_num(seq_num);
+}
+
+static void remote_cmd_set_schedule_wed_1() {
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(21);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_WED].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_WED].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_WED].len));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    uint8_t *pstrd = data_point->data;
+    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_wed;
+    uint16_t temp;
+
+    *pstrd++ = 1;
+    out_pkt->pkt_len++;
+
+    for (uint8_t i = 0; i < 4; i++) {
+        *pstrd++ = heat_mode[i].transTime / 60;
+        out_pkt->pkt_len++;
+        *pstrd++ = heat_mode[i].transTime % 60;
+        out_pkt->pkt_len++;
+        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_WED].divisor;
+        *pstrd++ = (temp >> 8)  & 0xFF;
+        *pstrd++ = temp & 0xFF;
+        out_pkt->pkt_len += 2;
+    }
+
+    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, false);
+
+    set_seq_num(seq_num);
+}
+
+static void remote_cmd_set_schedule_thu_1() {
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(21);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_THU].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_THU].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_THU].len));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    uint8_t *pstrd = data_point->data;
+    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_thu;
+    uint16_t temp;
+
+    *pstrd++ = 1;
+    out_pkt->pkt_len++;
+
+    for (uint8_t i = 0; i < 4; i++) {
+        *pstrd++ = heat_mode[i].transTime / 60;
+        out_pkt->pkt_len++;
+        *pstrd++ = heat_mode[i].transTime % 60;
+        out_pkt->pkt_len++;
+        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_THU].divisor;
+        *pstrd++ = (temp >> 8)  & 0xFF;
+        *pstrd++ = temp & 0xFF;
+        out_pkt->pkt_len += 2;
+    }
+
+    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, false);
+
+    set_seq_num(seq_num);
+}
+
+static void remote_cmd_set_schedule_fri_1() {
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(21);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_FRI].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_FRI].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_FRI].len));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    uint8_t *pstrd = data_point->data;
+    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_fri;
+    uint16_t temp;
+
+    *pstrd++ = 1;
+    out_pkt->pkt_len++;
+
+    for (uint8_t i = 0; i < 4; i++) {
+        *pstrd++ = heat_mode[i].transTime / 60;
+        out_pkt->pkt_len++;
+        *pstrd++ = heat_mode[i].transTime % 60;
+        out_pkt->pkt_len++;
+        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_FRI].divisor;
+        *pstrd++ = (temp >> 8)  & 0xFF;
+        *pstrd++ = temp & 0xFF;
+        out_pkt->pkt_len += 2;
+    }
+
+    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, false);
+
+    set_seq_num(seq_num);
+}
+
+static void remote_cmd_set_schedule_sat_1() {
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(21);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_SAT].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_SAT].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_SAT].len));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    uint8_t *pstrd = data_point->data;
+    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_sat;
+    uint16_t temp;
+
+    *pstrd++ = 1;
+    out_pkt->pkt_len++;
+
+    for (uint8_t i = 0; i < 4; i++) {
+        *pstrd++ = heat_mode[i].transTime / 60;
+        out_pkt->pkt_len++;
+        *pstrd++ = heat_mode[i].transTime % 60;
+        out_pkt->pkt_len++;
+        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_SAT].divisor;
+        *pstrd++ = (temp >> 8)  & 0xFF;
+        *pstrd++ = temp & 0xFF;
+        out_pkt->pkt_len += 2;
+    }
+
+    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, false);
+
+    set_seq_num(seq_num);
+}
+
+static void remote_cmd_set_schedule_sun_1() {
+
+    uint8_t pkt_buff[DATA_MAX_LEN+12];
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+
+    uint16_t seq_num = get_seq_num();
+    seq_num++;
+
+    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(21);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_SUN].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_SUN].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_SUN].len));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    uint8_t *pstrd = data_point->data;
+    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_sun;
+    uint16_t temp;
+
+    *pstrd++ = 7;
+    out_pkt->pkt_len++;
+
+    for (uint8_t i = 0; i < 4; i++) {
+        *pstrd++ = heat_mode[i].transTime / 60;
+        out_pkt->pkt_len++;
+        *pstrd++ = heat_mode[i].transTime % 60;
+        out_pkt->pkt_len++;
+        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_SUN].divisor;
+        *pstrd++ = (temp >> 8)  & 0xFF;
+        *pstrd++ = temp & 0xFF;
+        out_pkt->pkt_len += 2;
+    }
+
+    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, false);
+
+    set_seq_num(seq_num);
+}
+
+void remote_cmd_set_weekly_schedule_1(void *args) {
+
+    if (data_point_model[DP_IDX_SCHEDULE].remote_cmd == NULL) return;
+
+    uint8_t *dayOfWeek = (uint8_t*)args;
+
+    if (*dayOfWeek & DAY_SUN) {
+        remote_cmd_set_schedule_sun_1();
+    }
+
+    if (*dayOfWeek & DAY_MON) {
+        remote_cmd_set_schedule_mon_1();
+    }
+
+    if (*dayOfWeek & DAY_TUE) {
+        remote_cmd_set_schedule_tue_1();
+    }
+
+    if (*dayOfWeek & DAY_WED) {
+        remote_cmd_set_schedule_wed_1();
+    }
+
+    if (*dayOfWeek & DAY_THU) {
+        remote_cmd_set_schedule_thu_1();
+    }
+
+    if (*dayOfWeek & DAY_FRI) {
+        remote_cmd_set_schedule_fri_1();
+    }
+
+    if (*dayOfWeek & DAY_SAT) {
+        remote_cmd_set_schedule_sat_1();
+    }
+
+    thermostat_settings_save();
+}
+
+
+/*****************************************************************************************************/
+
+
+void remote_cmd_sys_mode(uint8_t mode) {
 
     uint8_t pkt_buff[DATA_MAX_LEN+12];
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
@@ -532,7 +1111,7 @@ void remote_smd_sys_mode(uint8_t mode) {
     }
 }
 
-void remote_smd_heating_set(int32_t temp) {
+void remote_cmd_heating_set(int32_t temp) {
 
     uint8_t pkt_buff[DATA_MAX_LEN+12];
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
@@ -572,7 +1151,7 @@ void remote_smd_heating_set(int32_t temp) {
     thermostat_settings_save();
 }
 
-void remote_smd_temp_calibration(int8_t temp) {
+void remote_cmd_temp_calibration(int8_t temp) {
 
     if(data_point_model[DP_IDX_CALIBRATION].id == 0) return;
 
@@ -616,7 +1195,7 @@ void remote_smd_temp_calibration(int8_t temp) {
     thermostat_settings_save();
 }
 
-void remote_smd_display_mode(uint8_t mode) {
+void remote_cmd_display_mode(uint8_t mode) {
 
 //    pkt_output_t *pkt = (pkt_output_t*)cmdTx[CMD_DISPLAY];
 //    pkt->cnt++;
@@ -630,7 +1209,7 @@ void remote_smd_display_mode(uint8_t mode) {
 //    }
 }
 
-void remote_smd_keylock(uint8_t keylock) {
+void remote_cmd_keylock(uint8_t keylock) {
 
     if(data_point_model[DP_IDX_LOCKUNLOCK].id == 0) return;
 
@@ -1054,10 +1633,15 @@ nv_sts_t thermostat_settings_save() {
     uint8_t     manual_progMode;
     uint8_t     sensor_used;
     uint8_t     dead_band;
+    int16_t     frostProtect;
+    int16_t     heatProtect;
     uint8_t     keypadLockout;
+    uint8_t     crc;
+    bool        save = false;
 
     st = nv_flashReadNew(1, NV_MODULE_APP, NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
-    bool save = false;
+
+    crc = thermostat_settings.crc;
 
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&minHeatSetpointLimit);
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&maxHeatSetpointLimit);
@@ -1066,10 +1650,12 @@ nv_sts_t thermostat_settings_save() {
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, &len, (uint8_t*)&manual_progMode);
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED, &len, (uint8_t*)&sensor_used);
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND, &len, (uint8_t*)&dead_band);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT, &len, (uint8_t*)&frostProtect);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT, &len, (uint8_t*)&heatProtect);
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG, ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, &len, (uint8_t*)&keypadLockout);
 
 
-    if(st == NV_SUCC) {
+    if(st == NV_SUCC && crc == checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1)) {
         if (memcmp(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t)) != 0) {
             memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
             save = true;
@@ -1110,6 +1696,16 @@ nv_sts_t thermostat_settings_save() {
             save = true;
         }
 
+        if (thermostat_settings.frostProtect != frostProtect) {
+            thermostat_settings.frostProtect = frostProtect;
+            save = true;
+        }
+
+        if (thermostat_settings.heatProtect != heatProtect) {
+            thermostat_settings.heatProtect = heatProtect;
+            save = true;
+        }
+
         if (thermostat_settings.keypadLockout != keypadLockout) {
             thermostat_settings.keypadLockout = keypadLockout;
             save = true;
@@ -1119,6 +1715,7 @@ nv_sts_t thermostat_settings_save() {
 #if UART_PRINTF_MODE && DEBUG_SAVE
         printf("Settings saved\r\n");
 #endif
+        thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
         st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
 
         }
@@ -1136,7 +1733,10 @@ nv_sts_t thermostat_settings_save() {
         thermostat_settings.occupiedHeatingSetpoint = occupiedHeatingSetpoint;
         thermostat_settings.sensor_used = sensor_used;
         thermostat_settings.dead_band = dead_band;
+        thermostat_settings.frostProtect = frostProtect;
+        thermostat_settings.heatProtect = heatProtect;
         thermostat_settings.keypadLockout = keypadLockout;
+        thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
 
         st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
     }
@@ -1162,7 +1762,7 @@ nv_sts_t thermostat_settings_restore() {
 
     st = nv_flashReadNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
 
-    if (st == NV_SUCC) {
+    if (st == NV_SUCC && thermostat_settings.crc == checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1)) {
         memcpy(&g_zcl_scheduleData, &thermostat_settings.schedule_data, sizeof(zcl_scheduleData_t));
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*)&thermostat_settings.minHeatSetpointLimit);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)&thermostat_settings.maxHeatSetpointLimit);
@@ -1170,6 +1770,8 @@ nv_sts_t thermostat_settings_restore() {
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT, (uint8_t*)&thermostat_settings.occupiedHeatingSetpoint);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED, (uint8_t*)&thermostat_settings.sensor_used);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND, (uint8_t*)&thermostat_settings.dead_band);
+        zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT, (uint8_t*)&thermostat_settings.frostProtect);
+        zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT, (uint8_t*)&thermostat_settings.heatProtect);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG, ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, (uint8_t*)&thermostat_settings.keypadLockout);
     }
 
@@ -1181,4 +1783,14 @@ nv_sts_t thermostat_settings_restore() {
     return st;
 }
 
+void set_zcl_modelId(uint8_t *signature) {
+    uint8_t modelId[ZCL_BASIC_MAX_LENGTH] = {0};
+    uint8_t name[ZCL_BASIC_MAX_LENGTH-1] = {0};
 
+    strncpy((char*)name, "TZE204_Custom_", 14);
+    strncpy((char*)name+14, (char*)signature, 8);
+
+    set_zcl_str(name, modelId, ZCL_BASIC_MAX_LENGTH);
+
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, modelId);
+}
