@@ -89,6 +89,8 @@
  * 0x0f - Livolo_thermostat
  * 0x10 - EKF_switch_2keys_battery
  * 0x11 - Tuya Thermostat - "u9bfwha0"
+ *                          "aoclfnxz"
+ *                          "edl8pz1k"
  */
 
 #define IMAGE_TYPE_APP              (0x11 | (IMAGE_TYPE_BOOT_FLAG << 7))

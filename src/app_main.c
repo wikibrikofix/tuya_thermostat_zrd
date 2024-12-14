@@ -2,8 +2,6 @@
 
 //static uint32_t last_light = 0;
 
-uint8_t first_start = 1;
-
 app_ctx_t g_appCtx = {
         .bdbFBTimerEvt = NULL,
         .short_poll = POLL_RATE * 3,

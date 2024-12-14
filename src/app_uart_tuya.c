@@ -3,6 +3,7 @@
 #include "app_main.h"
 
 static uint8_t      pkt_buff[DATA_MAX_LEN*2];
+static uint8_t      first_start = 1;
 static uint8_t      answer_count = 0;
 static uint16_t     seq_num = 0;
 static status_net_t status_net = STATUS_NET_UNKNOWN;
@@ -54,7 +55,7 @@ static void move_cmd_queue() {
 
 static void send_command(pkt_tuya_t *pkt) {
 
-    while(1) {
+    for(uint8_t i = 0; i < 10; i++) {
         if (app_uart_txMsg((uint8_t*)pkt, pkt->pkt_len) == UART_TX_SUCCESS) break;
         sleep_ms(30);
     }
@@ -242,7 +243,6 @@ void uart_cmd_handler() {
 
     if (first_start == 1) {
         set_command(COMMAND01, seq_num, true);
-        first_start = 0;
         data_point_model_init();
         TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_15SEC);
 
@@ -366,6 +366,7 @@ void uart_cmd_handler() {
                                 }
 
                                 data_point_model = data_point_model_arr[manuf_name];
+                                first_start = 0;
 
                                 break;
                             case COMMAND02:

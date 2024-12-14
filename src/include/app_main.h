@@ -62,7 +62,6 @@ typedef struct {
     app_linkKey_info_t tcLinkKey;
 } app_ctx_t;
 
-extern uint8_t first_start;
 extern app_ctx_t g_appCtx;
 
 extern bdb_appCb_t g_zbBdbCb;
