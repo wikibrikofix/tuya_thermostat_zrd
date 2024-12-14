@@ -58,6 +58,8 @@ extern "C" {
 #define ZCL_BASIC_MFG_NAME     {10,'S','l','a','c','k','y','-','D','I','Y'}
 /* Tuya Custom Thermostat for Floor Heating */
 #define ZCL_BASIC_MODEL_ID     {13,'T','Z','E','2','0','4','_','C','u','s','t','o','m'}
+#define STR_MODEL_ID_BEGIN      "TZE204_Custom_"
+#define STR_MODEL_ID_BEGIN_LEN  14
 
 
 /**********************************************************************

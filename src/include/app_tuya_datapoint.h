@@ -115,7 +115,8 @@ typedef struct __attribute__((packed)) {
     uint8_t  data[DATA_MAX_LEN-8];
 } data_point_t;
 
-typedef void (*remote_cmd_t)(void *arg);
+typedef void (*remote_cmd_t)(void *args);
+typedef void (*local_cmd_t)(void *args);
 
 typedef struct {
     uint8_t         id;
@@ -123,19 +124,20 @@ typedef struct {
     uint16_t        len;
     uint16_t        divisor;
     remote_cmd_t    remote_cmd;
+    local_cmd_t     local_cmd;
 } data_point_st_t;
 
 typedef struct {
     uint8_t hour;
     uint8_t minute;
     uint8_t temperature;
-} dp_schedule_t;
+} dp_schedule_model1_t;
 
 typedef struct {
     uint8_t hour;
     uint8_t minute;
     uint16_t temperature;
-} dp_schedule_type1_t;
+} dp_schedule_model2_t;
 
 extern uint8_t manuf_name;
 extern data_point_st_t *data_point_model;

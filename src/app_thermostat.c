@@ -3,11 +3,12 @@
 
 
 /*
- *  remote_smd for signarure
- *  "u9bfwha0"
- *  "aoclfnxz"
+ *
+ *  common remote_cmd functions
+ *
  */
-void remote_cmd_sys_mode_0(void *args) {
+
+void remote_cmd_sys_mode(void *args) {
 
     uint8_t *mode = (uint8_t*)args;
 
@@ -52,7 +53,7 @@ void remote_cmd_sys_mode_0(void *args) {
     }
 }
 
-void remote_cmd_heating_set_0(void *args) {
+void remote_cmd_heating_set(void *args) {
 
     int16_t *arg = (int16_t*)args;
     int32_t temp = *arg;
@@ -113,7 +114,7 @@ void remote_cmd_heating_set_0(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_temp_calibration_0(void *args) {
+void remote_cmd_temp_calibration(void *args) {
 
     int8_t *arg = (int8_t*)args;
     int8_t temp = *arg;
@@ -164,23 +165,7 @@ void remote_cmd_temp_calibration_0(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_display_mode_0(void *args) {
-
-//    uint8_t *mode = (uint8_t*)args;
-
-//    pkt_output_t *pkt = (pkt_output_t*)cmdTx[CMD_DISPLAY];
-//    pkt->cnt++;
-//
-//    if (mode == ZCL_DISPLAY_MODE_CELSIUS) {
-//        pkt->cmd_value = DEV_DISPLAY_MODE_CELSIUS;
-//        add_cmd_queue(CMD_DISPLAY, true, cmdTx[CMD_DISPLAY]);
-//    } else if (mode == ZCL_DISPLAY_MODE_FAHRENHEIT) {
-//        pkt->cmd_value = DEV_DISPLAY_MODE_FAHRENHEIT;
-//        add_cmd_queue(CMD_DISPLAY, true, cmdTx[CMD_DISPLAY]);
-//    }
-}
-
-void remote_cmd_keylock_0(void *args) {
+void remote_cmd_keylock(void *args) {
 
     uint8_t *keylock = (uint8_t*)args;
 
@@ -215,7 +200,7 @@ void remote_cmd_keylock_0(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_sensor_used_0(void *args) {
+void remote_cmd_sensor_used(void *args) {
 
     uint8_t *sensor_used = (uint8_t*)args;
 
@@ -254,7 +239,7 @@ void remote_cmd_sensor_used_0(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_deadband_0(void *args) {
+void remote_cmd_deadband(void *args) {
 
     uint8_t *arg = (uint8_t*)args;
     uint32_t hysteresis = *arg;
@@ -304,198 +289,7 @@ void remote_cmd_deadband_0(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_min_setpoint_0(void *args) {
-
-    uint16_t *arg = (uint16_t*)args;
-    uint32_t min_temp = *arg;
-
-    printf("min_temp: %d\r\n", min_temp);
-
-    if (data_point_model[DP_IDX_MIN].id == 0) return;
-
-    if (min_temp < SET_POINT_MIN_MIN * 100 || min_temp > SET_POINT_MIN_MAX * 100) {
-        return;
-    }
-
-//    min_temp /= 10;
-//    uint8_t pkt_buff[DATA_MAX_LEN+12];
-//    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-//    uint16_t seq_num = get_seq_num();
-//    seq_num++;
-//
-//    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-//
-//    out_pkt->len = reverse16(8);
-//    out_pkt->pkt_len++;
-//    out_pkt->pkt_len++;
-//
-//    data_point_t *data_point = (data_point_t*)out_pkt->data;
-//    data_point->dp_id = DP_ID_1A;
-//    out_pkt->pkt_len++;
-//    data_point->dp_type = DP_VAL;
-//    out_pkt->pkt_len++;
-//    data_point->dp_len = (reverse16(4));
-//    out_pkt->pkt_len++;
-//    out_pkt->pkt_len++;
-//    data_point->data[0] = (min_temp >> 24) & 0xFF;
-//    data_point->data[1] = (min_temp >> 16) & 0xFF;
-//    data_point->data[2] = (min_temp >> 8)  & 0xFF;
-//    data_point->data[3] = min_temp & 0xFF;
-//    out_pkt->pkt_len += 4;
-//    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-//    add_cmd_queue(out_pkt, true);
-//
-//    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_max_setpoint_0(void *args) {
-
-    uint16_t *arg = (uint16_t*)args;
-    uint32_t max_temp = *arg;
-
-    if (data_point_model[DP_IDX_MAX].id == 0) return;
-
-    if (max_temp < SET_POINT_MAX_MIN * 100 || max_temp > SET_POINT_MAX_MAX * 100) {
-        return;
-    }
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    max_temp /= 100; // 4400 -> 44°C
-
-    if (data_point_model[DP_IDX_MAX].divisor == 10) {
-        max_temp *= 10;
-    } else if (data_point_model[DP_IDX_MAX].divisor == 100) {
-        max_temp *= 100;
-    }
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(8);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_MAX].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_MAX].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(4));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    data_point->data[0] = (max_temp >> 24) & 0xFF;
-    data_point->data[1] = (max_temp >> 16) & 0xFF;
-    data_point->data[2] = (max_temp >> 8)  & 0xFF;
-    data_point->data[3] = max_temp & 0xFF;
-    out_pkt->pkt_len += 4;
-    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_oper_mode_0(void *args) {
-
-    uint8_t *oper_mode = (uint8_t*)args;
-
-    if (data_point_model[DP_IDX_PROG].id == 0) return;
-
-    if (*oper_mode > 1) return;
-
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(5);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_PROG].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_PROG].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(1));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    data_point->data[0] = *oper_mode;
-    out_pkt->pkt_len ++;
-    data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_set_weekly_schedule_0(void *args) {
-
-    if (data_point_model[DP_IDX_SCHEDULE].id == 0) return;
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(40);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE].len));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    uint8_t *pstrd = data_point->data;
-    heatMode_t *heat_mode;
-
-    for (uint8_t i = 0; i < 3; i++) {
-        if (i == 0) {
-            heat_mode = g_zcl_scheduleData.schedule_mon;
-        } else if (i == 1) {
-            heat_mode = g_zcl_scheduleData.schedule_sat;
-        } else {
-            heat_mode = g_zcl_scheduleData.schedule_sun;
-        }
-        for (uint8_t ii = 0; ii < 4; ii++) {
-            *pstrd++ = heat_mode[ii].transTime/60;
-            out_pkt->pkt_len++;
-            *pstrd++ = heat_mode[ii].transTime%60;
-            out_pkt->pkt_len++;
-            *pstrd++ = heat_mode[ii].heatSetpoint/100*2;
-            out_pkt->pkt_len++;
-        }
-    }
-
-    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-/*****************************************************************************************************/
-
-void remote_cmd_min_setpoint_1(void *args) {
+void remote_cmd_min_setpoint(void *args) {
 
     uint16_t *arg = (uint16_t*)args;
     uint32_t min_temp = *arg;
@@ -548,817 +342,16 @@ void remote_cmd_min_setpoint_1(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_oper_mode_1(void *args) {
+void remote_cmd_max_setpoint(void *args) {
 
-    uint8_t oper_mode;
-    uint8_t *arg = (uint8_t*)args;
-
-    if (*arg) {
-        oper_mode = 0;
-    } else {
-        oper_mode = 1;
-    }
-
-    if (data_point_model[DP_IDX_PROG].id == 0) return;
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(5);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_PROG].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_PROG].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(1));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    data_point->data[0] = oper_mode;
-    out_pkt->pkt_len ++;
-    data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_frost_protect_1(void *args) {
-
-    int16_t *arg = (int16_t*)args;
-    uint32_t frost_protect = *arg;
-
-    printf("1. frost protect: %d\r\n", frost_protect);
-
-    if (data_point_model[DP_IDX_FROST_PROTECT].id == 0) return;
-
-    if (frost_protect < FROST_PROTECT_MIN * 100 || frost_protect > FROST_PROTECT_MAX * 100) {
-        return;
-    }
-
-    printf("2. frost protect: %d\r\n", frost_protect);
-
-
-    frost_protect /= 100; // 1500 -> 15°C
-
-    if (data_point_model[DP_IDX_FROST_PROTECT].divisor == 10) {
-        frost_protect *= 10;
-    } else if (data_point_model[DP_IDX_FROST_PROTECT].divisor == 100) {
-        frost_protect *= 100;
-    }
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(8);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_FROST_PROTECT].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_FROST_PROTECT].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(4));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    data_point->data[0] = (frost_protect >> 24) & 0xFF;
-    data_point->data[1] = (frost_protect >> 16) & 0xFF;
-    data_point->data[2] = (frost_protect >> 8)  & 0xFF;
-    data_point->data[3] = frost_protect & 0xFF;
-    out_pkt->pkt_len += 4;
-    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-
-}
-
-void remote_cmd_heat_protect_1(void *args) {
-
-    int16_t *arg = (int16_t*)args;
-    uint32_t heat_protect = *arg;
-
-    printf("1. heat protect: %d\r\n", heat_protect);
-
-    if (data_point_model[DP_IDX_HEAT_PROTECT].id == 0) return;
-
-    if (heat_protect < HEAT_PROTECT_MIN * 100 || heat_protect > HEAT_PROTECT_MAX * 100) {
-        return;
-    }
-
-    printf("2. heat protect: %d\r\n", heat_protect);
-
-
-    heat_protect /= 100; // 1500 -> 15°C
-
-    if (data_point_model[DP_IDX_HEAT_PROTECT].divisor == 10) {
-        heat_protect *= 10;
-    } else if (data_point_model[DP_IDX_HEAT_PROTECT].divisor == 100) {
-        heat_protect *= 100;
-    }
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(8);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_HEAT_PROTECT].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_HEAT_PROTECT].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(4));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    data_point->data[0] = (heat_protect >> 24) & 0xFF;
-    data_point->data[1] = (heat_protect >> 16) & 0xFF;
-    data_point->data[2] = (heat_protect >> 8)  & 0xFF;
-    data_point->data[3] = heat_protect & 0xFF;
-    out_pkt->pkt_len += 4;
-    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-
-}
-
-static void remote_cmd_set_schedule_mon_1() {
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(21);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_MON].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_MON].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_MON].len));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    uint8_t *pstrd = data_point->data;
-    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_mon;
-    uint16_t temp;
-
-    *pstrd++ = 1;
-    out_pkt->pkt_len++;
-
-    for (uint8_t i = 0; i < 4; i++) {
-        *pstrd++ = heat_mode[i].transTime / 60;
-        out_pkt->pkt_len++;
-        *pstrd++ = heat_mode[i].transTime % 60;
-        out_pkt->pkt_len++;
-        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_MON].divisor;
-        *pstrd++ = (temp >> 8)  & 0xFF;
-        *pstrd++ = temp & 0xFF;
-        out_pkt->pkt_len += 2;
-    }
-
-    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
-
-    set_seq_num(seq_num);
-}
-
-static void remote_cmd_set_schedule_tue_1() {
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(21);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_TUE].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_TUE].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_TUE].len));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    uint8_t *pstrd = data_point->data;
-    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_tue;
-    uint16_t temp;
-
-    *pstrd++ = 1;
-    out_pkt->pkt_len++;
-
-    for (uint8_t i = 0; i < 4; i++) {
-        *pstrd++ = heat_mode[i].transTime / 60;
-        out_pkt->pkt_len++;
-        *pstrd++ = heat_mode[i].transTime % 60;
-        out_pkt->pkt_len++;
-        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_TUE].divisor;
-        *pstrd++ = (temp >> 8)  & 0xFF;
-        *pstrd++ = temp & 0xFF;
-        out_pkt->pkt_len += 2;
-    }
-
-    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
-
-    set_seq_num(seq_num);
-}
-
-static void remote_cmd_set_schedule_wed_1() {
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(21);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_WED].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_WED].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_WED].len));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    uint8_t *pstrd = data_point->data;
-    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_wed;
-    uint16_t temp;
-
-    *pstrd++ = 1;
-    out_pkt->pkt_len++;
-
-    for (uint8_t i = 0; i < 4; i++) {
-        *pstrd++ = heat_mode[i].transTime / 60;
-        out_pkt->pkt_len++;
-        *pstrd++ = heat_mode[i].transTime % 60;
-        out_pkt->pkt_len++;
-        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_WED].divisor;
-        *pstrd++ = (temp >> 8)  & 0xFF;
-        *pstrd++ = temp & 0xFF;
-        out_pkt->pkt_len += 2;
-    }
-
-    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
-
-    set_seq_num(seq_num);
-}
-
-static void remote_cmd_set_schedule_thu_1() {
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(21);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_THU].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_THU].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_THU].len));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    uint8_t *pstrd = data_point->data;
-    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_thu;
-    uint16_t temp;
-
-    *pstrd++ = 1;
-    out_pkt->pkt_len++;
-
-    for (uint8_t i = 0; i < 4; i++) {
-        *pstrd++ = heat_mode[i].transTime / 60;
-        out_pkt->pkt_len++;
-        *pstrd++ = heat_mode[i].transTime % 60;
-        out_pkt->pkt_len++;
-        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_THU].divisor;
-        *pstrd++ = (temp >> 8)  & 0xFF;
-        *pstrd++ = temp & 0xFF;
-        out_pkt->pkt_len += 2;
-    }
-
-    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
-
-    set_seq_num(seq_num);
-}
-
-static void remote_cmd_set_schedule_fri_1() {
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(21);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_FRI].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_FRI].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_FRI].len));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    uint8_t *pstrd = data_point->data;
-    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_fri;
-    uint16_t temp;
-
-    *pstrd++ = 1;
-    out_pkt->pkt_len++;
-
-    for (uint8_t i = 0; i < 4; i++) {
-        *pstrd++ = heat_mode[i].transTime / 60;
-        out_pkt->pkt_len++;
-        *pstrd++ = heat_mode[i].transTime % 60;
-        out_pkt->pkt_len++;
-        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_FRI].divisor;
-        *pstrd++ = (temp >> 8)  & 0xFF;
-        *pstrd++ = temp & 0xFF;
-        out_pkt->pkt_len += 2;
-    }
-
-    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
-
-    set_seq_num(seq_num);
-}
-
-static void remote_cmd_set_schedule_sat_1() {
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(21);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_SAT].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_SAT].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_SAT].len));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    uint8_t *pstrd = data_point->data;
-    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_sat;
-    uint16_t temp;
-
-    *pstrd++ = 1;
-    out_pkt->pkt_len++;
-
-    for (uint8_t i = 0; i < 4; i++) {
-        *pstrd++ = heat_mode[i].transTime / 60;
-        out_pkt->pkt_len++;
-        *pstrd++ = heat_mode[i].transTime % 60;
-        out_pkt->pkt_len++;
-        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_SAT].divisor;
-        *pstrd++ = (temp >> 8)  & 0xFF;
-        *pstrd++ = temp & 0xFF;
-        out_pkt->pkt_len += 2;
-    }
-
-    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
-
-    set_seq_num(seq_num);
-}
-
-static void remote_cmd_set_schedule_sun_1() {
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(21);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_SCHEDULE_SUN].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_SCHEDULE_SUN].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE_SUN].len));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    uint8_t *pstrd = data_point->data;
-    heatMode_t *heat_mode = g_zcl_scheduleData.schedule_sun;
-    uint16_t temp;
-
-    *pstrd++ = 7;
-    out_pkt->pkt_len++;
-
-    for (uint8_t i = 0; i < 4; i++) {
-        *pstrd++ = heat_mode[i].transTime / 60;
-        out_pkt->pkt_len++;
-        *pstrd++ = heat_mode[i].transTime % 60;
-        out_pkt->pkt_len++;
-        temp = (heat_mode[i].heatSetpoint / 100) * data_point_model[DP_IDX_SCHEDULE_SUN].divisor;
-        *pstrd++ = (temp >> 8)  & 0xFF;
-        *pstrd++ = temp & 0xFF;
-        out_pkt->pkt_len += 2;
-    }
-
-    *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
-
-    set_seq_num(seq_num);
-}
-
-void remote_cmd_set_weekly_schedule_1(void *args) {
-
-    if (data_point_model[DP_IDX_SCHEDULE].remote_cmd == NULL) return;
-
-    uint8_t *dayOfWeek = (uint8_t*)args;
-
-    if (*dayOfWeek & DAY_SUN) {
-        remote_cmd_set_schedule_sun_1();
-    }
-
-    if (*dayOfWeek & DAY_MON) {
-        remote_cmd_set_schedule_mon_1();
-    }
-
-    if (*dayOfWeek & DAY_TUE) {
-        remote_cmd_set_schedule_tue_1();
-    }
-
-    if (*dayOfWeek & DAY_WED) {
-        remote_cmd_set_schedule_wed_1();
-    }
-
-    if (*dayOfWeek & DAY_THU) {
-        remote_cmd_set_schedule_thu_1();
-    }
-
-    if (*dayOfWeek & DAY_FRI) {
-        remote_cmd_set_schedule_fri_1();
-    }
-
-    if (*dayOfWeek & DAY_SAT) {
-        remote_cmd_set_schedule_sat_1();
-    }
-
-    thermostat_settings_save();
-}
-
-
-/*****************************************************************************************************/
-
-
-void remote_cmd_sys_mode(uint8_t mode) {
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(5);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_ONOFF].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_ONOFF].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(1));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    if (mode == SYS_MODE_OFF) {
-        data_point->data[0] = 0x00;
-        out_pkt->pkt_len ++;
-        data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-        add_cmd_queue(out_pkt, true);
-        set_seq_num(seq_num);
-    } else if (mode == SYS_MODE_HEAT) {
-        data_point->data[0] = 0x01;
-        out_pkt->pkt_len ++;
-        data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-        add_cmd_queue(out_pkt, true);
-        set_seq_num(seq_num);
-    }
-}
-
-void remote_cmd_heating_set(int32_t temp) {
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    if (data_point_model[DP_IDX_SETPOINT].divisor == 1) {
-        temp /= 100;
-    } else if (data_point_model[DP_IDX_SETPOINT].divisor == 10) {
-        temp /= 10;
-    }
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(8);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_SETPOINT].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_SETPOINT].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(4));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    data_point->data[0] = (temp >> 24) & 0xFF;
-    data_point->data[1] = (temp >> 16) & 0xFF;
-    data_point->data[2] = (temp >> 8)  & 0xFF;
-    data_point->data[3] = temp & 0xFF;
-    out_pkt->pkt_len += 4;
-    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_temp_calibration(int8_t temp) {
-
-    if(data_point_model[DP_IDX_CALIBRATION].id == 0) return;
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    temp /= 10; // 90 -> 9, -90 -> -9
-    if (data_point_model[DP_IDX_CALIBRATION].divisor == 10) {
-        temp *= 10;
-    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 100) {
-        temp *= 100;
-    }
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(8);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_CALIBRATION].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_CALIBRATION].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(4));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    int32_t dev_temp = temp;
-    data_point->data[0] = (dev_temp >> 24) & 0xFF;
-    data_point->data[1] = (dev_temp >> 16) & 0xFF;
-    data_point->data[2] = (dev_temp >> 8)  & 0xFF;
-    data_point->data[3] = dev_temp & 0xFF;
-    out_pkt->pkt_len += 4;
-    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_display_mode(uint8_t mode) {
-
-//    pkt_output_t *pkt = (pkt_output_t*)cmdTx[CMD_DISPLAY];
-//    pkt->cnt++;
-//
-//    if (mode == ZCL_DISPLAY_MODE_CELSIUS) {
-//        pkt->cmd_value = DEV_DISPLAY_MODE_CELSIUS;
-//        add_cmd_queue(CMD_DISPLAY, true, cmdTx[CMD_DISPLAY]);
-//    } else if (mode == ZCL_DISPLAY_MODE_FAHRENHEIT) {
-//        pkt->cmd_value = DEV_DISPLAY_MODE_FAHRENHEIT;
-//        add_cmd_queue(CMD_DISPLAY, true, cmdTx[CMD_DISPLAY]);
-//    }
-}
-
-void remote_cmd_keylock(uint8_t keylock) {
-
-    if(data_point_model[DP_IDX_LOCKUNLOCK].id == 0) return;
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(5);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_LOCKUNLOCK].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_LOCKUNLOCK].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(1));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    data_point->data[0] = keylock;
-    out_pkt->pkt_len ++;
-    data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_sensor_used(uint8_t sensor_used) {
-
-    if (data_point_model[DP_IDX_SENSOR].id == 0) return;
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(5);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_SENSOR].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_SENSOR].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(1));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    data_point->data[0] = sensor_used;
-    out_pkt->pkt_len ++;
-    data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_deadband(uint32_t hysteresis) {
-
-    if (data_point_model[DP_IDX_DEADZONE].id == 0) return;
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-
-    if (data_point_model[DP_IDX_DEADZONE].divisor == 10) {
-        hysteresis *= 10;
-    } else if (data_point_model[DP_IDX_DEADZONE].divisor == 100) {
-        hysteresis *= 100;
-    }
-
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(8);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_DEADZONE].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_DEADZONE].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(4));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    data_point->data[0] = (hysteresis >> 24) & 0xFF;
-    data_point->data[1] = (hysteresis >> 16) & 0xFF;
-    data_point->data[2] = (hysteresis >> 8)  & 0xFF;
-    data_point->data[3] = hysteresis & 0xFF;
-    out_pkt->pkt_len += 4;
-    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_min_setpoint(uint32_t min_temp) {
-//    printf("min_temp: %d\r\n", min_temp);
-
-    if (data_point_model[DP_IDX_MIN].id == 0) return;
-
-//    min_temp /= 10;
-//    uint8_t pkt_buff[DATA_MAX_LEN+12];
-//    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-//    uint16_t seq_num = get_seq_num();
-//    seq_num++;
-//
-//    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-//
-//    out_pkt->len = reverse16(8);
-//    out_pkt->pkt_len++;
-//    out_pkt->pkt_len++;
-//
-//    data_point_t *data_point = (data_point_t*)out_pkt->data;
-//    data_point->dp_id = DP_ID_1A;
-//    out_pkt->pkt_len++;
-//    data_point->dp_type = DP_VAL;
-//    out_pkt->pkt_len++;
-//    data_point->dp_len = (reverse16(4));
-//    out_pkt->pkt_len++;
-//    out_pkt->pkt_len++;
-//    data_point->data[0] = (min_temp >> 24) & 0xFF;
-//    data_point->data[1] = (min_temp >> 16) & 0xFF;
-//    data_point->data[2] = (min_temp >> 8)  & 0xFF;
-//    data_point->data[3] = min_temp & 0xFF;
-//    out_pkt->pkt_len += 4;
-//    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-//    add_cmd_queue(out_pkt, true);
-//
-//    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_max_setpoint(uint32_t max_temp) {
+    uint16_t *arg = (uint16_t*)args;
+    uint32_t max_temp = *arg;
 
     if (data_point_model[DP_IDX_MAX].id == 0) return;
+
+    if (max_temp < SET_POINT_MAX_MIN * 100 || max_temp > SET_POINT_MAX_MAX * 100) {
+        return;
+    }
 
     uint8_t pkt_buff[DATA_MAX_LEN+12];
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
@@ -1400,111 +393,202 @@ void remote_cmd_max_setpoint(uint32_t max_temp) {
     thermostat_settings_save();
 }
 
-void remote_cmd_oper_mode(uint8_t oper_mode) {
+/*
+ *
+ *  common local_cmd functions
+ *
+ */
 
-    if (data_point_model[DP_IDX_PROG].id == 0) return;
+void local_cmd_inner_sensor(void *args) {
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
+    int16_t *temp = (int16_t*)args;
+    uint16_t divisor = 1;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(5);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_PROG].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_PROG].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(1));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    data_point->data[0] = oper_mode;
-    out_pkt->pkt_len ++;
-    data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
-
-void remote_cmd_set_weekly_schedule() {
-
-    if (data_point_model[DP_IDX_SCHEDULE].id == 0) return;
-
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
-
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    switch(manuf_name) {
-        case MANUF_NAME_0:
-            set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
-
-            out_pkt->len = reverse16(40);
-            out_pkt->pkt_len++;
-            out_pkt->pkt_len++;
-
-            data_point_t *data_point = (data_point_t*)out_pkt->data;
-            data_point->dp_id = data_point_model[DP_IDX_SCHEDULE].id;
-            out_pkt->pkt_len++;
-            data_point->dp_type = data_point_model[DP_IDX_SCHEDULE].type;
-            out_pkt->pkt_len++;
-            data_point->dp_len = (reverse16(data_point_model[DP_IDX_SCHEDULE].len));
-            out_pkt->pkt_len++;
-            out_pkt->pkt_len++;
-
-            uint8_t *pstrd = data_point->data;
-            heatMode_t *heat_mode;
-
-            for (uint8_t i = 0; i < 3; i++) {
-                if (i == 0) {
-                    heat_mode = g_zcl_scheduleData.schedule_mon;
-                } else if (i == 1) {
-                    heat_mode = g_zcl_scheduleData.schedule_sat;
-                } else {
-                    heat_mode = g_zcl_scheduleData.schedule_sun;
-                }
-                for (uint8_t ii = 0; ii < 4; ii++) {
-                    *pstrd++ = heat_mode[ii].transTime/60;
-                    out_pkt->pkt_len++;
-                    *pstrd++ = heat_mode[ii].transTime%60;
-                    out_pkt->pkt_len++;
-                    *pstrd++ = heat_mode[ii].heatSetpoint/100*2;
-                    out_pkt->pkt_len++;
-                }
-            }
-            *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-            add_cmd_queue(out_pkt, true);
-            break;
-        case MANUF_NAME_1:
-            break;
-        default:
-            break;
+    if (data_point_model[DP_IDX_TEMP].divisor == 1) {
+        divisor = 100;
+    } else if (data_point_model[DP_IDX_TEMP].divisor == 10) {
+        divisor = 10;
     }
 
-    set_seq_num(seq_num);
+    *temp *= divisor;
+
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMPERATURE, (uint8_t*)temp);
+
+#if UART_PRINTF_MODE && DEBUG_CMD
+            printf("Local Temperature: %d\r\n", temp);
+#endif
+
+
+}
+void local_cmd_heating_set(void *args) {
+
+    uint16_t *temp = (uint16_t*)args;
+    uint16_t divisor = 1;
+
+    if (data_point_model[DP_IDX_SETPOINT].divisor == 1) {
+        divisor = 100;
+    } else if (data_point_model[DP_IDX_SETPOINT].divisor == 10) {
+        divisor = 10;
+    }
+
+    *temp *= divisor;
+
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT, (uint8_t*)temp);
+
+    thermostat_settings_save();
+
+
+}
+
+void local_cmd_min_setpoint(void *args) {
+
+    int16_t *temp = (int16_t*)args;
+
+    uint16_t divisor = 1;
+    int16_t  old_min;
+    uint16_t len;
+
+    if (data_point_model[DP_IDX_MIN].divisor == 1) {
+        divisor = 100;
+    } else if (data_point_model[DP_IDX_MIN].divisor == 10) {
+        divisor = 10;
+    }
+
+    *temp *= divisor;
+
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&old_min);
+
+//                            printf("temp: %d, old_min: %d", temp, old_min);
+
+    if (old_min != *temp) {
+
+        zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*)temp);
+
+        thermostat_settings_save();
+    }
+
+
+}
+
+void local_cmd_max_setpoint(void *args) {
+
+    int16_t *temp = (int16_t*)args;
+
+    uint16_t divisor = 1;
+    int16_t  absMinHeatSet;
+    int16_t  absMaxHeatSet;
+    int16_t  old_max;
+    uint16_t len;
+    bool set_attr = false;
+
+
+    if (data_point_model[DP_IDX_MAX].divisor == 1) {
+        divisor = 100;
+    } else if (data_point_model[DP_IDX_MAX].divisor == 10) {
+        divisor = 10;
+    }
+
+    *temp *= divisor;
+
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&absMinHeatSet);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MAX_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&absMaxHeatSet);
+
+//    printf("temp: %d, absMinHeatSet: %d, absMaxHeatSet: %d\r\n", temp, absMinHeatSet, absMaxHeatSet);
+
+    if (*temp > absMaxHeatSet) {
+        *temp = absMaxHeatSet;
+        set_attr = true;
+    }
+    if (*temp < absMinHeatSet) {
+        *temp = absMinHeatSet;
+        set_attr = true;
+    }
+
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&old_max);
+
+    if (old_max != *temp) {
+        zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)temp);
+
+        thermostat_settings_save();
+    }
+
+    if (set_attr) {
+        data_point_model[DP_IDX_MAX].remote_cmd(temp);
+    }
+
+}
+
+void local_cmd_deadband(void *args) {
+
+    int16_t *temp = (int16_t*)args;
+
+    if (data_point_model[DP_IDX_DEADZONE].divisor == 10) {
+        *temp /= 10;
+    } else if (data_point_model[DP_IDX_DEADZONE].divisor == 100) {
+        *temp /= 100;
+    }
+
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND, (uint8_t*)temp);
 
     thermostat_settings_save();
 }
 
-void set_run_state_bit(uint8_t bit_num, bool set) {
+void local_cmd_temp_calibration(void *args) {
+
+    int8_t *temp = (int8_t*)args;
+
+    if (data_point_model[DP_IDX_CALIBRATION].divisor == 1) {
+        *temp *= 10;
+    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 100) {
+        *temp /= 10;
+    }
+
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION, (uint8_t*)temp);
+
+    thermostat_settings_save();
+
+
+}
+
+void local_cmd_keylock(void *args) {
+
+    uint8_t *lock = (uint8_t*)args;
+
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG, ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, (uint8_t*)lock);
+
+    thermostat_settings_save();
+
+
+}
+
+void local_cmd_sensor_used(void *args) {
+
+    uint8_t *sensor_used = (uint8_t*)args;
+
+//    if (sensor_used == SENSOR_IN) {
+////                                printf("sensor IN\r\n");
+//    } else if (sensor_used == SENSOR_AL) {
+////                                printf("sensor AL\r\n");
+//    } else {
+////                                printf("sensor OU\r\n");
+//    }
+
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED, (uint8_t*)sensor_used);
+}
+
+void local_cmd_set_run_state(void *args) {
+
+    run_state_bit_t *run_state_bit = (run_state_bit_t*)args;
 
     uint16_t runState;
     uint16_t len;
 
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_RUNNING_STATE, &len, (uint8_t*)&runState);
 
-    if (set) {
-        runState |= (1 << bit_num);
+    if (run_state_bit->set) {
+        runState |= (1 << run_state_bit->bit_num);
     } else {
-        runState &= ~( 1 << bit_num);
+        runState &= ~( 1 << run_state_bit->bit_num);
     }
 
     zcl_setAttrVal(APP_ENDPOINT1,
@@ -1514,11 +598,13 @@ void set_run_state_bit(uint8_t bit_num, bool set) {
 
 }
 
-void thermostat_onoff_state(int8_t onoff) {
+void local_cmd_onoff_state(void *args) {
 
+    uint8_t *onoff = (uint8_t*)args;
+    run_state_bit_t run_state_bit;
     uint8_t sys_mode;
 
-    if (onoff == DEV_POWER_OFF) {
+    if (*onoff == DEV_POWER_OFF) {
 #if UART_PRINTF_MODE && DEBUG_CMD
         printf("Power OFF\r\n");
 #endif
@@ -1527,7 +613,9 @@ void thermostat_onoff_state(int8_t onoff) {
                        ZCL_CLUSTER_HAVC_THERMOSTAT,
                        ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE,
                        (uint8_t*)&sys_mode);
-        set_run_state_bit(RUN_STATE_HEAT_BIT, OFF);
+        run_state_bit.bit_num = RUN_STATE_HEAT_BIT;
+        run_state_bit.set = OFF;
+        local_cmd_set_run_state(&run_state_bit);
     } else {
 #if UART_PRINTF_MODE && DEBUG_CMD
         printf("Power ON\r\n");
@@ -1541,122 +629,22 @@ void thermostat_onoff_state(int8_t onoff) {
 
 }
 
-//void thermostat_heatset_state(int32_t tempF) {
-//
-//    zcl_thermostatAttr_t *tempAttrs = zcl_thermostatAttrGet();
-//
-//    int16_t tempC = zcl_convert_temperature_fromFtoC(tempF/10);
-//
-//#if UART_PRINTF_MODE && DEBUG_CMD
-//    printf("Heat set temperature: %d F, %d C, localTemperature: %d C\r\n", tempF, tempC, tempAttrs->localTemperature);
-//#endif
-//    tempAttrs->occupiedHeatingSetpoint = tempC;
-//    if (tempAttrs->systemMode == SYS_MODE_HEAT && thermostat_mode == DEV_THERM_MODE_MANUAL) {
-//        if (tempAttrs->occupiedHeatingSetpoint > tempAttrs->localTemperature) {
-//            set_run_state_bit(RUN_STATE_HEAT_BIT, ON);
-//        } else {
-//            set_run_state_bit(RUN_STATE_HEAT_BIT, OFF);
-//        }
-//    } else if (tempAttrs->systemMode == SYS_MODE_OFF) {
-//        set_run_state_bit(RUN_STATE_HEAT_BIT, OFF);
-//    }
-//
-//}
 
-void thermostat_get_weekly_schedule(uint8_t day) {
+/*****************************************************************************************************/
 
-    if(!zb_isDeviceJoinedNwk()) return;
+void set_zcl_modelId(uint8_t *signature) {
+    uint8_t modelId[ZCL_BASIC_MAX_LENGTH] = {0};
+    uint8_t name[ZCL_BASIC_MAX_LENGTH-1] = {0};
 
-    epInfo_t dstEpInfo;
-    TL_SETSTRUCTCONTENT(dstEpInfo, 0);
+    strncpy((char*)name, STR_MODEL_ID_BEGIN, STR_MODEL_ID_BEGIN_LEN);
+    strncpy((char*)name+STR_MODEL_ID_BEGIN_LEN, (char*)signature, 8);
 
-    dstEpInfo.profileId = HA_PROFILE_ID;
-#if FIND_AND_BIND_SUPPORT
-    dstEpInfo.dstAddrMode = APS_DSTADDR_EP_NOTPRESETNT;
-#else
-    dstEpInfo.dstAddrMode = APS_SHORT_DSTADDR_WITHEP;
-    dstEpInfo.dstEp = APP_ENDPOINT1;
-    dstEpInfo.dstAddr.shortAddr = 0x0;
-#endif
+    set_zcl_str(name, modelId, ZCL_BASIC_MAX_LENGTH);
 
-    zcl_thermostat_setWeeklyScheduleCmd_t cmd;
-    heatMode_t *heat_mode;
-
-    cmd.dayOfWeekForSequence = 0;
-
-    if (manuf_name == MANUF_NAME_0) {
-
-        if (day == 0) {
-            //mon
-            heat_mode =  g_zcl_scheduleData.schedule_mon;
-            cmd.dayOfWeekForSequence = DAY_MON;
-        } else if (day == 1) {
-            //sat
-            heat_mode =  g_zcl_scheduleData.schedule_sat;
-            cmd.dayOfWeekForSequence = DAY_SAT;
-        } else  if (day == 2){
-            //sun
-            heat_mode =  g_zcl_scheduleData.schedule_sun;
-            cmd.dayOfWeekForSequence = DAY_SUN;
-        } else {
-            return;
-        }
-
-        cmd.numOfTransForSequence = 4;
-        cmd.sequenceMode.pHeatMode = heat_mode;
-        cmd.modeForSequence = HEAT_SERPOINT_FIELD_PRESENT;
-
-//        for (uint8_t i = 0; i < cmd.numOfTransForSequence; i++) {
-//            printf("i: %d, time: %d, temp: %d\r\n", i, cmd.sequenceMode.pHeatMode[i].transTime, cmd.sequenceMode.pHeatMode[i].heatSetpoint);
-//        }
-
-    } else if (manuf_name == MANUF_NAME_1) {
-        if (day == 0) {
-            //mon
-            heat_mode =  g_zcl_scheduleData.schedule_mon;
-            cmd.dayOfWeekForSequence = DAY_MON;
-        } else if (day == 1) {
-            //tue
-            heat_mode =  g_zcl_scheduleData.schedule_tue;
-            cmd.dayOfWeekForSequence = DAY_TUE;
-        } else if (day == 2) {
-            //wed
-            heat_mode =  g_zcl_scheduleData.schedule_wed;
-            cmd.dayOfWeekForSequence = DAY_WED;
-        } else if (day == 3) {
-            //thu
-            heat_mode =  g_zcl_scheduleData.schedule_thu;
-            cmd.dayOfWeekForSequence = DAY_THU;
-        } else if (day == 4) {
-            //fri
-            heat_mode =  g_zcl_scheduleData.schedule_fri;
-            cmd.dayOfWeekForSequence = DAY_FRI;
-        } else if (day == 5) {
-            //sat
-            heat_mode =  g_zcl_scheduleData.schedule_sat;
-            cmd.dayOfWeekForSequence = DAY_SAT;
-        } else if (day == 6) {
-            //sun
-            heat_mode =  g_zcl_scheduleData.schedule_sun;
-            cmd.dayOfWeekForSequence = DAY_SUN;
-        } else {
-            return;
-        }
-
-        cmd.numOfTransForSequence = 4;
-        cmd.sequenceMode.pHeatMode = heat_mode;
-        cmd.modeForSequence = HEAT_SERPOINT_FIELD_PRESENT;
-
-//        for (uint8_t i = 0; i < cmd.numOfTransForSequence; i++) {
-//            printf("i: %d, time: %d, temp: %d\r\n", i, cmd.sequenceMode.pHeatMode[i].transTime, cmd.sequenceMode.pHeatMode[i].heatSetpoint);
-//        }
-    } else {
-        return;
-    }
-
-    zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
-
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, modelId);
 }
+
+/*****************************************************************************************************/
 
 nv_sts_t thermostat_settings_save() {
     nv_sts_t st = NV_SUCC;
@@ -1822,14 +810,3 @@ nv_sts_t thermostat_settings_restore() {
     return st;
 }
 
-void set_zcl_modelId(uint8_t *signature) {
-    uint8_t modelId[ZCL_BASIC_MAX_LENGTH] = {0};
-    uint8_t name[ZCL_BASIC_MAX_LENGTH-1] = {0};
-
-    strncpy((char*)name, "TZE204_Custom_", 14);
-    strncpy((char*)name+14, (char*)signature, 8);
-
-    set_zcl_str(name, modelId, ZCL_BASIC_MAX_LENGTH);
-
-    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, modelId);
-}

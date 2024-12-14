@@ -101,12 +101,22 @@ uint16_t reverse16(uint16_t in) {
 
 int32_t int32_from_str(uint8_t *data) {
 
-    int32_t val;
+    int32_t val = 0;
 
     val = data[0] << 24;
     val |= data[1] << 16;
     val |= data[2] << 8;
     val |= data[3];
+
+    return val;
+}
+
+int16_t int16_from_str(uint8_t *data) {
+
+    int16_t val = 0;
+
+    val |= data[0] << 8;
+    val |= data[1];
 
     return val;
 }
