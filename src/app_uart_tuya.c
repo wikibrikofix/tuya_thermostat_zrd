@@ -3,7 +3,8 @@
 #include "app_main.h"
 
 static uint8_t      pkt_buff[DATA_MAX_LEN*2];
-static uint8_t      first_start = 1;
+static bool         first_start = true;
+static bool         answer_mcu = false;
 static uint8_t      answer_count = 0;
 static uint16_t     seq_num = 0;
 static status_net_t status_net = STATUS_NET_UNKNOWN;
@@ -214,10 +215,17 @@ static void set_default_answer(command_t command, uint16_t f_seq_num) {
 static int32_t check_answerCb(void *arg) {
 
     if (no_answer) {
-#if UART_PRINTF_MODE
-        printf("no answer, reboot\r\n");
-#endif
-        TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_1SEC);
+        app_uart_init();
+//#if UART_PRINTF_MODE
+//        printf("no answer, reboot\r\n");
+//#endif
+//        TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_1SEC);
+    }
+
+    if (answer_mcu) {
+        answer_mcu = false;
+    } else {
+        app_uart_init();
     }
     return 0;
 }
@@ -241,10 +249,12 @@ void uart_cmd_handler() {
     pkt_tuya_t *pkt  = (pkt_tuya_t*)answer_buff;
     data_point_t *data_point = (data_point_t*)pkt->data;
 
-    if (first_start == 1) {
+    if (first_start) {
         set_command(COMMAND01, seq_num, true);
         data_point_model_init();
         TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_15SEC);
+
+        first_start = false;
 
         //only for test!!!
 //        set_command(COMMANDXX, seq_num, true);
@@ -258,7 +268,7 @@ void uart_cmd_handler() {
             /* trying to read for 1 seconds */
             for(uint8_t i = 0; i < 100; i++ ) {
                 load_size = 0;
-                if (available_ring_buff() && get_queue_len_ring_buff() >= 8) {
+                if (available_ring_buff() /*&& get_queue_len_ring_buff() >= 8*/) {
                     while (available_ring_buff() && load_size < (DATA_MAX_LEN + 8)) {
                         ch = read_byte_from_ring_buff();
 
@@ -366,7 +376,6 @@ void uart_cmd_handler() {
                                 }
 
                                 data_point_model = data_point_model_arr[manuf_name];
-                                first_start = 0;
 
                                 break;
                             case COMMAND02:
@@ -414,7 +423,7 @@ void uart_cmd_handler() {
 
     move_cmd_queue();
 
-    if (available_ring_buff() && get_queue_len_ring_buff() >= 8) {
+    if (available_ring_buff() /* && get_queue_len_ring_buff() >= 8*/) {
         load_size = 0;
         while (available_ring_buff() && load_size < (DATA_MAX_LEN + 8)) {
             ch = read_byte_from_ring_buff();
@@ -449,6 +458,8 @@ void uart_cmd_handler() {
         }
 
         if (load_size == pkt->len + 9) {
+
+            answer_mcu = true;
 
             pkt->pkt_len = load_size;
             uint8_t crc = checksum((uint8_t*)pkt, pkt->pkt_len-1);
@@ -872,6 +883,8 @@ void uart_cmd_handler() {
 
                             }
 
+                            thermostat_settings_save();
+
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_TUE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_TUE].type) {
 
@@ -890,6 +903,8 @@ void uart_cmd_handler() {
                                         g_zcl_scheduleData.schedule_tue[i].heatSetpoint);
                             }
 
+                            thermostat_settings_save();
+
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_WED].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_WED].type) {
 
@@ -907,6 +922,9 @@ void uart_cmd_handler() {
                                 printf("wed. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_wed[i].transTime,
                                         g_zcl_scheduleData.schedule_wed[i].heatSetpoint);
                             }
+
+                            thermostat_settings_save();
+
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_THU].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_THU].type) {
 
@@ -924,6 +942,9 @@ void uart_cmd_handler() {
                                 printf("thu. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_thu[i].transTime,
                                         g_zcl_scheduleData.schedule_thu[i].heatSetpoint);
                             }
+
+                            thermostat_settings_save();
+
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_FRI].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_FRI].type) {
 
@@ -941,6 +962,9 @@ void uart_cmd_handler() {
                                 printf("fri. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_fri[i].transTime,
                                         g_zcl_scheduleData.schedule_fri[i].heatSetpoint);
                             }
+
+                            thermostat_settings_save();
+
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_SAT].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_SAT].type) {
 
@@ -958,6 +982,9 @@ void uart_cmd_handler() {
                                 printf("sat. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sat[i].transTime,
                                         g_zcl_scheduleData.schedule_sat[i].heatSetpoint);
                             }
+
+                            thermostat_settings_save();
+
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_SUN].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_SUN].type) {
 
@@ -975,6 +1002,9 @@ void uart_cmd_handler() {
                                 printf("sat. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sun[i].transTime,
                                         g_zcl_scheduleData.schedule_sun[i].heatSetpoint);
                             }
+
+                            thermostat_settings_save();
+
                         }
                     }
                 }

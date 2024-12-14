@@ -168,7 +168,7 @@ uartTx_err app_uart_txMsg(uint8_t *data, uint8_t len) {
     return UART_TX_FAILED;
 }
 
-void app_uart_init(uint32_t baudrate) {
+void app_uart_init() {
 
     flush_ring_buff();
     drv_uart_pin_set(GPIO_UART_TX, GPIO_UART_RX);
