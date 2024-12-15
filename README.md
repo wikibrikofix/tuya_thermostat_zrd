@@ -4,6 +4,7 @@
 
 	"_TZE204_u9bfwha0"
 	"_TZE204_aoclfnxz"
+	"_TZE204_edl8pz1k"
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/TYBAC-006.png"/>
 
