@@ -32,27 +32,7 @@
 
 ## Как обновить.
 
-Сначала подключаем к z2m два внешних [конвертора](https://github.com/slacky1965/tuya_thermostat_zrd/tree/main/zigbee2mqtt/convertors) `tuya_thermostat_orig.js` и `tuya_thermostat_model1.js`. Первый активирует OTA в z2m для термостата с прошивкой от Tuya. Второй - для термостата с кастомной прошивкой.
-
-В `tuya_thermostat_orig.js` меняем сигнатуру на свою, если не совпадает. Т.е. везде, где встречается `_TZE204_u9bfwha0` меняем на `_TZE204_xxxxxxx`
-
-```const {identify, reporting, ota} = require('zigbee-herdsman-converters/lib/modernExtend');
-
-const definition = {
-    fingerprint: [{modelID: 'TS0601', manufacturerName: '_TZE204_u9bfwha0'}],
-    zigbeeModel: ['TS0601'],
-    model: 'TS0601',
-    vendor: '_TZE204_u9bfwha0',
-    description: 'Automatically generated definition',
-    extend: [
-      identify(),
-      ota(),
-    ],
-    meta: {},
-};
-
-module.exports = definition;
-```
+Сначала подключаем к z2m два внешних [конвертора](https://github.com/slacky1965/tuya_thermostat_zrd/tree/main/zigbee2mqtt/convertors) `tuya_thermostat_orig.js` и `tuya_thermostat_model1.js`. Первый активирует OTA в z2m для термостата с прошивкой от Tuya. Второй - для термостата с кастомной прошивкой. В `tuya_thermostat_orig.js` менять ничего не надо.
 
 Далее нужно добавить локальное хранилище обновлений. 
 
