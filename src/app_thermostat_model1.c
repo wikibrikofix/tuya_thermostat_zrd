@@ -70,22 +70,22 @@ void local_cmd_set_schedule_0(void *args) {
                 g_zcl_scheduleData.schedule_mon[ii].transTime = *ptr++ * 60;
                 g_zcl_scheduleData.schedule_mon[ii].transTime += *ptr++;
                 g_zcl_scheduleData.schedule_mon[ii].heatSetpoint = *ptr++ / 2 * 100;
-                printf("mon. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_mon[ii].transTime,
-                        g_zcl_scheduleData.schedule_mon[ii].heatSetpoint);
+//                printf("mon. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_mon[ii].transTime,
+//                        g_zcl_scheduleData.schedule_mon[ii].heatSetpoint);
                 i++;
             } else if (i < 8) {
                 g_zcl_scheduleData.schedule_sat[ii].transTime = *ptr++ * 60;
                 g_zcl_scheduleData.schedule_sat[ii].transTime += *ptr++;
                 g_zcl_scheduleData.schedule_sat[ii].heatSetpoint = *ptr++ / 2 * 100;
-                printf("sat. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sat[ii].transTime,
-                        g_zcl_scheduleData.schedule_sat[ii].heatSetpoint);
+//                printf("sat. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sat[ii].transTime,
+//                        g_zcl_scheduleData.schedule_sat[ii].heatSetpoint);
                 i++;
             } else {
                 g_zcl_scheduleData.schedule_sun[ii].transTime = *ptr++ * 60;
                 g_zcl_scheduleData.schedule_sun[ii].transTime += *ptr++;
                 g_zcl_scheduleData.schedule_sun[ii].heatSetpoint = *ptr++ / 2 * 100;
-                printf("sun. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sun[ii].transTime,
-                        g_zcl_scheduleData.schedule_sun[ii].heatSetpoint);
+//                printf("sun. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sun[ii].transTime,
+//                        g_zcl_scheduleData.schedule_sun[ii].heatSetpoint);
                 i++;
             }
         }

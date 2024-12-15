@@ -7,7 +7,6 @@ uint8_t mcuBootAddrGet(void);
 //uint32_t mcuBootAddrGet(void);
 
 void start_message() {
-    const uint8_t version[] = ZCL_BASIC_SW_BUILD_ID;
 #ifdef ZCL_OTA
     if (mcuBootAddrGet()) {
 #if UART_PRINTF_MODE
@@ -24,7 +23,10 @@ void start_message() {
 #endif /* UART_PRINTF_MODE */
 #endif
 
+#if UART_PRINTF_MODE
+    const uint8_t version[] = ZCL_BASIC_SW_BUILD_ID;
     printf("Firmware version: %s\r\n", version+1);
+#endif
 }
 
 

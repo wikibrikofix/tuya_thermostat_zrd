@@ -294,8 +294,6 @@ void remote_cmd_min_setpoint(void *args) {
     uint16_t *arg = (uint16_t*)args;
     uint32_t min_temp = *arg;
 
-    printf("min_temp: %d\r\n", min_temp);
-
     if (data_point_model[DP_IDX_MIN].id == 0) return;
 
     if (min_temp < SET_POINT_MIN_MIN * 100 || min_temp > SET_POINT_MIN_MAX * 100) {

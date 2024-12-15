@@ -80,8 +80,6 @@ void local_cmd_frost_protect_1(void *args) {
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
                    ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT, &len, (uint8_t*)&old_temp);
 
-    printf("frost prottect. temp: %d, old_temp: %d", *temp, old_temp);
-
     if (old_temp != *temp) {
 
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
@@ -112,8 +110,6 @@ void local_cmd_heat_protect_1(void *args) {
 
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
                    ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT, &len, (uint8_t*)&old_temp);
-
-    printf("heat prottect. temp: %d, old_temp: %d", *temp, old_temp);
 
     if (old_temp != *temp) {
 
@@ -153,14 +149,12 @@ void local_cmd_set_schedule_1(void *args) {
     ptr++;
     dp_schedule_model2_t *schedule = (dp_schedule_model2_t*)ptr;
 
-    printf("Schedule mon\r\n");
-
     for (uint8_t i = 0; i < 4; i++) {
         schedule_args->heatMode[i].transTime = schedule->hour * 60;
         schedule_args->heatMode[i].transTime += schedule->minute;
         schedule_args->heatMode[i].heatSetpoint = reverse16(schedule->temperature)/data_point_model[schedule_args->idx].divisor * 100;
         schedule++;
-        printf("idx: %d, i: %d, time: %d, temp: %d\r\n", schedule_args->idx, i, schedule_args->heatMode[i].transTime, schedule_args->heatMode[i].heatSetpoint);
+//        printf("idx: %d, i: %d, time: %d, temp: %d\r\n", schedule_args->idx, i, schedule_args->heatMode[i].transTime, schedule_args->heatMode[i].heatSetpoint);
     }
 
     thermostat_settings_save();
@@ -219,16 +213,11 @@ void remote_cmd_frost_protect_1(void *args) {
     int16_t *arg = (int16_t*)args;
     uint32_t frost_protect = *arg;
 
-    printf("1. frost protect: %d\r\n", frost_protect);
-
     if (data_point_model[DP_IDX_FROST_PROTECT].id == 0) return;
 
     if (frost_protect < FROST_PROTECT_MIN * 100 || frost_protect > FROST_PROTECT_MAX * 100) {
         return;
     }
-
-    printf("2. frost protect: %d\r\n", frost_protect);
-
 
     frost_protect /= 100; // 1500 -> 15°C
 
@@ -276,16 +265,11 @@ void remote_cmd_heat_protect_1(void *args) {
     int16_t *arg = (int16_t*)args;
     uint32_t heat_protect = *arg;
 
-    printf("1. heat protect: %d\r\n", heat_protect);
-
     if (data_point_model[DP_IDX_HEAT_PROTECT].id == 0) return;
 
     if (heat_protect < HEAT_PROTECT_MIN * 100 || heat_protect > HEAT_PROTECT_MAX * 100) {
         return;
     }
-
-    printf("2. heat protect: %d\r\n", heat_protect);
-
 
     heat_protect /= 100; // 1500 -> 15°C
 
@@ -370,7 +354,7 @@ static void remote_cmd_set_schedule_mon() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
+    add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
 }
@@ -417,7 +401,7 @@ static void remote_cmd_set_schedule_tue() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
+    add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
 }
@@ -464,7 +448,7 @@ static void remote_cmd_set_schedule_wed() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
+    add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
 }
@@ -511,7 +495,7 @@ static void remote_cmd_set_schedule_thu() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
+    add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
 }
@@ -558,7 +542,7 @@ static void remote_cmd_set_schedule_fri() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
+    add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
 }
@@ -605,7 +589,7 @@ static void remote_cmd_set_schedule_sat() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
+    add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
 }
@@ -652,7 +636,7 @@ static void remote_cmd_set_schedule_sun() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, false);
+    add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
 }

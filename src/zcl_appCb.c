@@ -1125,43 +1125,43 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                                 heat_mode =  g_zcl_scheduleData.schedule_sun;
                                 heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
                                 heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
-                                printf("i: %d, weekday: sun, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+//                                printf("i: %d, weekday: sun, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
                             }
                             if (cmd->dayOfWeekForSequence & DAY_MON) {
                                 heat_mode =  g_zcl_scheduleData.schedule_mon;
                                 heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
                                 heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
-                                printf("i: %d, weekday: mon, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+//                                printf("i: %d, weekday: mon, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
                             }
                             if (cmd->dayOfWeekForSequence & DAY_TUE) {
                                 heat_mode =  g_zcl_scheduleData.schedule_tue;
                                 heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
                                 heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
-                                printf("i: %d, weekday: tue, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+//                                printf("i: %d, weekday: tue, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
                             }
                             if (cmd->dayOfWeekForSequence & DAY_WED) {
                                 heat_mode =  g_zcl_scheduleData.schedule_wed;
                                 heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
                                 heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
-                                printf("i: %d, weekday: wed, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+//                                printf("i: %d, weekday: wed, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
                             }
                             if (cmd->dayOfWeekForSequence & DAY_THU) {
                                 heat_mode =  g_zcl_scheduleData.schedule_thu;
                                 heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
                                 heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
-                                printf("i: %d, weekday: thu, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+//                                printf("i: %d, weekday: thu, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
                             }
                             if (cmd->dayOfWeekForSequence & DAY_FRI) {
                                 heat_mode =  g_zcl_scheduleData.schedule_fri;
                                 heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
                                 heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
-                                printf("i: %d, weekday: fri, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+//                                printf("i: %d, weekday: fri, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
                             }
                             if (cmd->dayOfWeekForSequence & DAY_SAT) {
                                 heat_mode =  g_zcl_scheduleData.schedule_sat;
                                 heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
                                 heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
-                                printf("i: %d, weekday: sat, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+//                                printf("i: %d, weekday: sat, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
                             }
                         }
 

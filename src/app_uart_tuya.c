@@ -315,6 +315,7 @@ void uart_cmd_handler() {
 //                printf("complete.inCRC: 0x%x, outCRC: 0x%x\r\n", crc, answer_buff[pkt->pkt_len-1]);
 
                 if (crc == answer_buff[pkt->pkt_len-1]) {
+
                     if (send_pkt->command == COMMAND04 && pkt->command == COMMAND06 && pkt->seq_num == send_pkt->seq_num) {
                         cmd_queue.cmd_queue[0].confirm_rec = true;
                         if (data_point->dp_id == data_point_model[DP_IDX_SETPOINT].id ||
@@ -486,10 +487,9 @@ void uart_cmd_handler() {
 //                    zb_factoryReset();
 //                    TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_3SEC);
                 } else if (pkt->command == COMMAND24) {
-#if UART_PRINTF_MODE && DEBUG_CMD
+#if UART_PRINTF_MODE
                     printf("command 0x24. Sync Time\r\n");
 #endif
-                    printf("command 0x24. Sync Time\r\n");
                     if (get_time_sent()) {
                         set_command(pkt->command, pkt->seq_num, false);
                     } else {
