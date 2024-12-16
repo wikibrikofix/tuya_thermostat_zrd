@@ -222,6 +222,7 @@ const zclAttrInfo_t time_attrTbl[] =
 
 zcl_thermostatAttr_t g_zcl_thermostatAttrs = {
     .localTemperature = 2200,               // 22°C * 100
+    .outDoorTemperature = 2400,             // 24°C * 100
     .absMinHeatSetpointLimit = 500,         // min  5°C * 100 ( +5°C ... +15°C)
     .absMaxHeatSetpointLimit = 4500,        // max 45°C * 100 (+15°C ... +45°C)
     .minHeatSetpointLimit = 500,            // min  5°C * 100 ( +5°C ... +15°C)
@@ -233,6 +234,8 @@ zcl_thermostatAttr_t g_zcl_thermostatAttrs = {
     .runningState = 0x0000,                 // 0x0000 - off, 0x0001 - heat
     .manual_progMode = 0x00,                // 0x00 - manual mode, 0x01 - programming mode
     .sensor_used = SENSOR_IN,               // IN, ALL, OU
+    .frostProtect = 0,
+    .heatProtect = 4500,
     .dead_band = HYSTERESIS_MIN,            // 1 ... 5 °C
     .temperatureDisplayMode = 0x00,         // 0x00 - °C, 0x01 - °F (Not support)
     .keypadLockout = 0x00,                  // on off
@@ -244,6 +247,7 @@ zcl_thermostatAttr_t g_zcl_thermostatAttrs = {
 
 const zclAttrInfo_t thermostat_attrTbl[] = {
         { ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMPERATURE,             ZCL_INT16,      RR,     (uint8_t*)&g_zcl_thermostatAttrs.localTemperature           },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_OUTDOOR_TEMPERATURE,           ZCL_INT16,      RR,     (uint8_t*)&g_zcl_thermostatAttrs.outDoorTemperature         },
         { ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT,   ZCL_INT16,      R,      (uint8_t*)&g_zcl_thermostatAttrs.absMinHeatSetpointLimit    },
         { ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MAX_HEAT_SETPOINT_LIMIT,   ZCL_INT16,      R,      (uint8_t*)&g_zcl_thermostatAttrs.absMaxHeatSetpointLimit    },
         { ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT,       ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.minHeatSetpointLimit       },
@@ -259,6 +263,8 @@ const zclAttrInfo_t thermostat_attrTbl[] = {
         { ZCL_ATTRID_HVAC_THERMOSTAT_NUM_OF_WEEKLY_TRANSITIONS,     ZCL_INT8,       R,      (uint8_t*)&g_zcl_thermostatAttrs.weeklyTransNum             },
         { ZCL_ATTRID_HVAC_THERMOSTAT_NUM_OF_DAILY_TRANSITIONS,      ZCL_INT8,       R,      (uint8_t*)&g_zcl_thermostatAttrs.dailyTransNum              },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED,            ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.sensor_used                },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT,          ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.frostProtect               },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT,           ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.heatProtect                },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,                       ZCL_UINT16,     R,      (uint8_t*)&zcl_attr_global_clusterRevision                  },
 };

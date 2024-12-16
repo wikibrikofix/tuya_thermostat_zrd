@@ -186,8 +186,8 @@ $(LST_FILE): $(ELF_FILE)
 
 $(BIN_FILE): $(ELF_FILE)
 	@echo 'Create Flash image (binary format)'
-	@python3 $(TL_CHECK) $(BIN_FILE)
 	@$(OBJCOPY) -v -O binary $(ELF_FILE)  $(BIN_FILE)
+	@python3 $(TL_CHECK) $(BIN_FILE)
 	@cat $(BIN_FILE) $(BOOT_FILE) > $(FW_FILE)
 	@cp $(BIN_FILE) $(BIN_PATH)/$(PROJECT_NAME)_$(VERSION_RELEASE).$(VERSION_BUILD).bin
 	@echo 'Create zigbee OTA file'

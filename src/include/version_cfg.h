@@ -42,7 +42,7 @@
 #endif
 
 #define APP_RELEASE                         0x10        //app release 1.0
-#define APP_BUILD                           0x03        //app build 01, full version - v1.0.01
+#define APP_BUILD                           0x04        //app build 01, full version - v1.0.01
 #define STACK_RELEASE						0x30        //stack release 3.0
 #define STACK_BUILD							0x01        //stack build 01
 #define HW_VERSION                          0x01
@@ -89,6 +89,8 @@
  * 0x0f - Livolo_thermostat
  * 0x10 - EKF_switch_2keys_battery
  * 0x11 - Tuya Thermostat - "u9bfwha0"
+ *                          "aoclfnxz"
+ *                          "edl8pz1k"
  */
 
 #define IMAGE_TYPE_APP              (0x11 | (IMAGE_TYPE_BOOT_FLAG << 7))

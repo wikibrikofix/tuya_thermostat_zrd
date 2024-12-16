@@ -7,7 +7,6 @@ uint8_t mcuBootAddrGet(void);
 //uint32_t mcuBootAddrGet(void);
 
 void start_message() {
-    const uint8_t version[] = ZCL_BASIC_SW_BUILD_ID;
 #ifdef ZCL_OTA
     if (mcuBootAddrGet()) {
 #if UART_PRINTF_MODE
@@ -24,7 +23,10 @@ void start_message() {
 #endif /* UART_PRINTF_MODE */
 #endif
 
+#if UART_PRINTF_MODE
+    const uint8_t version[] = ZCL_BASIC_SW_BUILD_ID;
     printf("Firmware version: %s\r\n", version+1);
+#endif
 }
 
 
@@ -101,7 +103,7 @@ uint16_t reverse16(uint16_t in) {
 
 int32_t int32_from_str(uint8_t *data) {
 
-    int32_t val;
+    int32_t val = 0;
 
     val = data[0] << 24;
     val |= data[1] << 16;
@@ -109,6 +111,29 @@ int32_t int32_from_str(uint8_t *data) {
     val |= data[3];
 
     return val;
+}
+
+int16_t int16_from_str(uint8_t *data) {
+
+    int16_t val = 0;
+
+    val |= data[0] << 8;
+    val |= data[1];
+
+    return val;
+}
+
+uint8_t set_zcl_str(uint8_t *str_in, uint8_t *str_out, uint8_t len) {
+    uint8_t *data = str_out;
+    uint8_t *str_len = data;
+    uint8_t *str_data = data+1;
+
+    for (uint8_t i = 0; *(str_in+i) != 0 && i < (len-1); i++) {
+        *(str_data+i) = *(str_in+i);
+        (*str_len)++;
+    }
+
+    return *str_len;
 }
 
 //char * mystrstr(char * mainStr, char * subStr) {
