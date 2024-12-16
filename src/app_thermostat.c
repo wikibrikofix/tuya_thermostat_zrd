@@ -1,6 +1,23 @@
 #include "app_main.h"
 
-
+uint8_t zb_modelId_arr[zb_modelId_arr_num][ZCL_BASIC_MAX_LENGTH] = {
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','1',0},   // model1
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','2',0},   // model2
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','3',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','4',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','5',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','6',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','7',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','8',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','9',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','A',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','B',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','C',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','D',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','E',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','F',0},
+        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','1','0',0},  // etc
+};
 
 /*
  *
@@ -630,19 +647,38 @@ void local_cmd_onoff_state(void *args) {
 
 /*****************************************************************************************************/
 
-void set_zcl_modelId(uint8_t *signature) {
-    uint8_t modelId[ZCL_BASIC_MAX_LENGTH] = {0};
-    uint8_t name[ZCL_BASIC_MAX_LENGTH-1] = {0};
-
-    strncpy((char*)name, STR_MODEL_ID_BEGIN, STR_MODEL_ID_BEGIN_LEN);
-    strncpy((char*)name+STR_MODEL_ID_BEGIN_LEN, (char*)signature, 8);
-
-    set_zcl_str(name, modelId, ZCL_BASIC_MAX_LENGTH);
-
-    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, modelId);
-}
+//void set_zcl_modelId(uint8_t *signature) {
+//    uint8_t modelId[ZCL_BASIC_MAX_LENGTH] = {0};
+//    uint8_t name[ZCL_BASIC_MAX_LENGTH-1] = {0};
+//
+//    strncpy((char*)name, STR_MODEL_ID_BEGIN, STR_MODEL_ID_BEGIN_LEN);
+//    strncpy((char*)name+STR_MODEL_ID_BEGIN_LEN, (char*)signature, 8);
+//
+//    set_zcl_str(name, modelId, ZCL_BASIC_MAX_LENGTH);
+//
+//    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, modelId);
+//}
 
 /*****************************************************************************************************/
+
+#if UART_PRINTF_MODE && DEBUG_SAVE
+static void print_setting_sr(thermostat_settings_t *thermostat_settings, bool save) {
+
+    printf("Settings %s\r\n", save?"saved":"restored");
+
+    printf("occupiedHeatingSetpoint: %d\r\n", thermostat_settings->occupiedHeatingSetpoint);
+    printf("localTemperatureCalibration: %d\r\n", thermostat_settings->localTemperatureCalibration);
+    printf("sensor_used: %d\r\n", thermostat_settings->sensor_used);
+    printf("dead_band: %d\r\n", thermostat_settings->dead_band);
+    printf("manual_progMode: %d\r\n", thermostat_settings->manual_progMode);
+    printf("minHeatSetpointLimit: %d\r\n", thermostat_settings->minHeatSetpointLimit);
+    printf("maxHeatSetpointLimit: %d\r\n", thermostat_settings->maxHeatSetpointLimit);
+    printf("frostProtect: %d\r\n", thermostat_settings->frostProtect);
+    printf("heatProtect: %d\r\n", thermostat_settings->heatProtect);
+    printf("keypadLockout: %d\r\n", thermostat_settings->keypadLockout);
+}
+#endif
+
 
 nv_sts_t thermostat_settings_save() {
     nv_sts_t st = NV_SUCC;
@@ -650,7 +686,6 @@ nv_sts_t thermostat_settings_save() {
 #ifdef ZCL_THERMOSTAT
 #if NV_ENABLE
     thermostat_settings_t thermostat_settings;
-    uint16_t len;
     int16_t     minHeatSetpointLimit;
     int16_t     maxHeatSetpointLimit;
     int8_t      localTemperatureCalibration;
@@ -661,6 +696,8 @@ nv_sts_t thermostat_settings_save() {
     int16_t     frostProtect;
     int16_t     heatProtect;
     uint8_t     keypadLockout;
+
+    uint16_t    len;
     uint8_t     crc;
     bool        save = false;
 
@@ -737,25 +774,21 @@ nv_sts_t thermostat_settings_save() {
         }
 
         if (save) {
-#if UART_PRINTF_MODE && DEBUG_SAVE
-        printf("Settings saved\r\n");
-#endif
-        thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
-        st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
+
+            thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
+            st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
+
+            print_setting_sr(&thermostat_settings, true);
 
         }
     } else if (st == NV_ITEM_NOT_FOUND) {
-
-#if UART_PRINTF_MODE && DEBUG_SAVE
-        printf("Settings saved\r\n");
-#endif
 
         memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
         thermostat_settings.minHeatSetpointLimit = minHeatSetpointLimit;
         thermostat_settings.maxHeatSetpointLimit = maxHeatSetpointLimit;
         thermostat_settings.localTemperatureCalibration = localTemperatureCalibration;
         thermostat_settings.occupiedHeatingSetpoint = occupiedHeatingSetpoint;
-        thermostat_settings.occupiedHeatingSetpoint = occupiedHeatingSetpoint;
+        thermostat_settings.manual_progMode = manual_progMode;
         thermostat_settings.sensor_used = sensor_used;
         thermostat_settings.dead_band = dead_band;
         thermostat_settings.frostProtect = frostProtect;
@@ -764,6 +797,9 @@ nv_sts_t thermostat_settings_save() {
         thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
 
         st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
+
+        print_setting_sr(&thermostat_settings, true);
+
     }
 #else
     st = NV_ENABLE_PROTECT_ERROR;
@@ -775,10 +811,6 @@ nv_sts_t thermostat_settings_save() {
 
 nv_sts_t thermostat_settings_restore() {
     nv_sts_t st = NV_SUCC;
-
-#if UART_PRINTF_MODE && DEBUG_SAVE
-        printf("Settings restored\r\n");
-#endif
 
 #ifdef ZCL_THERMOSTAT
 #if NV_ENABLE
@@ -797,8 +829,15 @@ nv_sts_t thermostat_settings_restore() {
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND, (uint8_t*)&thermostat_settings.dead_band);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT, (uint8_t*)&thermostat_settings.frostProtect);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT, (uint8_t*)&thermostat_settings.heatProtect);
+        zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, (uint8_t*)&thermostat_settings.manual_progMode);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG, ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, (uint8_t*)&thermostat_settings.keypadLockout);
     }
+
+#if UART_PRINTF_MODE && DEBUG_SAVE
+
+    print_setting_sr(&thermostat_settings, false);
+
+#endif
 
 #else
     st = NV_ENABLE_PROTECT_ERROR;

@@ -32,6 +32,11 @@
 #define CLIENT_TEMP_CALIBRATION_MIN -90
 #define CLIENT_TEMP_CALIBRATION_MAX  90
 
+#define zb_modelId_arr_num  16
+#define zb_modelId_size     19
+
+extern uint8_t zb_modelId_arr[zb_modelId_arr_num][ZCL_BASIC_MAX_LENGTH];
+
 typedef struct __attribute__((packed)) {
     zcl_scheduleData_t schedule_data;
     int16_t     minHeatSetpointLimit;           // min 5°C * 100
@@ -174,7 +179,7 @@ void local_cmd_set_schedule_1(void *args);
  *
  * common function
  */
-void set_zcl_modelId(uint8_t *signature);
+//void set_zcl_modelId(uint8_t *signature);
 
 /*
  *
