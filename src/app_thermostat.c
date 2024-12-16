@@ -831,13 +831,11 @@ nv_sts_t thermostat_settings_restore() {
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT, (uint8_t*)&thermostat_settings.heatProtect);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, (uint8_t*)&thermostat_settings.manual_progMode);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG, ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, (uint8_t*)&thermostat_settings.keypadLockout);
+#if UART_PRINTF_MODE && DEBUG_SAVE
+    print_setting_sr(&thermostat_settings, false);
+#endif
     }
 
-#if UART_PRINTF_MODE && DEBUG_SAVE
-
-    print_setting_sr(&thermostat_settings, false);
-
-#endif
 
 #else
     st = NV_ENABLE_PROTECT_ERROR;
