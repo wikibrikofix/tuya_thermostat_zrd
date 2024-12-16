@@ -223,8 +223,14 @@ static int32_t check_answerCb(void *arg) {
     }
 
     if (answer_mcu) {
+#if UART_PRINTF_MODE
+        printf("answer, continue\r\n");
+#endif
         answer_mcu = false;
     } else {
+#if UART_PRINTF_MODE
+        printf("no answer, reboot\r\n");
+#endif
         app_uart_init();
     }
     return 0;
@@ -365,15 +371,20 @@ void uart_cmd_handler() {
                                     printf("Known Tuya signature not found. Use default\r\n");
 #endif
                                     manuf_name = MANUF_NAME_0;
-                                    uint8_t signature[] = "u9bfwha0";
-                                    set_zcl_modelId(signature);
+
+//                                    uint8_t signature[] = "u9bfwha0";
+//                                    set_zcl_modelId(signature);
                                 } else {
 #if UART_PRINTF_MODE
                                     printf("Tuya signature found: \"%s\"\r\n", ptr);
 #endif
-                                    set_zcl_modelId(ptr);
+//                                    set_zcl_modelId(ptr);
                                 }
+#if UART_PRINTF_MODE
+                                printf("Use modelId: %s\r\n", zb_modelId_arr[manuf_name]+1);
+#endif
 
+                                zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId_arr[manuf_name]);
                                 data_point_model = data_point_model_arr[manuf_name];
 
                                 break;
