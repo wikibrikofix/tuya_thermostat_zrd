@@ -90,7 +90,21 @@ ota:
 
 P.S. В реальной работе не проверялось, требует всестороннего тестирования.
 
-Более развернутое описание [тут](https://habr.com/ru/articles/864740)
+Более развернутое описание для саомго первого термостата [тут](https://habr.com/ru/articles/864740)
+
+Спасибы :))
+
+- [@ruslikx3mза](https://t.me/ruslikx3mза) первый предоставленный термостат _TZE204_u9bfwha0 на растерзание.
+
+- [@immortal_serg](https://t.me/immortal_serg) за предоставленный термостат _TZE204_edl8pz1k.
+
+- [https://github.com/doctor64](https://github.com/doctor64) [@doctor_64](https://t.me/doctor_64) - за желание всегда помочь и направить в правильное русло.
+
+- [https://github.com/devbis](https://github.com/devbis) [@Belokobylskiy](https://t.me/Belokobylskiy) - за идеи и написание скриптов на Питоне.
+
+- [@goofyk](https://t.me/goofyk) - за терпение и за хорошее знание z2m.
+
+- [https://github.com/pvvx](https://github.com/pvvx) - за замечательный программматор для чипов Telink.
 
 ## История версий
 - 1.0.01
