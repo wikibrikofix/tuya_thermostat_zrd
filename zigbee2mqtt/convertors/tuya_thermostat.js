@@ -206,20 +206,17 @@ const definition = [
     const endpoint = device.getEndpoint(1);
     await endpoint.read('hvacUserInterfaceCfg', ['keypadLockout']);
     await endpoint.read('genLevelCtrl', ['currentLevel']);
-    await endpoint.read('hvacThermostat', [
-                        'localTemp',
-	                      'absMinHeatSetpointLimit',
-                        'absMaxHeatSetpointLimit',
-//	                      'minHeatSetpointLimit',
-                        'maxHeatSetpointLimit',
-                        'localTemperatureCalibration', 
-                        'occupiedHeatingSetpoint',
-                        'programingOperMode',
-                        'systemMode', 
-                        'runningState',
-                        'minSetpointDeadBand',
-                         0xF000,
-                       ]);
+    await endpoint.read('hvacThermostat', ['localTemp']);
+    await endpoint.read('hvacThermostat', ['absMinHeatSetpointLimit']);
+    await endpoint.read('hvacThermostat', ['absMaxHeatSetpointLimit']);
+    await endpoint.read('hvacThermostat', ['maxHeatSetpointLimit']);
+    await endpoint.read('hvacThermostat', ['localTemperatureCalibration']);
+    await endpoint.read('hvacThermostat', ['occupiedHeatingSetpoint']);
+    await endpoint.read('hvacThermostat', ['programingOperMode']);
+    await endpoint.read('hvacThermostat', ['systemMode']);
+    await endpoint.read('hvacThermostat', ['runningState']);
+    await endpoint.read('hvacThermostat', ['minSetpointDeadBand']);
+    await endpoint.read('hvacThermostat', [0xF000]);
     await reporting.bind(endpoint, coordinatorEndpoint, ['hvacThermostat', 'hvacUserInterfaceCfg', 'genLevelCtrl']);
     await reporting.thermostatTemperature(endpoint, {min: 0, max: 3600, change: 0});
     await reporting.thermostatOccupiedHeatingSetpoint(endpoint, {min: 0, max: 3600, change: 0});
@@ -244,13 +241,6 @@ const definition = [
       .withValueMin(1)
       .withValueMax(5)
       .withValueStep(1),
-    // e
-    //   .numeric('min_heat_setpoint_limit', ea.ALL)
-    //   .withUnit('°C')
-    //   .withDescription('Minimum Heating set point limit')
-    //   .withValueMin(5)
-    //   .withValueMax(15)
-    //   .withValueStep(1),
     e
       .numeric('max_heat_setpoint_limit', ea.ALL)
       .withDescription('Maximum Heating set point limit')

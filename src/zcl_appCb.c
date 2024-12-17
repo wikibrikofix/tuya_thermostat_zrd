@@ -1255,7 +1255,7 @@ status_t app_thermostat_uicCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, v
 /*********************************************************************
  * @fn      app_timeCb
  *
- * @brief   Handler for ZCL Identify command.
+ * @brief   Handler for ZCL Time command.
  *
  * @param   pAddrInfo
  * @param   cmdId
