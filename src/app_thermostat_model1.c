@@ -110,12 +110,11 @@ void remote_cmd_oper_mode_0(void *args) {
     if (*oper_mode > 1) return;
 
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(5);
     out_pkt->pkt_len++;
@@ -143,13 +142,12 @@ void remote_cmd_set_schedule_0(void *args) {
 
     if (data_point_model[DP_IDX_SCHEDULE].id == 0) return;
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(40);
     out_pkt->pkt_len++;

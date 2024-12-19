@@ -1,23 +1,25 @@
 #include "app_main.h"
 
-uint8_t zb_modelId_arr[zb_modelId_arr_num][ZCL_BASIC_MAX_LENGTH] = {
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','1',0},   // model1
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','2',0},   // model2
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','3',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','4',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','5',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','6',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','7',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','8',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','9',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','A',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','B',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','C',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','D',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','E',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','F',0},
-        {zb_modelId_size, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','1','0',0},  // etc
+uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE] = {
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','1',0},   // model1
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','2',0},   // model2
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','3',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','4',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','5',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','6',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','7',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','8',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','9',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','A',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','B',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','C',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','D',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','E',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','F',0},
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','1','0',0},  // etc
 };
+
+uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 
 /*
  *
@@ -35,12 +37,11 @@ void remote_cmd_sys_mode(void *args) {
         return;
     }
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(5);
     out_pkt->pkt_len++;
@@ -93,8 +94,7 @@ void remote_cmd_heating_set(void *args) {
 //    printf("2. temp: %d, minHeatSet: %d, maxHeatSet: %d\r\n", temp, minHeatSet, maxHeatSet);
 
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
@@ -104,7 +104,7 @@ void remote_cmd_heating_set(void *args) {
         temp /= 10;
     }
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(8);
     out_pkt->pkt_len++;
@@ -142,8 +142,7 @@ void remote_cmd_temp_calibration(void *args) {
         return;
     }
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
@@ -154,7 +153,7 @@ void remote_cmd_temp_calibration(void *args) {
         temp *= 100;
     }
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(8);
     out_pkt->pkt_len++;
@@ -188,12 +187,11 @@ void remote_cmd_keylock(void *args) {
 
     if(data_point_model[DP_IDX_LOCKUNLOCK].id == 0) return;
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(5);
     out_pkt->pkt_len++;
@@ -227,12 +225,11 @@ void remote_cmd_sensor_used(void *args) {
         return;
     }
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(5);
     out_pkt->pkt_len++;
@@ -267,8 +264,7 @@ void remote_cmd_deadband(void *args) {
         return;
     }
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
@@ -279,7 +275,7 @@ void remote_cmd_deadband(void *args) {
         hysteresis *= 100;
     }
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(8);
     out_pkt->pkt_len++;
@@ -325,12 +321,11 @@ void remote_cmd_min_setpoint(void *args) {
         min_temp *= 100;
     }
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(8);
     out_pkt->pkt_len++;
@@ -368,8 +363,7 @@ void remote_cmd_max_setpoint(void *args) {
         return;
     }
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
@@ -381,7 +375,7 @@ void remote_cmd_max_setpoint(void *args) {
         max_temp *= 100;
     }
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(8);
     out_pkt->pkt_len++;

@@ -179,12 +179,11 @@ void remote_cmd_oper_mode_1(void *args) {
 
     if (data_point_model[DP_IDX_PROG].id == 0) return;
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(5);
     out_pkt->pkt_len++;
@@ -227,12 +226,11 @@ void remote_cmd_frost_protect_1(void *args) {
         frost_protect *= 100;
     }
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(8);
     out_pkt->pkt_len++;
@@ -279,12 +277,11 @@ void remote_cmd_heat_protect_1(void *args) {
         heat_protect *= 100;
     }
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(8);
     out_pkt->pkt_len++;
@@ -314,13 +311,12 @@ void remote_cmd_heat_protect_1(void *args) {
 
 static void remote_cmd_set_schedule_mon() {
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(21);
     out_pkt->pkt_len++;
@@ -361,13 +357,12 @@ static void remote_cmd_set_schedule_mon() {
 
 static void remote_cmd_set_schedule_tue() {
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(21);
     out_pkt->pkt_len++;
@@ -408,13 +403,12 @@ static void remote_cmd_set_schedule_tue() {
 
 static void remote_cmd_set_schedule_wed() {
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(21);
     out_pkt->pkt_len++;
@@ -455,13 +449,12 @@ static void remote_cmd_set_schedule_wed() {
 
 static void remote_cmd_set_schedule_thu() {
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(21);
     out_pkt->pkt_len++;
@@ -502,13 +495,12 @@ static void remote_cmd_set_schedule_thu() {
 
 static void remote_cmd_set_schedule_fri() {
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(21);
     out_pkt->pkt_len++;
@@ -549,13 +541,12 @@ static void remote_cmd_set_schedule_fri() {
 
 static void remote_cmd_set_schedule_sat() {
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(21);
     out_pkt->pkt_len++;
@@ -596,13 +587,12 @@ static void remote_cmd_set_schedule_sat() {
 
 static void remote_cmd_set_schedule_sun() {
 
-    uint8_t pkt_buff[DATA_MAX_LEN+12];
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)pkt_buff;
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    set_header_pkt(pkt_buff, sizeof(pkt_buff), seq_num, COMMAND04);
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
     out_pkt->len = reverse16(21);
     out_pkt->pkt_len++;
