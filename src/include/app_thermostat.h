@@ -32,10 +32,9 @@
 #define CLIENT_TEMP_CALIBRATION_MIN -90
 #define CLIENT_TEMP_CALIBRATION_MAX  90
 
-#define zb_modelId_arr_num  16
-#define zb_modelId_size     19
-
-extern uint8_t zb_modelId_arr[zb_modelId_arr_num][ZCL_BASIC_MAX_LENGTH];
+#define ZB_MODELID_ARR_NUM          16
+#define ZB_MODELID_SIZE             19
+#define ZB_MODELID_FULL_SIZE        ZB_MODELID_SIZE+2
 
 typedef struct __attribute__((packed)) {
     zcl_scheduleData_t schedule_data;
@@ -66,6 +65,9 @@ typedef struct {
 
 extern data_point_st_t data_point_model0[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model1[DP_IDX_MAXNUM];
+extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
+extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
+
 
 /*
  * common functions remote_cmd
