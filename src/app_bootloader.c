@@ -70,8 +70,8 @@ void bootloader_check() {
 
     }
 
-    flash_erase(0x7000);
-    flash_read(0, 256, buff);
+    flash_erase(BOOTLOAD_MARKER_SECTOR);
+    flash_read(0, 256, bootloader_buff);
 
     flash_write(BOOTLOAD_MARKER_ADDR, marker[0], marker+1);
 #if UART_PRINTF_MODE

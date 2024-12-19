@@ -6,6 +6,7 @@
 #define IMAGE_OTA_ADDR2         FLASH_ADDR_OF_OTA_IMAGE
 #define BOOTLOAD_MARKER         ZCL_BASIC_MFG_NAME
 #define BOOTLOAD_MARKER_ADDR    0x7ff0
+#define BOOTLOAD_MARKER_SECTOR  0x7000
 
 #ifndef BOOT_SIZE
 #define BOOT_SIZE               20580
