@@ -76,6 +76,22 @@ ota:
 
 Далее ждем окончания. После этого мы в OTA видим наш термостат со старым именем, но уже с новыми `Firmware build date` и `Firmware version`.
 
+Вот так выглядит лог при первом старте после обновления с прошивки Tuya на кастомную.
+
+```
+OTA mode enabled. MCU boot from address: 0x8000
+Firmware version: v1.0.04
+Tuya bootloader
+Bootloader is overwritten. Reset
+OTA mode enabled. MCU boot from address: 0x8000
+Firmware version: v1.0.04
+SDK bootloader
+out_pkt <== 0x55AA02000101000003
+inp_pkt ==> 0x55AA02000101001C7B2270223A2265646C38707A316B222C2276223A22312E302E30227D8D
+Tuya signature found: "edl8pz1k"
+Use modelId: Tuya_Thermostat_r02
+```
+
 Далее идем в радел `Devices` и жмем на нашем термостате "Корзинку", т.е. удаляем его из сети.
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_tuya_remove_1.jpg"/>
