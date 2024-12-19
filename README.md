@@ -76,6 +76,8 @@ ota:
 
 Далее ждем окончания. После этого мы в OTA видим наш термостат со старым именем, но уже с новыми `Firmware build date` и `Firmware version`.
 
+<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_tuya_update_4.jpg"/>
+
 Вот так выглядит лог при первом старте после обновления с прошивки Tuya на кастомную.
 
 ```
