@@ -215,6 +215,9 @@ static void set_default_answer(command_t command, uint16_t f_seq_num) {
 static int32_t check_answerCb(void *arg) {
 
     if (no_answer) {
+#if UART_PRINTF_MODE
+        printf("no answer, uart reinit\r\n");
+#endif
         app_uart_init();
 //#if UART_PRINTF_MODE
 //        printf("no answer, reboot\r\n");
@@ -224,12 +227,12 @@ static int32_t check_answerCb(void *arg) {
 
     if (answer_mcu) {
 #if UART_PRINTF_MODE
-        printf("answer, continue\r\n");
+        printf("answer from MCU, continue\r\n");
 #endif
         answer_mcu = false;
     } else {
 #if UART_PRINTF_MODE
-        printf("no answer, reboot\r\n");
+        printf("no answer from MCU, uart reinit\r\n");
 #endif
         app_uart_init();
     }
