@@ -31,8 +31,6 @@ void remote_cmd_sys_mode(void *args) {
 
     uint8_t *mode = (uint8_t*)args;
 
-    if(data_point_model[DP_IDX_ONOFF].id == 0) return;
-
     if (*mode != SYS_MODE_OFF && *mode != SYS_MODE_HEAT) {
         return;
     }
@@ -614,7 +612,7 @@ void local_cmd_onoff_state(void *args) {
     uint8_t sys_mode;
 
     if (*onoff == DEV_POWER_OFF) {
-#if UART_PRINTF_MODE && DEBUG_CMD
+#if UART_PRINTF_MODE /* && DEBUG_CMD*/
         printf("Power OFF\r\n");
 #endif
         sys_mode = SYS_MODE_OFF;
@@ -626,7 +624,7 @@ void local_cmd_onoff_state(void *args) {
         run_state_bit.set = OFF;
         local_cmd_set_run_state(&run_state_bit);
     } else {
-#if UART_PRINTF_MODE && DEBUG_CMD
+#if UART_PRINTF_MODE /*&& DEBUG_CMD*/
         printf("Power ON\r\n");
 #endif
         sys_mode = SYS_MODE_HEAT;
@@ -655,8 +653,8 @@ void local_cmd_onoff_state(void *args) {
 
 /*****************************************************************************************************/
 
-#if UART_PRINTF_MODE && DEBUG_SAVE
 static void print_setting_sr(thermostat_settings_t *thermostat_settings, bool save) {
+#if UART_PRINTF_MODE && DEBUG_SAVE
 
     printf("Settings %s\r\n", save?"saved":"restored");
 
@@ -670,8 +668,8 @@ static void print_setting_sr(thermostat_settings_t *thermostat_settings, bool sa
     printf("frostProtect: %d\r\n", thermostat_settings->frostProtect);
     printf("heatProtect: %d\r\n", thermostat_settings->heatProtect);
     printf("keypadLockout: %d\r\n", thermostat_settings->keypadLockout);
-}
 #endif
+}
 
 
 nv_sts_t thermostat_settings_save() {

@@ -215,6 +215,9 @@ static void set_default_answer(command_t command, uint16_t f_seq_num) {
 static int32_t check_answerCb(void *arg) {
 
     if (no_answer) {
+#if UART_PRINTF_MODE
+        printf("no answer, uart reinit\r\n");
+#endif
         app_uart_init();
 //#if UART_PRINTF_MODE
 //        printf("no answer, reboot\r\n");
@@ -224,12 +227,12 @@ static int32_t check_answerCb(void *arg) {
 
     if (answer_mcu) {
 #if UART_PRINTF_MODE
-        printf("answer, continue\r\n");
+        printf("answer from MCU, continue\r\n");
 #endif
         answer_mcu = false;
     } else {
 #if UART_PRINTF_MODE
-        printf("no answer, reboot\r\n");
+        printf("no answer from MCU, uart reinit\r\n");
 #endif
         app_uart_init();
     }
@@ -322,13 +325,13 @@ void uart_cmd_handler() {
 
                 if (crc == answer_buff[pkt->pkt_len-1]) {
 
-                    if (send_pkt->command == COMMAND04 && pkt->command == COMMAND06 && pkt->seq_num == send_pkt->seq_num) {
+                    if (send_pkt->command == COMMAND04 && pkt->command == COMMAND06 /*&& pkt->seq_num == send_pkt->seq_num*/) {
                         cmd_queue.cmd_queue[0].confirm_rec = true;
                         if (data_point->dp_id == data_point_model[DP_IDX_SETPOINT].id ||
                             data_point->dp_id == data_point_model[DP_IDX_ONOFF].id) {
                             set_default_answer(COMMAND06, reverse16(pkt->seq_num));
                         }
-                    } else if (pkt->command == send_pkt->command && pkt->seq_num == send_pkt->seq_num) {
+                    } else if (pkt->command == send_pkt->command /*&& pkt->seq_num == send_pkt->seq_num*/) {
                         switch(pkt->command) {
                             case COMMAND01:
 
@@ -370,7 +373,7 @@ void uart_cmd_handler() {
 #if UART_PRINTF_MODE
                                     printf("Known Tuya signature not found. Use default\r\n");
 #endif
-                                    manuf_name = MANUF_NAME_0;
+                                    manuf_name = MANUF_NAME_1;
 
 //                                    uint8_t signature[] = "u9bfwha0";
 //                                    set_zcl_modelId(signature);
@@ -521,7 +524,6 @@ void uart_cmd_handler() {
 
                         set_default_answer(pkt->command, pkt->seq_num);
 
-
                         if (data_point->dp_id == data_point_model[DP_IDX_ONOFF].id &&
                                 data_point->dp_type == data_point_model[DP_IDX_ONOFF].type) {
 
@@ -639,6 +641,38 @@ void uart_cmd_handler() {
 
                             if (data_point_model[DP_IDX_SENSOR].local_cmd)
                                 data_point_model[DP_IDX_SENSOR].local_cmd(&sensor_used);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_ECO_MODE].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_ECO_MODE].type) {
+
+                            uint8_t eco_mode = data_point->data[0];
+
+                            if (data_point_model[DP_IDX_ECO_MODE].local_cmd)
+                                data_point_model[DP_IDX_ECO_MODE].local_cmd(&eco_mode);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_ECO_TEMP].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_ECO_TEMP].type) {
+
+                            int16_t temp = int32_from_str(data_point->data) & 0xffff;
+
+                            if (data_point_model[DP_IDX_ECO_TEMP].local_cmd)
+                                data_point_model[DP_IDX_ECO_TEMP].local_cmd(&temp);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_LEVEL_A].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_LEVEL_A].type) {
+
+                            uint8_t level = int32_from_str(data_point->data) & 0xff;
+
+                            if (data_point_model[DP_IDX_LEVEL_A].local_cmd)
+                                data_point_model[DP_IDX_LEVEL_A].local_cmd(&level);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_LEVEL_B].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_LEVEL_B].type) {
+
+                            uint8_t level = int32_from_str(data_point->data) & 0xff;
+
+                            if (data_point_model[DP_IDX_LEVEL_B].local_cmd)
+                                data_point_model[DP_IDX_LEVEL_B].local_cmd(&level);
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE].type) {

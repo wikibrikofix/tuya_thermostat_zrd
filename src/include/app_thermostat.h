@@ -65,6 +65,7 @@ typedef struct {
 
 extern data_point_st_t data_point_model0[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model1[DP_IDX_MAXNUM];
+extern data_point_st_t data_point_model2[DP_IDX_MAXNUM];
 extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
@@ -86,40 +87,66 @@ void remote_cmd_max_setpoint(void *args);
  *  "u9bfwha0"
  *  "aoclfnxz"
  *
- *  model1 - name_0
+ *  model1 - name_1
  */
 
-#define remote_cmd_sys_mode_0           remote_cmd_sys_mode
-#define remote_cmd_heating_set_0        remote_cmd_heating_set
-#define remote_cmd_temp_calibration_0   remote_cmd_temp_calibration
-#define remote_cmd_sensor_used_0        remote_cmd_sensor_used
-#define remote_cmd_keylock_0            remote_cmd_keylock
-#define remote_cmd_deadband_0           remote_cmd_deadband
-#define remote_cmd_max_setpoint_0       remote_cmd_max_setpoint
-void remote_cmd_oper_mode_0(void *args);
-void remote_cmd_set_schedule_0(void *args);
-void remote_cmd_get_schedule_0(uint8_t day);
-
-
-/*
- *  remote_cmd for signarure
- *  "edl8pz1k"
- *
- *  model2 - name_1
- */
 #define remote_cmd_sys_mode_1           remote_cmd_sys_mode
 #define remote_cmd_heating_set_1        remote_cmd_heating_set
 #define remote_cmd_temp_calibration_1   remote_cmd_temp_calibration
 #define remote_cmd_sensor_used_1        remote_cmd_sensor_used
 #define remote_cmd_keylock_1            remote_cmd_keylock
 #define remote_cmd_deadband_1           remote_cmd_deadband
-#define remote_cmd_min_setpoint_1       remote_cmd_min_setpoint
 #define remote_cmd_max_setpoint_1       remote_cmd_max_setpoint
 void remote_cmd_oper_mode_1(void *args);
-void remote_cmd_frost_protect_1(void *args);
-void remote_cmd_heat_protect_1(void *args);
 void remote_cmd_set_schedule_1(void *args);
 void remote_cmd_get_schedule_1(uint8_t day);
+
+
+/*
+ *  remote_cmd for signarure
+ *  "edl8pz1k"
+ *
+ *  model2 - name_2
+ */
+#define remote_cmd_sys_mode_2           remote_cmd_sys_mode
+#define remote_cmd_heating_set_2        remote_cmd_heating_set
+#define remote_cmd_temp_calibration_2   remote_cmd_temp_calibration
+#define remote_cmd_sensor_used_2        remote_cmd_sensor_used
+#define remote_cmd_keylock_2            remote_cmd_keylock
+#define remote_cmd_deadband_2           remote_cmd_deadband
+#define remote_cmd_min_setpoint_2       remote_cmd_min_setpoint
+#define remote_cmd_max_setpoint_2       remote_cmd_max_setpoint
+void remote_cmd_oper_mode_2(void *args);
+void remote_cmd_frost_protect_2(void *args);
+void remote_cmd_heat_protect_2(void *args);
+void remote_cmd_set_schedule_2(void *args);
+void remote_cmd_get_schedule_2(uint8_t day);
+
+/*
+ *  remote_cmd for signarure
+ *  "tagezcph"
+ *
+ *  model3 - name_3
+ */
+#define remote_cmd_sys_mode_3           remote_cmd_sys_mode
+#define remote_cmd_heating_set_3        remote_cmd_heating_set
+#define remote_cmd_temp_calibration_3   remote_cmd_temp_calibration
+#define remote_cmd_sensor_used_3        remote_cmd_sensor_used
+#define remote_cmd_keylock_3            remote_cmd_keylock
+#define remote_cmd_deadband_3           remote_cmd_deadband
+#define remote_cmd_min_setpoint_3       remote_cmd_min_setpoint
+#define remote_cmd_max_setpoint_3       remote_cmd_max_setpoint
+
+#define remote_cmd_oper_mode_3          remote_cmd_oper_mode_2
+#define remote_cmd_frost_protect_3      remote_cmd_frost_protect_2
+#define remote_cmd_heat_protect_3       remote_cmd_heat_protect_2
+#define remote_cmd_set_schedule_3       remote_cmd_set_schedule_2
+#define remote_cmd_get_schedule_3       remote_cmd_get_schedule_2
+
+void remote_cmd_eco_mode_3(void *args);
+void remote_cmd_eco_mode_temp_3(void *args);
+void remote_cmd_level_day_3(void *args);
+void remote_cmd_level_night_3(void *args);
 
 /*
  * common functions local_cmd
@@ -140,26 +167,7 @@ void local_cmd_onoff_state(void *args);
  *  "u9bfwha0"
  *  "aoclfnxz"
  *
- *  model1 - name_0
- */
-#define local_cmd_inner_sensor_0        local_cmd_inner_sensor
-#define local_cmd_heating_set_0         local_cmd_heating_set
-#define local_cmd_temp_calibration_0    local_cmd_temp_calibration
-#define local_cmd_min_setpoint_0        local_cmd_min_setpoint
-#define local_cmd_max_setpoint_0        local_cmd_max_setpoint
-#define local_cmd_deadband_0            local_cmd_deadband
-#define local_cmd_keylock_0             local_cmd_keylock
-#define local_cmd_sensor_used_0         local_cmd_sensor_used
-#define local_cmd_set_run_state_0       local_cmd_set_run_state
-#define local_cmd_onoff_state_0         local_cmd_onoff_state
-void local_cmd_oper_mode_0(void *args);
-void local_cmd_set_schedule_0(void *args);
-
-/*
- *  local_cmd for signarure
- *  "edl8pz1k"
- *
- *  model2 - name_1
+ *  model1 - name_1
  */
 #define local_cmd_inner_sensor_1        local_cmd_inner_sensor
 #define local_cmd_heating_set_1         local_cmd_heating_set
@@ -172,10 +180,58 @@ void local_cmd_set_schedule_0(void *args);
 #define local_cmd_set_run_state_1       local_cmd_set_run_state
 #define local_cmd_onoff_state_1         local_cmd_onoff_state
 void local_cmd_oper_mode_1(void *args);
-void local_cmd_frost_protect_1(void *args);
-void local_cmd_heat_protect_1(void *args);
-void local_cmd_outdoor_sensor_1(void *args);
 void local_cmd_set_schedule_1(void *args);
+
+/*
+ *  local_cmd for signarure
+ *  "edl8pz1k"
+ *
+ *  model2 - name_2
+ */
+#define local_cmd_inner_sensor_2        local_cmd_inner_sensor
+#define local_cmd_heating_set_2         local_cmd_heating_set
+#define local_cmd_temp_calibration_2    local_cmd_temp_calibration
+#define local_cmd_min_setpoint_2        local_cmd_min_setpoint
+#define local_cmd_max_setpoint_2        local_cmd_max_setpoint
+#define local_cmd_deadband_2            local_cmd_deadband
+#define local_cmd_keylock_2             local_cmd_keylock
+#define local_cmd_sensor_used_2         local_cmd_sensor_used
+#define local_cmd_set_run_state_2       local_cmd_set_run_state
+#define local_cmd_onoff_state_2         local_cmd_onoff_state
+void local_cmd_oper_mode_2(void *args);
+void local_cmd_frost_protect_2(void *args);
+void local_cmd_heat_protect_2(void *args);
+void local_cmd_outdoor_sensor_2(void *args);
+void local_cmd_set_schedule_2(void *args);
+
+
+/*
+ *  local_cmd for signarure
+ *  "tagezcph"
+ *
+ *  model3 - name_3
+ */
+#define local_cmd_inner_sensor_3        local_cmd_inner_sensor
+#define local_cmd_heating_set_3         local_cmd_heating_set
+#define local_cmd_temp_calibration_3    local_cmd_temp_calibration
+#define local_cmd_min_setpoint_3        local_cmd_min_setpoint
+#define local_cmd_max_setpoint_3        local_cmd_max_setpoint
+#define local_cmd_deadband_3            local_cmd_deadband
+#define local_cmd_keylock_3             local_cmd_keylock
+#define local_cmd_sensor_used_3         local_cmd_sensor_used
+#define local_cmd_set_run_state_3       local_cmd_set_run_state
+#define local_cmd_onoff_state_3         local_cmd_onoff_state
+
+#define local_cmd_oper_mode_3           local_cmd_oper_mode_2
+#define local_cmd_frost_protect_3       local_cmd_frost_protect_2
+#define local_cmd_heat_protect_3        local_cmd_heat_protect_2
+#define local_cmd_outdoor_sensor_3      local_cmd_outdoor_sensor_2
+#define local_cmd_set_schedule_3        local_cmd_set_schedule_2
+
+void local_cmd_eco_mode_3(void *args);
+void local_cmd_eco_mode_temp_3(void *args);
+void local_cmd_level_day_3(void *args);
+void local_cmd_level_night_3(void *args);
 
 /*
  *

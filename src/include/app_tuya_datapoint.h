@@ -5,54 +5,90 @@
  * "u9bfwha0"
  * "aoclfnxz"
  *
- * type0
+ * type1 (model1)
 */
 typedef enum {
-    DP_TYPE0_ID_00    = 0x00,     // heat min  - if 0 - not support
-    DP_TYPE0_ID_01    = 0x01,     // on off
-    DP_TYPE0_ID_02    = 0x02,     // manual / programming
-    DP_TYPE0_ID_03    = 0x03,     // unknown
-    DP_TYPE0_ID_10    = 0x10,     // heat setpoint
-    DP_TYPE0_ID_13    = 0x13,     // max heat
-    DP_TYPE0_ID_18    = 0x18,     // local temperature
-    DP_TYPE0_ID_1A    = 0x1A,     // hysteresis
-    DP_TYPE0_ID_1B    = 0x1B,     // calibration
-    DP_TYPE0_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
-    DP_TYPE0_ID_28    = 0x28,     // lock / unlock keys
-    DP_TYPE0_ID_2B    = 0x2B,     // Sensor IN/AL/OU
-    DP_TYPE0_ID_65    = 0x65,     // schedule
+    DP_TYPE1_ID_00    = 0x00,     // heat min  - if 0 - not support
+    DP_TYPE1_ID_01    = 0x01,     // on off
+    DP_TYPE1_ID_02    = 0x02,     // manual / programming
+    DP_TYPE1_ID_03    = 0x03,     // unknown
+    DP_TYPE1_ID_10    = 0x10,     // heat setpoint
+    DP_TYPE1_ID_13    = 0x13,     // max heat
+    DP_TYPE1_ID_18    = 0x18,     // local temperature
+    DP_TYPE1_ID_1A    = 0x1A,     // hysteresis
+    DP_TYPE1_ID_1B    = 0x1B,     // calibration
+    DP_TYPE1_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE1_ID_28    = 0x28,     // lock / unlock keys
+    DP_TYPE1_ID_2B    = 0x2B,     // Sensor IN/AL/OU
+    DP_TYPE1_ID_65    = 0x65,     // schedule
 } data_point_id_type0_t;
 
 
 /* data point for manufacturer id -
  * "edl8pz1k"
  *
- * type1
+ * type2 (model2)
  */
 typedef enum {
-    DP_TYPE1_ID_00    = 0x00,     // 0 - not support
-    DP_TYPE1_ID_01    = 0x01,     // on off
-    DP_TYPE1_ID_02    = 0x02,     // manual / programming
-    DP_TYPE1_ID_10    = 0x10,     // heat setpoint
-    DP_TYPE1_ID_13    = 0x13,     // max heat
-    DP_TYPE1_ID_18    = 0x18,     // local temperature
-    DP_TYPE1_ID_1A    = 0x1A,     // min heat
-    DP_TYPE1_ID_1B    = 0x1B,     // calibration
-    DP_TYPE1_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
-    DP_TYPE1_ID_28    = 0x28,     // lock / unlock keys
-    DP_TYPE1_ID_2B    = 0x2B,     // Sensor IN/AL/OU
-    DP_TYPE1_ID_67    = 0x67,     // hysteresis
-    DP_TYPE1_ID_68    = 0x68,     // protection max temperature
-    DP_TYPE1_ID_6F    = 0x6F,     // protection min temperature
-    DP_TYPE1_ID_65    = 0x65,     // schedule sun
-    DP_TYPE1_ID_66    = 0x66,     // temperature of outer sensor (if AL or OU)
-    DP_TYPE1_ID_69    = 0x69,     // schedule sat
-    DP_TYPE1_ID_6A    = 0x6A,     // schedule fri
-    DP_TYPE1_ID_6B    = 0x6B,     // schedule thu
-    DP_TYPE1_ID_6C    = 0x6C,     // schedule wed
-    DP_TYPE1_ID_6D    = 0x6D,     // schedule tue
-    DP_TYPE1_ID_6E    = 0x6E,     // schedule mon
+    DP_TYPE2_ID_00    = 0x00,     // 0 - not support
+    DP_TYPE2_ID_01    = 0x01,     // on off
+    DP_TYPE2_ID_02    = 0x02,     // manual / programming
+    DP_TYPE2_ID_10    = 0x10,     // heat setpoint
+    DP_TYPE2_ID_13    = 0x13,     // max heat
+    DP_TYPE2_ID_18    = 0x18,     // local temperature
+    DP_TYPE2_ID_1A    = 0x1A,     // min heat
+    DP_TYPE2_ID_1B    = 0x1B,     // calibration
+    DP_TYPE2_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE2_ID_28    = 0x28,     // lock / unlock keys
+    DP_TYPE2_ID_2B    = 0x2B,     // Sensor IN/AL/OU
+    DP_TYPE2_ID_67    = 0x67,     // hysteresis
+    DP_TYPE2_ID_68    = 0x68,     // protection max temperature
+    DP_TYPE2_ID_6F    = 0x6F,     // protection min temperature
+    DP_TYPE2_ID_65    = 0x65,     // schedule sun
+    DP_TYPE2_ID_66    = 0x66,     // temperature of outer sensor (if AL or OU)
+    DP_TYPE2_ID_69    = 0x69,     // schedule sat
+    DP_TYPE2_ID_6A    = 0x6A,     // schedule fri
+    DP_TYPE2_ID_6B    = 0x6B,     // schedule thu
+    DP_TYPE2_ID_6C    = 0x6C,     // schedule wed
+    DP_TYPE2_ID_6D    = 0x6D,     // schedule tue
+    DP_TYPE2_ID_6E    = 0x6E,     // schedule mon
 } data_point_id_type1_t;
+
+
+/* data point for manufacturer id -
+ * "tagezcph"
+ *
+ * type3 (model3)
+*/
+typedef enum {
+    DP_TYPE3_ID_00    = 0x00,     // 0 - not support
+    DP_TYPE3_ID_01    = 0x01,     // on off
+    DP_TYPE3_ID_02    = 0x02,     // manual / programming
+    DP_TYPE3_ID_10    = 0x10,     // heat setpoint
+    DP_TYPE3_ID_13    = 0x13,     // max heat
+    DP_TYPE3_ID_18    = 0x18,     // local temperature
+    DP_TYPE3_ID_1A    = 0x1A,     // min heat
+    DP_TYPE3_ID_1B    = 0x1B,     // calibration
+    DP_TYPE3_ID_1C    = 0x1C,     // default setting
+    DP_TYPE3_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE3_ID_27    = 0x27,     // lock / unlock keys
+    DP_TYPE3_ID_28    = 0x28,     // eco mode
+    DP_TYPE3_ID_2B    = 0x2B,     // Sensor IN/AL/OU
+    DP_TYPE3_ID_67    = 0x67,     // hysteresis
+    DP_TYPE3_ID_68    = 0x68,     // protection max temperature
+    DP_TYPE3_ID_6F    = 0x6F,     // protection min temperature
+    DP_TYPE3_ID_65    = 0x65,     // schedule sun
+    DP_TYPE3_ID_66    = 0x66,     // temperature of outer sensor (if AL or OU)
+    DP_TYPE3_ID_69    = 0x69,     // schedule sat
+    DP_TYPE3_ID_6A    = 0x6A,     // schedule fri
+    DP_TYPE3_ID_6B    = 0x6B,     // schedule thu
+    DP_TYPE3_ID_6C    = 0x6C,     // schedule wed
+    DP_TYPE3_ID_6D    = 0x6D,     // schedule tue
+    DP_TYPE3_ID_6E    = 0x6E,     // schedule mon
+    DP_TYPE3_ID_70    = 0x70,     // eco mode's temperature
+    DP_TYPE3_ID_71    = 0x71,     // level brightness 06:00-22:00
+    DP_TYPE3_ID_72    = 0x72,     // level brightness 22:00-06:00
+} data_point_id_type2_t;
 
 typedef enum {
     DP_IDX_ONOFF    = 0,
@@ -80,6 +116,8 @@ typedef enum {
     DP_IDX_SCHEDULE_SUN,
     DP_IDX_LEVEL_A,
     DP_IDX_LEVEL_B,
+    DP_IDX_ECO_MODE,
+    DP_IDX_ECO_TEMP,
     DP_IDX_MAXNUM
 } data_point_idx_t;
 
@@ -103,8 +141,9 @@ typedef enum {
 } dp_type_t;
 
 typedef enum {
-    MANUF_NAME_0 = 0,
-    MANUF_NAME_1,
+    MANUF_NAME_1 = 0,
+    MANUF_NAME_2,
+    MANUF_NAME_3,
     MANUF_NAME_MAX
 } manuf_name_t;
 
@@ -144,6 +183,6 @@ extern data_point_st_t *data_point_model;
 extern const char8_t **tuya_manuf_names[];
 
 void data_point_model_init();
-data_point_st_t *data_point_model_arr[MANUF_NAME_MAX];
+data_point_st_t *data_point_model_arr[DP_IDX_MAXNUM];
 
 #endif /* SRC_INCLUDE_APP_TUYA_DATAPOINT_H_ */

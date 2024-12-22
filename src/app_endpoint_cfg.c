@@ -73,6 +73,18 @@ const uint16_t app_ep1_outClusterList[] = {
 #define APP_EP1_IN_CLUSTER_NUM   (sizeof(app_ep1_inClusterList)/sizeof(app_ep1_inClusterList[0]))
 #define APP_EP1_OUT_CLUSTER_NUM  (sizeof(app_ep1_outClusterList)/sizeof(app_ep1_outClusterList[0]))
 
+const uint16_t app_ep2_inClusterList[] = {
+#ifdef ZCL_LEVEL_CTRL
+    ZCL_CLUSTER_GEN_LEVEL_CONTROL,
+#endif
+};
+
+const uint16_t app_ep2_outClusterList[] = {
+};
+
+#define APP_EP2_IN_CLUSTER_NUM   (sizeof(app_ep2_inClusterList)/sizeof(app_ep2_inClusterList[0]))
+#define APP_EP2_OUT_CLUSTER_NUM  (sizeof(app_ep2_outClusterList)/sizeof(app_ep2_outClusterList[0]))
+
 /**
  *  @brief Definition for simple description for HA profile
  */
@@ -88,6 +100,18 @@ const af_simple_descriptor_t app_ep1Desc = {
     (uint16_t *)app_ep1_outClusterList,     /* Application output cluster list */
 };
 
+
+const af_simple_descriptor_t app_ep2Desc = {
+    HA_PROFILE_ID,                          /* Application profile identifier */
+    HA_DEV_THERMOSTAT,                      /* Application device identifier */
+    APP_ENDPOINT2,                          /* Endpoint */
+    2,                                      /* Application device version */
+    0,                                      /* Reserved */
+    APP_EP2_IN_CLUSTER_NUM,                 /* Application input cluster count */
+    APP_EP2_OUT_CLUSTER_NUM,                /* Application output cluster count */
+    (uint16_t *)app_ep2_inClusterList,      /* Application input cluster list */
+    (uint16_t *)app_ep2_outClusterList,     /* Application output cluster list */
+};
 
 
 /* Basic */
@@ -185,21 +209,36 @@ const zclAttrInfo_t scene_attr1Tbl[] = {
 #ifdef ZCL_LEVEL_CTRL
 /* Level */
 zcl_levelAttr_t g_zcl_levelAttrs = {
-    .currentLevel = 9,
-    .minLevel = 1,
-    .maxLevel = 9,
+    .currentLevelA = 6,
+    .currentLevelB = 6,
+    .minLevelA = 0,
+    .maxLevelA = 8,
+    .minLevelB = 0,
+    .maxLevelB = 8,
 };
 
-const zclAttrInfo_t level_attrTbl[] =
+const zclAttrInfo_t levelA_attrTbl[] =
 {
-    { ZCL_ATTRID_LEVEL_CURRENT_LEVEL,       ZCL_UINT8,  RR, (uint8_t*)&g_zcl_levelAttrs.currentLevel },
-    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.minLevel },
-    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.maxLevel },
+    { ZCL_ATTRID_LEVEL_CURRENT_LEVEL,       ZCL_UINT8,  RR, (uint8_t*)&g_zcl_levelAttrs.currentLevelA },
+    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.minLevelA },
+    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.maxLevelA },
 
     { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,   ZCL_UINT16, R,  (u8*)&zcl_attr_global_clusterRevision},
 };
 
-#define ZCL_LEVEL_ATTR_NUM   sizeof(level_attrTbl) / sizeof(zclAttrInfo_t)
+#define ZCL_LEVEL_A_ATTR_NUM   sizeof(levelA_attrTbl) / sizeof(zclAttrInfo_t)
+
+const zclAttrInfo_t levelB_attrTbl[] =
+{
+    { ZCL_ATTRID_LEVEL_CURRENT_LEVEL,       ZCL_UINT8,  RR, (uint8_t*)&g_zcl_levelAttrs.currentLevelB },
+    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.minLevelB },
+    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.maxLevelB },
+
+    { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,   ZCL_UINT16, R,  (u8*)&zcl_attr_global_clusterRevision},
+};
+
+#define ZCL_LEVEL_B_ATTR_NUM   sizeof(levelB_attrTbl) / sizeof(zclAttrInfo_t)
+
 #endif
 
 zcl_timeAttr_t g_zcl_timeAttrs = {
@@ -242,6 +281,8 @@ zcl_thermostatAttr_t g_zcl_thermostatAttrs = {
     .startOfWeek = DAY_MON,                 // 1 - Monday
     .weeklyTransNum = 3,                    // 1 - Mon-Fri, 2 - Sat, 3 - Sun
     .dailyTransNum = 4,
+    .ecoMode = 0,                           // 0 - off, 1 - on
+    .ecoModeTemperature = 2000,             // 20°C * 100
 };
 
 
@@ -256,7 +297,7 @@ const zclAttrInfo_t thermostat_attrTbl[] = {
         { ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT,     ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.occupiedHeatingSetpoint    },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CTRL_SEQUENCE_OF_OPERATION,    ZCL_ENUM8,      R,      (uint8_t*)&g_zcl_thermostatAttrs.controlSequenceOfOperation },
         { ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE,                      ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.systemMode                 },
-        {ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE,     ZCL_BITMAP8,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.manual_progMode            },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE,    ZCL_BITMAP8,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.manual_progMode            },
         { ZCL_ATTRID_HVAC_THERMOSTAT_RUNNING_STATE,                 ZCL_BITMAP16,   RR,     (uint8_t*)&g_zcl_thermostatAttrs.runningState               },
         { ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND,        ZCL_INT8,       RRW,    (uint8_t*)&g_zcl_thermostatAttrs.dead_band                  },
         { ZCL_ATTRID_HVAC_THERMOSTAT_START_OF_WEEK,                 ZCL_ENUM8,      R,      (uint8_t*)&g_zcl_thermostatAttrs.startOfWeek                },
@@ -265,6 +306,8 @@ const zclAttrInfo_t thermostat_attrTbl[] = {
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED,            ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.sensor_used                },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT,          ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.frostProtect               },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT,           ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.heatProtect                },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE,               ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.ecoMode                    },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_TEMPERATURE,   ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.ecoModeTemperature         },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,                       ZCL_UINT16,     R,      (uint8_t*)&zcl_attr_global_clusterRevision                  },
 };
@@ -295,7 +338,7 @@ const zcl_specClusterInfo_t g_appEp1ClusterList[] = {
     {ZCL_CLUSTER_GEN_SCENES,    MANUFACTURER_CODE_NONE, ZCL_SCENE_1ATTR_NUM,    scene_attr1Tbl,     zcl_scene_register,     app_sceneCb},
 #endif
 #ifdef ZCL_LEVEL_CTRL
-    {ZCL_CLUSTER_GEN_LEVEL_CONTROL, MANUFACTURER_CODE_NONE, ZCL_LEVEL_ATTR_NUM, level_attrTbl,      zcl_level_register,     app_displayLevelCb},
+    {ZCL_CLUSTER_GEN_LEVEL_CONTROL, MANUFACTURER_CODE_NONE, ZCL_LEVEL_A_ATTR_NUM, levelA_attrTbl,      zcl_level_register,     app_displayLevelCb},
 #endif
     {ZCL_CLUSTER_GEN_TIME,      MANUFACTURER_CODE_NONE, ZCL_TIME_ATTR_NUM,      time_attrTbl,       zcl_time_register,      app_timeCb},
 #ifdef ZCL_THERMOSTAT
@@ -305,4 +348,12 @@ const zcl_specClusterInfo_t g_appEp1ClusterList[] = {
 };
 
 uint8_t APP_EP1_CB_CLUSTER_NUM = (sizeof(g_appEp1ClusterList)/sizeof(g_appEp1ClusterList[0]));
+
+const zcl_specClusterInfo_t g_appEp2ClusterList[] = {
+#ifdef ZCL_LEVEL_CTRL
+    {ZCL_CLUSTER_GEN_LEVEL_CONTROL, MANUFACTURER_CODE_NONE, ZCL_LEVEL_B_ATTR_NUM, levelB_attrTbl,      zcl_level_register,     app_displayLevelCb},
+#endif
+};
+
+uint8_t APP_EP2_CB_CLUSTER_NUM = (sizeof(g_appEp2ClusterList)/sizeof(g_appEp2ClusterList[0]));
 
