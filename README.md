@@ -125,6 +125,8 @@ P.S. В реальной работе не проверялось, требуе�
 
 - [@immortal_serg](https://t.me/immortal_serg) за предоставленный термостат _TZE204_edl8pz1k.
 
+- [@chernyshevruslan](https://t.me/chernyshevruslan) за предоставленные термостаты _TZE204_tagezcph в двух разных исполнениях.
+
 - [https://github.com/doctor64](https://github.com/doctor64) [@doctor_64](https://t.me/doctor_64) - за желание всегда помочь и направить в правильное русло.
 
 - [https://github.com/devbis](https://github.com/devbis) [@Belokobylskiy](https://t.me/Belokobylskiy) - за идеи и написание скриптов на Питоне.
