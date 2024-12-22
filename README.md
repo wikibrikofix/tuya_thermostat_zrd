@@ -54,7 +54,7 @@
 ```
 external_converters:
   - tuya_thermostat_orig.js
-  - tuya_thermostat_model1.js
+  - tuya_thermostat.js
 ota:
   zigbee_ota_override_index_location: local_ota_index.json
 ```
