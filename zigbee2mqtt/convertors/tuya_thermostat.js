@@ -106,7 +106,8 @@ const fzLocal = {
     convert: (model, msg, publish, options, meta) => {
       const result = {};
       if (msg.data.hasOwnProperty('currentLevel')) {
-        const property = postfixWithEndpointName('brightness', msg, model, meta);
+        const property = `brightness_${utils.getEndpointName(msg, model, meta)}`;
+//        meta.logger.info('property: ' + property);
         return {[property]: msg.data['currentLevel']};
       }
       return result;
@@ -525,6 +526,10 @@ const definition = [
     await endpoint1.read('hvacThermostat', [0xF003]);
     await endpoint1.read('hvacThermostat', [0xF004]);
     await reporting.bind(endpoint1, coordinatorEndpoint, ['hvacThermostat', 'hvacUserInterfaceCfg', 'genLevelCtrl']);
+    await reporting.bind(endpoint2, coordinatorEndpoint, ['genLevelCtrl']);
+    const payload_currentLevel = [{attribute: {ID: 0x0000, type: 0x20}, minimumReportInterval: 0, maximumReportInterval: 3600, reportableChange: 0}];
+    await endpoint1.configureReporting('genLevelCtrl', payload_currentLevel);
+    await endpoint2.configureReporting('genLevelCtrl', payload_currentLevel);
     await reporting.thermostatTemperature(endpoint1, {min: 0, max: 3600, change: 0});
     await reporting.thermostatOccupiedHeatingSetpoint(endpoint1, {min: 0, max: 3600, change: 0});
     await reporting.thermostatRunningState(endpoint1, {min: 0, max: 3600, change: 0});
@@ -552,7 +557,8 @@ const definition = [
     e.binary('child_lock', ea.ALL, 'Lock', 'Unlock').withDescription('Enables/disables physical input on the device'),
     e.programming_operation_mode(['setpoint', 'schedule']).withDescription('Setpoint or Schedule mode'),
     e.enum('sensor', ea.ALL, switchSensorUsed).withDescription('Select temperature sensor to use'),
-    e.numeric('deadzone_temperature', ea.ALL)
+    e
+      .numeric('deadzone_temperature', ea.ALL)
       .withDescription('The delta between local_temperature and current_heating_setpoint to trigger activity')
       .withUnit('°C')
       .withValueMin(1)
@@ -609,9 +615,9 @@ const definition = [
       .withValueMax(45)
       .withValueStep(1),
     e
-	  .numeric('outdoor_temperature', ea.STATE_GET)
-	  .withUnit('°C')
-	  .withDescription('Current temperature measured from the floor outer sensor'),
+      .numeric('outdoor_temperature', ea.STATE_GET)
+      .withUnit('°C')
+      .withDescription('Current temperature measured from the floor outer sensor'),
     e.climate()
       .withLocalTemperature()
       .withSetpoint('occupied_heating_setpoint', 5, 45, 0.5)

@@ -72,17 +72,8 @@ void local_cmd_eco_mode_temp_3(void *args) {
 void local_cmd_level_day_3(void *args) {
 
     uint16_t *level = (uint16_t*)args;
-//    uint16_t divisor = 1;
 
-    printf("local_cmd_level_day_3(). level: %d\r\n", *level);
-
-//    if (data_point_model[DP_IDX_LEVEL_A].divisor == 1) {
-//        divisor = 100;
-//    } else if (data_point_model[DP_IDX_LEVEL_A].divisor == 10) {
-//        divisor = 10;
-//    }
-
-//    *level *= divisor;
+//    printf("local_cmd_level_day_3(). level: %d\r\n", *level);
 
     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_LEVEL_CONTROL, ZCL_ATTRID_LEVEL_CURRENT_LEVEL, (uint8_t*)level);
 
@@ -92,17 +83,8 @@ void local_cmd_level_day_3(void *args) {
 void local_cmd_level_night_3(void *args) {
 
     uint16_t *level = (uint16_t*)args;
-//    uint16_t divisor = 1;
 
-    printf("local_cmd_level_night_3(). level: %d\r\n", *level);
-
-//    if (data_point_model[DP_IDX_LEVEL_B].divisor == 1) {
-//        divisor = 100;
-//    } else if (data_point_model[DP_IDX_LEVEL_B].divisor == 10) {
-//        divisor = 10;
-//    }
-
-//    *level *= divisor;
+//    printf("local_cmd_level_night_3(). level: %d\r\n", *level);
 
     zcl_setAttrVal(APP_ENDPOINT2, ZCL_CLUSTER_GEN_LEVEL_CONTROL, ZCL_ATTRID_LEVEL_CURRENT_LEVEL, (uint8_t*)level);
 
@@ -160,14 +142,6 @@ void remote_cmd_eco_mode_temp_3(void *args) {
     if (eco_temp < min_temp) eco_temp = min_temp;
     if (eco_temp > max_temp) eco_temp = max_temp;
 
-//    eco_temp /= 100; // 1500 -> 15°C
-//
-//    if (data_point_model[DP_IDX_ECO_TEMP].divisor == 10) {
-//        eco_temp *= 10;
-//    } else if (data_point_model[DP_IDX_ECO_TEMP].divisor == 100) {
-//        eco_temp *= 100;
-//    }
-
     if (data_point_model[DP_IDX_ECO_TEMP].divisor == 1) {
         eco_temp /= 100;
     } else if (data_point_model[DP_IDX_ECO_TEMP].divisor == 10) {
@@ -210,15 +184,9 @@ void remote_cmd_level_day_3(void *args) {
 
     uint8_t *level = (uint8_t*)args;
 
-    printf("remote_cmd_level_day_3(). level: %d\r\n", *level);
+//    printf("remote_cmd_level_day_3(). level: %d\r\n", *level);
 
     if (*level < 0 || *level > 8) return;
-
-//    if (data_point_model[DP_IDX_LEVEL_A].divisor == 10) {
-//        *level *= 10;
-//    } else if (data_point_model[DP_IDX_LEVEL_A].divisor == 100) {
-//        *level *= 100;
-//    }
 
     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_LEVEL_CONTROL, ZCL_ATTRID_LEVEL_CURRENT_LEVEL, (uint8_t*)level);
 
@@ -258,15 +226,9 @@ void remote_cmd_level_night_3(void *args) {
 
     uint8_t *level = (uint8_t*)args;
 
-    printf("remote_cmd_level_night_3(). level: %d\r\n", *level);
+//    printf("remote_cmd_level_night_3(). level: %d\r\n", *level);
 
     if (*level < 0 || *level > 8) return;
-
-//    if (data_point_model[DP_IDX_LEVEL_B].divisor == 10) {
-//        *level *= 10;
-//    } else if (data_point_model[DP_IDX_LEVEL_B].divisor == 100) {
-//        *level *= 100;
-//    }
 
     zcl_setAttrVal(APP_ENDPOINT2, ZCL_CLUSTER_GEN_LEVEL_CONTROL, ZCL_ATTRID_LEVEL_CURRENT_LEVEL, (uint8_t*)level);
 

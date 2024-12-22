@@ -211,15 +211,17 @@ const zclAttrInfo_t scene_attr1Tbl[] = {
 zcl_levelAttr_t g_zcl_levelAttrs = {
     .currentLevelA = 6,
     .currentLevelB = 6,
-    .minLevel = 1,
-    .maxLevel = 9,
+    .minLevelA = 0,
+    .maxLevelA = 8,
+    .minLevelB = 0,
+    .maxLevelB = 8,
 };
 
 const zclAttrInfo_t levelA_attrTbl[] =
 {
     { ZCL_ATTRID_LEVEL_CURRENT_LEVEL,       ZCL_UINT8,  RR, (uint8_t*)&g_zcl_levelAttrs.currentLevelA },
-    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.minLevel },
-    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.maxLevel },
+    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.minLevelA },
+    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.maxLevelA },
 
     { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,   ZCL_UINT16, R,  (u8*)&zcl_attr_global_clusterRevision},
 };
@@ -229,8 +231,8 @@ const zclAttrInfo_t levelA_attrTbl[] =
 const zclAttrInfo_t levelB_attrTbl[] =
 {
     { ZCL_ATTRID_LEVEL_CURRENT_LEVEL,       ZCL_UINT8,  RR, (uint8_t*)&g_zcl_levelAttrs.currentLevelB },
-    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.minLevel },
-    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.maxLevel },
+    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.minLevelB },
+    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.maxLevelB },
 
     { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,   ZCL_UINT16, R,  (u8*)&zcl_attr_global_clusterRevision},
 };

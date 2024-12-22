@@ -64,8 +64,10 @@ typedef struct {
 typedef struct {
     uint8_t     currentLevelA;
     uint8_t     currentLevelB;
-    uint8_t     minLevel;
-    uint8_t     maxLevel;
+    uint8_t     minLevelA;
+    uint8_t     maxLevelA;
+    uint8_t     minLevelB;
+    uint8_t     maxLevelB;
 } zcl_levelAttr_t;
 
 /**
