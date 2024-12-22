@@ -249,6 +249,14 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
                 if (data_point_model[DP_IDX_HEAT_PROTECT].remote_cmd)
                     data_point_model[DP_IDX_HEAT_PROTECT].remote_cmd(&temp);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE) {
+                uint8_t eco_mode = attr->attrData[0];
+                if (data_point_model[DP_IDX_ECO_MODE].remote_cmd)
+                    data_point_model[DP_IDX_ECO_MODE].remote_cmd(&eco_mode);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_TEMPERATURE) {
+                uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                if (data_point_model[DP_IDX_ECO_TEMP].remote_cmd)
+                    data_point_model[DP_IDX_ECO_TEMP].remote_cmd(&temp);
             }
         }
     }
@@ -1092,7 +1100,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                 bool save = false;
 
                 switch(manuf_name) {
-                    case MANUF_NAME_0:
+                    case MANUF_NAME_1:
 #if UART_PRINTF_MODE
                         printf("Days other than Monday, Saturday and Sunday are not supported\r\n");
 #endif
@@ -1128,7 +1136,8 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                                 data_point_model[DP_IDX_SCHEDULE].remote_cmd(NULL);
                         }
                         break;
-                    case MANUF_NAME_1:
+                    case MANUF_NAME_2:
+                    case MANUF_NAME_3:
                         for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
                             if (i == 4) {
                                 break;
@@ -1190,12 +1199,12 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 #if UART_PRINTF_MODE
                 printf("CMD Get Weekly Schedule\r\n");
 #endif
-                if (manuf_name == MANUF_NAME_0) {
-                    remote_cmd_get_schedule_0(getWeeklyDay);
+                if (manuf_name == MANUF_NAME_1) {
+                    remote_cmd_get_schedule_1(getWeeklyDay);
                     getWeeklyDay++;
                     if (getWeeklyDay == 3) getWeeklyDay = 0;
-                } else if (manuf_name == MANUF_NAME_1) {
-                    remote_cmd_get_schedule_1(getWeeklyDay);
+                } else if (manuf_name == MANUF_NAME_2 || manuf_name == MANUF_NAME_3) {
+                    remote_cmd_get_schedule_2(getWeeklyDay);
                     getWeeklyDay++;
                     if (getWeeklyDay == 7) getWeeklyDay = 0;
                 }
@@ -1270,5 +1279,54 @@ status_t app_timeCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPa
     return ZCL_STA_SUCCESS;
 }
 
+
+/*********************************************************************
+ * @fn      app_displayMoveToLevelProcess
+ *
+ * @brief
+ *
+ * @param   cmdId
+ * @param   cmd
+ *
+ * @return  None
+ */
+
+static void app_displayMoveToLevelProcess(uint8_t endpoint, uint8_t cmdId, moveToLvl_t *cmd) {
+
+    if (endpoint == APP_ENDPOINT1) {
+        if (data_point_model[DP_IDX_LEVEL_A].remote_cmd)
+            data_point_model[DP_IDX_LEVEL_A].remote_cmd(&cmd->level);
+    } else if (endpoint == APP_ENDPOINT2) {
+        if (data_point_model[DP_IDX_LEVEL_B].remote_cmd)
+            data_point_model[DP_IDX_LEVEL_B].remote_cmd(&cmd->level);
+    }
+}
+
+
+/*********************************************************************
+ * @fn      app_displaylevelCb
+ *
+ * @brief   Handler for ZCL LEVEL command. This function will set LEVEL attribute first.
+ *
+ * @param   pAddrInfo
+ * @param   cmd - level cluster command id
+ * @param   cmdPayload
+ *
+ * @return  status_t
+ */
+
+status_t app_displayLevelCb(zclIncomingAddrInfo_t *pAddrInfo, u8 cmdId, void *cmdPayload) {
+    if(pAddrInfo->dstEp == APP_ENDPOINT1 || pAddrInfo->dstEp == APP_ENDPOINT2) {
+        switch(cmdId){
+            case ZCL_CMD_LEVEL_MOVE_TO_LEVEL:
+                app_displayMoveToLevelProcess(pAddrInfo->dstEp, cmdId, (moveToLvl_t *)cmdPayload);
+                break;
+            default:
+                break;
+        }
+    }
+
+    return ZCL_STA_SUCCESS;
+}
 
 

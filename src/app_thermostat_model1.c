@@ -8,31 +8,33 @@
 */
 
 data_point_st_t data_point_model0[DP_IDX_MAXNUM] = {
-        {DP_TYPE0_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_0, local_cmd_onoff_state_0},                // on off
-        {DP_TYPE0_ID_18, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_0},                                // local temperature
-        {DP_TYPE0_ID_10, DP_VAL,  4,    1,  remote_cmd_heating_set_0, local_cmd_heating_set_0},             // heat setpoint
-        {DP_TYPE0_ID_00, DP_VAL,  0,    0,  NULL, NULL},                                                    // heat min - not support
-        {DP_TYPE0_ID_13, DP_VAL,  4,    1,  remote_cmd_max_setpoint_0, local_cmd_max_setpoint_0},           // max heat setpoint
-        {DP_TYPE0_ID_1A, DP_VAL,  4,    1,  remote_cmd_deadband_0, local_cmd_deadband_0},                   // hysteresis
-        {DP_TYPE0_ID_1B, DP_VAL,  4,    1,  remote_cmd_temp_calibration_0, local_cmd_temp_calibration_0},   // local temperature calibration
-        {DP_TYPE0_ID_24, DP_ENUM, 1,    1,  NULL, local_cmd_set_run_state_0},                               // 0x00 - heat, 0x01 - idle
-        {DP_TYPE0_ID_2B, DP_ENUM, 1,    1,  remote_cmd_sensor_used_0, local_cmd_sensor_used_0},             // sensor IN/AL/OU
-        {DP_TYPE0_ID_02, DP_ENUM, 1,    1,  remote_cmd_oper_mode_0, local_cmd_oper_mode_0},                 // manual (setpoint) / programming (schedule)
-        {DP_TYPE0_ID_28, DP_BOOL, 1,    1,  remote_cmd_keylock_0, local_cmd_keylock_0},                     // lock / unlock keys (child lock)
-        {DP_TYPE0_ID_65, DP_RAW,  0x24, 1,  remote_cmd_set_schedule_0, local_cmd_set_schedule_0},           // schedule
-        {DP_TYPE0_ID_03, DP_BOOL, 1,    1,  NULL, NULL},                                                    // unknown
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE0_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_1, local_cmd_onoff_state_1},                // on off
+        {DP_TYPE1_ID_18, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_1},                                // local temperature
+        {DP_TYPE1_ID_10, DP_VAL,  4,    1,  remote_cmd_heating_set_1, local_cmd_heating_set_1},             // heat setpoint
+        {DP_TYPE1_ID_00, DP_VAL,  0,    0,  NULL, NULL},                                                    // heat min - not support
+        {DP_TYPE1_ID_13, DP_VAL,  4,    1,  remote_cmd_max_setpoint_1, local_cmd_max_setpoint_1},           // max heat setpoint
+        {DP_TYPE1_ID_1A, DP_VAL,  4,    1,  remote_cmd_deadband_1, local_cmd_deadband_1},                   // hysteresis
+        {DP_TYPE1_ID_1B, DP_VAL,  4,    1,  remote_cmd_temp_calibration_1, local_cmd_temp_calibration_1},   // local temperature calibration
+        {DP_TYPE1_ID_24, DP_ENUM, 1,    1,  NULL, local_cmd_set_run_state_1},                               // 0x00 - heat, 0x01 - idle
+        {DP_TYPE1_ID_2B, DP_ENUM, 1,    1,  remote_cmd_sensor_used_1, local_cmd_sensor_used_1},             // sensor IN/AL/OU
+        {DP_TYPE1_ID_02, DP_ENUM, 1,    1,  remote_cmd_oper_mode_1, local_cmd_oper_mode_1},                 // manual (setpoint) / programming (schedule)
+        {DP_TYPE1_ID_28, DP_BOOL, 1,    1,  remote_cmd_keylock_1, local_cmd_keylock_1},                     // lock / unlock keys (child lock)
+        {DP_TYPE1_ID_65, DP_RAW,  0x24, 1,  remote_cmd_set_schedule_1, local_cmd_set_schedule_1},           // schedule
+        {DP_TYPE1_ID_03, DP_BOOL, 1,    1,  NULL, NULL},                                                    // unknown
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
 };
 
 
@@ -44,7 +46,7 @@ data_point_st_t data_point_model0[DP_IDX_MAXNUM] = {
  * Funstions for local commands. MCU -> ZT3L -> Zegbee
  */
 
-void local_cmd_oper_mode_0(void *args) {
+void local_cmd_oper_mode_1(void *args) {
 
     uint8_t *mode = (uint8_t*)args;
 
@@ -57,7 +59,7 @@ void local_cmd_oper_mode_0(void *args) {
 
 }
 
-void local_cmd_set_schedule_0(void *args) {
+void local_cmd_set_schedule_1(void *args) {
 
     data_point_t *data_point = (data_point_t*)args;
 
@@ -101,7 +103,7 @@ void local_cmd_set_schedule_0(void *args) {
  *
  */
 
-void remote_cmd_oper_mode_0(void *args) {
+void remote_cmd_oper_mode_1(void *args) {
 
     uint8_t *oper_mode = (uint8_t*)args;
 
@@ -138,7 +140,7 @@ void remote_cmd_oper_mode_0(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_set_schedule_0(void *args) {
+void remote_cmd_set_schedule_1(void *args) {
 
     if (data_point_model[DP_IDX_SCHEDULE].id == 0) return;
 
@@ -191,7 +193,7 @@ void remote_cmd_set_schedule_0(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_get_schedule_0(uint8_t day) {
+void remote_cmd_get_schedule_1(uint8_t day) {
 
     if(!zb_isDeviceJoinedNwk()) return;
 

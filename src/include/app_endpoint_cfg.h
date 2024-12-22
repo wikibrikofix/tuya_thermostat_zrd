@@ -62,7 +62,8 @@ typedef struct {
  *  @brief Defined for level cluster attributes
  */
 typedef struct {
-    uint8_t     currentLevel;
+    uint8_t     currentLevelA;
+    uint8_t     currentLevelB;
     uint8_t     minLevel;
     uint8_t     maxLevel;
 } zcl_levelAttr_t;
@@ -90,11 +91,14 @@ typedef struct {
     int16_t     frostProtect;
     int16_t     heatProtect;
     uint8_t     dead_band;                      // 1 ... 5 °C
+    uint8_t     ecoMode;                        // 1 - ecoMode on, 0 - ecoMode off
+    int16_t     ecoModeTemperature;             // 20°C * 100
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off
 } zcl_thermostatAttr_t;
 
 extern uint8_t APP_EP1_CB_CLUSTER_NUM;
+extern uint8_t APP_EP2_CB_CLUSTER_NUM;
 
 /* Attributes */
 extern zcl_basicAttr_t g_zcl_basicAttrs;

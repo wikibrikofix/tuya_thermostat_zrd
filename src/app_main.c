@@ -111,12 +111,14 @@ void user_app_init(void)
 
     /* register endPoint */
     af_endpointRegister(APP_ENDPOINT1, (af_simple_descriptor_t *)&app_ep1Desc, zcl_rx_handler, NULL);
+    af_endpointRegister(APP_ENDPOINT2, (af_simple_descriptor_t *)&app_ep2Desc, zcl_rx_handler, NULL);
 
     zcl_reportingTabInit();
     thermostat_settings_restore();
 
     /* Register ZCL specific cluster information */
     zcl_register(APP_ENDPOINT1, APP_EP1_CB_CLUSTER_NUM, (zcl_specClusterInfo_t *)g_appEp1ClusterList);
+    zcl_register(APP_ENDPOINT2, APP_EP2_CB_CLUSTER_NUM, (zcl_specClusterInfo_t *)g_appEp2ClusterList);
 
 #if ZCL_GP_SUPPORT
     /* Initialize GP */
@@ -231,8 +233,14 @@ void user_init(bool isRetention) {
 //                            ZCL_ATTRID_HVAC_TEMPERATURE_DISPLAY_MODE, 0, 3600, (uint8_t *)&reportableChange);
     bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG,
                             ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, 0, 3600, (uint8_t *)&reportableChange);
-//    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_GEN_LEVEL_CONTROL,
-//                            ZCL_ATTRID_LEVEL_CURRENT_LEVEL, 0, 3600, (uint8_t *)&reportableChange);
+    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_GEN_LEVEL_CONTROL,
+                            ZCL_ATTRID_LEVEL_CURRENT_LEVEL, 0, 3600, (uint8_t *)&reportableChange);
+    bdb_defaultReportingCfg(APP_ENDPOINT2, HA_PROFILE_ID, ZCL_CLUSTER_GEN_LEVEL_CONTROL,
+                            ZCL_ATTRID_LEVEL_CURRENT_LEVEL, 0, 3600, (uint8_t *)&reportableChange);
+    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                            ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE, 0, 3600, (uint8_t *)&reportableChange);
+    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_THERMOSTAT,
+                            ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_TEMPERATURE, 0, 3600, (uint8_t *)&reportableChange);
 
     /* custom reporting application (non SDK) */
     app_reporting_init();

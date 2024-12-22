@@ -3,7 +3,9 @@ const {identify, reporting, ota} = require('zigbee-herdsman-converters/lib/moder
 const definition = {
     fingerprint: [{modelID: 'TS0601', manufacturerName: '_TZE204_u9bfwha0'},
                   {modelID: 'TS0601', manufacturerName: '_TZE204_aoclfnxz'},
-                  {modelID: 'TS0601', manufacturerName: '_TZE204_edl8pz1k'}],
+                  {modelID: 'TS0601', manufacturerName: '_TZE204_edl8pz1k'},
+                  {modelID: 'TS0601', manufacturerName: '_TZE204_tagezcph'}
+				  ],
     zigbeeModel: ['TS0601'],
     model: 'Original Tuya thermostat ready for update',
     vendor: 'Slacky-DIY',

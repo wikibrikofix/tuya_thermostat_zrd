@@ -6,31 +6,33 @@
  * id, type, len, divisor, remote_commands_functionCb, local_commands_functionCb
  */
 data_point_st_t data_point_model1[DP_IDX_MAXNUM] = {
-        {DP_TYPE1_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_1, local_cmd_onoff_state_1},                // onoff
-        {DP_TYPE1_ID_18, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_1},                                // local temperature
-        {DP_TYPE1_ID_10, DP_VAL,  4,    10, remote_cmd_heating_set_1, local_cmd_heating_set_1},             // heat setpoint
-        {DP_TYPE1_ID_1A, DP_VAL,  4,    10, remote_cmd_min_setpoint_1, local_cmd_min_setpoint_1},           // min heat setpoint
-        {DP_TYPE1_ID_13, DP_VAL,  4,    10, remote_cmd_max_setpoint_1, local_cmd_max_setpoint_1},           // max heat setpoint
-        {DP_TYPE1_ID_67, DP_VAL,  4,    1,  remote_cmd_deadband_1, local_cmd_deadband_1},                   // hysteresis
-        {DP_TYPE1_ID_1B, DP_VAL,  4,    1,  remote_cmd_temp_calibration_1, local_cmd_temp_calibration_1},   // local temperature calibration
-        {DP_TYPE1_ID_24, DP_ENUM, 1,    1,  NULL, local_cmd_set_run_state_1},                       // 0x00 - heat, 0x01 - idle
-        {DP_TYPE1_ID_2B, DP_ENUM, 1,    1,  remote_cmd_sensor_used_1, local_cmd_sensor_used_1},     // sensor IN/AL/OU
-        {DP_TYPE1_ID_02, DP_ENUM, 1,    1,  remote_cmd_oper_mode_1, local_cmd_oper_mode_1},         // manual (setpoint) / programming (schedule)
-        {DP_TYPE1_ID_28, DP_BOOL, 1,    1,  remote_cmd_keylock_1, local_cmd_keylock_1},             // lock / unlock keys (child lock)
-        {DP_TYPE1_ID_00, DP_RAW,  0,    1,  remote_cmd_set_schedule_1, NULL},                       // schedule
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // unknown
-        {DP_TYPE1_ID_66, DP_VAL,  4,    10, NULL, local_cmd_outdoor_sensor_1},                      // temperature of outer sensor
-        {DP_TYPE1_ID_6F, DP_VAL,  4,    10, remote_cmd_frost_protect_1, local_cmd_frost_protect_1}, // frost protected
-        {DP_TYPE1_ID_68, DP_VAL,  4,    10, remote_cmd_heat_protect_1, local_cmd_heat_protect_1},   // heat protected
-        {DP_TYPE1_ID_6E, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_1},                            // schedule mon
-        {DP_TYPE1_ID_6D, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_1},                            // schedule tue
-        {DP_TYPE1_ID_6C, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_1},                            // schedule wed
-        {DP_TYPE1_ID_6B, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_1},                            // schedule thu
-        {DP_TYPE1_ID_6A, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_1},                            // schedule fri
-        {DP_TYPE1_ID_69, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_1},                            // schedule sat
-        {DP_TYPE1_ID_65, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_1},                            // schedule sun
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE2_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_2, local_cmd_onoff_state_2},                // onoff
+        {DP_TYPE2_ID_18, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_2},                                // local temperature
+        {DP_TYPE2_ID_10, DP_VAL,  4,    10, remote_cmd_heating_set_2, local_cmd_heating_set_2},             // heat setpoint
+        {DP_TYPE2_ID_1A, DP_VAL,  4,    10, remote_cmd_min_setpoint_2, local_cmd_min_setpoint_2},           // min heat setpoint
+        {DP_TYPE2_ID_13, DP_VAL,  4,    10, remote_cmd_max_setpoint_2, local_cmd_max_setpoint_2},           // max heat setpoint
+        {DP_TYPE2_ID_67, DP_VAL,  4,    1,  remote_cmd_deadband_2, local_cmd_deadband_2},                   // hysteresis
+        {DP_TYPE2_ID_1B, DP_VAL,  4,    1,  remote_cmd_temp_calibration_2, local_cmd_temp_calibration_2},   // local temperature calibration
+        {DP_TYPE2_ID_24, DP_ENUM, 1,    1,  NULL, local_cmd_set_run_state_2},                       // 0x00 - heat, 0x01 - idle
+        {DP_TYPE2_ID_2B, DP_ENUM, 1,    1,  remote_cmd_sensor_used_2, local_cmd_sensor_used_2},     // sensor IN/AL/OU
+        {DP_TYPE2_ID_02, DP_ENUM, 1,    1,  remote_cmd_oper_mode_2, local_cmd_oper_mode_2},         // manual (setpoint) / programming (schedule)
+        {DP_TYPE2_ID_28, DP_BOOL, 1,    1,  remote_cmd_keylock_2, local_cmd_keylock_2},             // lock / unlock keys (child lock)
+        {DP_TYPE2_ID_00, DP_RAW,  0,    1,  remote_cmd_set_schedule_2, NULL},                       // schedule
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // unknown
+        {DP_TYPE2_ID_66, DP_VAL,  4,    10, NULL, local_cmd_outdoor_sensor_2},                      // temperature of outer sensor
+        {DP_TYPE2_ID_6F, DP_VAL,  4,    10, remote_cmd_frost_protect_2, local_cmd_frost_protect_2}, // frost protected
+        {DP_TYPE2_ID_68, DP_VAL,  4,    10, remote_cmd_heat_protect_2, local_cmd_heat_protect_2},   // heat protected
+        {DP_TYPE2_ID_6E, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_2},                        // schedule mon
+        {DP_TYPE2_ID_6D, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_2},                        // schedule tue
+        {DP_TYPE2_ID_6C, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_2},                        // schedule wed
+        {DP_TYPE2_ID_6B, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_2},                        // schedule thu
+        {DP_TYPE2_ID_6A, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_2},                        // schedule fri
+        {DP_TYPE2_ID_69, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_2},                        // schedule sat
+        {DP_TYPE2_ID_65, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_2},                        // schedule sun
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},
 };
 
 
@@ -42,7 +44,7 @@ data_point_st_t data_point_model1[DP_IDX_MAXNUM] = {
  * Funstions for local commands. MCU -> ZT3L -> Zegbee
  */
 
-void local_cmd_oper_mode_1(void *args) {
+void local_cmd_oper_mode_2(void *args) {
 
     uint8_t *mode = (uint8_t*)args;
 
@@ -62,7 +64,7 @@ void local_cmd_oper_mode_1(void *args) {
 
 }
 
-void local_cmd_frost_protect_1(void *args) {
+void local_cmd_frost_protect_2(void *args) {
 
     int16_t *temp = (int16_t*)args;
     uint16_t divisor = 1;
@@ -93,7 +95,7 @@ void local_cmd_frost_protect_1(void *args) {
 
 }
 
-void local_cmd_heat_protect_1(void *args) {
+void local_cmd_heat_protect_2(void *args) {
 
     int16_t *temp = (int16_t*)args;
     uint16_t divisor = 1;
@@ -120,7 +122,7 @@ void local_cmd_heat_protect_1(void *args) {
     }
 }
 
-void local_cmd_outdoor_sensor_1(void *args) {
+void local_cmd_outdoor_sensor_2(void *args) {
 
     int16_t *temp = (int16_t*)args;
     uint16_t divisor = 1;
@@ -142,7 +144,7 @@ void local_cmd_outdoor_sensor_1(void *args) {
 
 }
 
-void local_cmd_set_schedule_1(void *args) {
+void local_cmd_set_schedule_2(void *args) {
 
     schedule_args_model2_t *schedule_args = (schedule_args_model2_t*)args;
     uint8_t *ptr = schedule_args->data_point->data;
@@ -166,7 +168,7 @@ void local_cmd_set_schedule_1(void *args) {
  *
  */
 
-void remote_cmd_oper_mode_1(void *args) {
+void remote_cmd_oper_mode_2(void *args) {
 
     uint8_t oper_mode;
     uint8_t *arg = (uint8_t*)args;
@@ -207,7 +209,7 @@ void remote_cmd_oper_mode_1(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_frost_protect_1(void *args) {
+void remote_cmd_frost_protect_2(void *args) {
 
     int16_t *arg = (int16_t*)args;
     uint32_t frost_protect = *arg;
@@ -258,7 +260,7 @@ void remote_cmd_frost_protect_1(void *args) {
 
 }
 
-void remote_cmd_heat_protect_1(void *args) {
+void remote_cmd_heat_protect_2(void *args) {
 
     int16_t *arg = (int16_t*)args;
     uint32_t heat_protect = *arg;
@@ -631,7 +633,7 @@ static void remote_cmd_set_schedule_sun() {
     set_seq_num(seq_num);
 }
 
-void remote_cmd_set_schedule_1(void *args) {
+void remote_cmd_set_schedule_2(void *args) {
 
     if (data_point_model[DP_IDX_SCHEDULE].remote_cmd == NULL) return;
 
@@ -668,7 +670,7 @@ void remote_cmd_set_schedule_1(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_get_schedule_1(uint8_t day) {
+void remote_cmd_get_schedule_2(uint8_t day) {
 
     if(!zb_isDeviceJoinedNwk()) return;
 
