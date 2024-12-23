@@ -70,6 +70,7 @@ extern "C" {
 #define USB_PRINTF_MODE         		OFF
 
 #define DEBUG_PKT                       ON
+#define DEBUG_PKT_FILTER                ON
 #define DEBUG_CMD                       OFF
 #define DEBUG_DP                        OFF
 #define DEBUG_TIME                      OFF

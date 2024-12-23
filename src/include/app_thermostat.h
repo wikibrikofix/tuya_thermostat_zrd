@@ -63,9 +63,10 @@ typedef struct {
     heatMode_t      *heatMode;
 } schedule_args_model2_t;
 
-extern data_point_st_t data_point_model0[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model1[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model2[DP_IDX_MAXNUM];
+extern data_point_st_t data_point_model3[DP_IDX_MAXNUM];
+extern data_point_st_t data_point_model4[DP_IDX_MAXNUM];
 extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
@@ -147,6 +148,32 @@ void remote_cmd_eco_mode_3(void *args);
 void remote_cmd_eco_mode_temp_3(void *args);
 void remote_cmd_level_day_3(void *args);
 void remote_cmd_level_night_3(void *args);
+
+/*
+ *  remote_cmd for signarure
+ *  "xyugziqv"
+ *
+ *  model4 - name_4
+ */
+#define remote_cmd_sys_mode_4           remote_cmd_sys_mode
+#define remote_cmd_heating_set_4        remote_cmd_heating_set
+#define remote_cmd_temp_calibration_4   remote_cmd_temp_calibration
+#define remote_cmd_sensor_used_4        remote_cmd_sensor_used
+#define remote_cmd_keylock_4            remote_cmd_keylock
+#define remote_cmd_deadband_4           remote_cmd_deadband
+#define remote_cmd_min_setpoint_4       remote_cmd_min_setpoint
+#define remote_cmd_max_setpoint_4       remote_cmd_max_setpoint
+
+#define remote_cmd_oper_mode_4          remote_cmd_oper_mode_2
+#define remote_cmd_frost_protect_4      remote_cmd_frost_protect_2
+#define remote_cmd_heat_protect_4       remote_cmd_heat_protect_2
+#define remote_cmd_set_schedule_4       remote_cmd_set_schedule_2
+#define remote_cmd_get_schedule_4       remote_cmd_get_schedule_2
+
+#define remote_cmd_eco_mode_4           remote_cmd_eco_mode_3
+#define remote_cmd_eco_mode_temp_4      remote_cmd_eco_mode_temp_3
+
+void remote_cmd_level_4(void *args);
 
 /*
  * common functions local_cmd
@@ -232,6 +259,34 @@ void local_cmd_eco_mode_3(void *args);
 void local_cmd_eco_mode_temp_3(void *args);
 void local_cmd_level_day_3(void *args);
 void local_cmd_level_night_3(void *args);
+
+
+/*
+ *  local_cmd for signarure
+ *  "xyugziqv"
+ *
+ *  model4 - name_4
+ */
+#define local_cmd_inner_sensor_4        local_cmd_inner_sensor
+#define local_cmd_heating_set_4         local_cmd_heating_set
+#define local_cmd_temp_calibration_4    local_cmd_temp_calibration
+#define local_cmd_min_setpoint_4        local_cmd_min_setpoint
+#define local_cmd_max_setpoint_4        local_cmd_max_setpoint
+#define local_cmd_deadband_4            local_cmd_deadband
+#define local_cmd_keylock_4             local_cmd_keylock
+#define local_cmd_sensor_used_4         local_cmd_sensor_used
+#define local_cmd_set_run_state_4       local_cmd_set_run_state
+#define local_cmd_onoff_state_4         local_cmd_onoff_state
+
+#define local_cmd_oper_mode_4           local_cmd_oper_mode_2
+#define local_cmd_frost_protect_4       local_cmd_frost_protect_2
+#define local_cmd_heat_protect_4        local_cmd_heat_protect_2
+#define local_cmd_outdoor_sensor_4      local_cmd_outdoor_sensor_2
+#define local_cmd_set_schedule_4        local_cmd_set_schedule_2
+
+#define local_cmd_eco_mode_4            local_cmd_eco_mode_3
+#define local_cmd_eco_mode_temp_4       local_cmd_eco_mode_temp_3
+#define local_cmd_level_4               local_cmd_level_day_3
 
 /*
  *

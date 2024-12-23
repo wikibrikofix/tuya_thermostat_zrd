@@ -30,6 +30,8 @@ static void print_pkt_inp(uint8_t *data, uint32_t len) {
 
 #if UART_PRINTF_MODE && DEBUG_PKT
 
+#if DEBUG_PKT_FILTER
+
     static uint8_t command = 0;
     static uint32_t time_pkt = 0;
     pkt_tuya_t *pkt = (pkt_tuya_t*)data;
@@ -46,6 +48,10 @@ static void print_pkt_inp(uint8_t *data, uint32_t len) {
         }
         time_pkt = clock_time();
     }
+#else
+    printf("inp_pkt ==> 0x");
+    print_pkt(data, len);
+#endif
 #endif
 }
 
@@ -53,9 +59,12 @@ static void print_pkt_out(uint8_t *data, uint32_t len) {
 
 #if UART_PRINTF_MODE && DEBUG_PKT
 
+#if DEBUG_PKT_FILTER
+
     static uint8_t command = 0;
     static uint32_t time_pkt = 0;
     pkt_tuya_t *pkt = (pkt_tuya_t*)data;
+
 
     if (command != pkt->command) {
         command = pkt->command;
@@ -69,6 +78,10 @@ static void print_pkt_out(uint8_t *data, uint32_t len) {
         }
         time_pkt = clock_time();
     }
+#else
+    printf("out_pkt <== 0x");
+    print_pkt(data, len);
+#endif
 #endif
 }
 
