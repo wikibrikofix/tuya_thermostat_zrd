@@ -21,7 +21,7 @@ typedef enum {
     DP_TYPE1_ID_28    = 0x28,     // lock / unlock keys
     DP_TYPE1_ID_2B    = 0x2B,     // Sensor IN/AL/OU
     DP_TYPE1_ID_65    = 0x65,     // schedule
-} data_point_id_type0_t;
+} data_point_id_type1_t;
 
 
 /* data point for manufacturer id -
@@ -52,7 +52,7 @@ typedef enum {
     DP_TYPE2_ID_6C    = 0x6C,     // schedule wed
     DP_TYPE2_ID_6D    = 0x6D,     // schedule tue
     DP_TYPE2_ID_6E    = 0x6E,     // schedule mon
-} data_point_id_type1_t;
+} data_point_id_type2_t;
 
 
 /* data point for manufacturer id -
@@ -88,7 +88,48 @@ typedef enum {
     DP_TYPE3_ID_70    = 0x70,     // eco mode's temperature
     DP_TYPE3_ID_71    = 0x71,     // level brightness 06:00-22:00
     DP_TYPE3_ID_72    = 0x72,     // level brightness 22:00-06:00
-} data_point_id_type2_t;
+} data_point_id_type3_t;
+
+/* data point for manufacturer id -
+ * "xyugziqv"
+ *
+ * type4 (model4)
+*/
+typedef enum {
+    DP_TYPE4_ID_00    = 0x00,     // 0 - not support
+    DP_TYPE4_ID_01    = 0x01,     // on off
+    DP_TYPE4_ID_02    = 0x02,     // manual / programming
+    DP_TYPE4_ID_04    = 0x04,     // eco mode
+    DP_TYPE4_ID_10    = 0x10,     // heat setpoint
+    DP_TYPE4_ID_13    = 0x13,     // max heat
+    DP_TYPE4_ID_18    = 0x18,     // local temperature
+    DP_TYPE4_ID_1A    = 0x1A,     // min heat
+    DP_TYPE4_ID_1B    = 0x1B,     // calibration
+    DP_TYPE4_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE4_ID_28    = 0x28,     // lock / unlock keys
+    DP_TYPE4_ID_66    = 0x66,     // Sensor IN/AL/OU
+    DP_TYPE4_ID_67    = 0x67,     // hysteresis
+    DP_TYPE4_ID_69    = 0x69,     // eco mode's temperature
+    DP_TYPE4_ID_6A    = 0x6A,     // schedule sun
+    DP_TYPE4_ID_6B    = 0x6B,     // schedule sat
+    DP_TYPE4_ID_6C    = 0x6C,     // schedule fri
+    DP_TYPE4_ID_6D    = 0x6D,     // schedule thu
+    DP_TYPE4_ID_6E    = 0x6E,     // schedule wed
+    DP_TYPE4_ID_6F    = 0x6F,     // schedule tue
+    DP_TYPE4_ID_70    = 0x70,     // schedule mon
+    DP_TYPE4_ID_71    = 0x71,     // temperature of outer sensor (if AL or OU)
+    DP_TYPE4_ID_73    = 0x73,     // level brightness of screen
+    DP_TYPE4_ID_74    = 0x74,     // protection max temperature
+    DP_TYPE4_ID_75    = 0x75,     // protection min temperature
+} data_point_id_type4_t;
+
+typedef enum {
+    MANUF_NAME_1 = 0,
+    MANUF_NAME_2,
+    MANUF_NAME_3,
+    MANUF_NAME_4,
+    MANUF_NAME_MAX
+} manuf_name_t;
 
 typedef enum {
     DP_IDX_ONOFF    = 0,
@@ -139,13 +180,6 @@ typedef enum {
     DP_ENUM,
     DP_BITMAP
 } dp_type_t;
-
-typedef enum {
-    MANUF_NAME_1 = 0,
-    MANUF_NAME_2,
-    MANUF_NAME_3,
-    MANUF_NAME_MAX
-} manuf_name_t;
 
 typedef struct __attribute__((packed)) {
     uint8_t  dp_id;

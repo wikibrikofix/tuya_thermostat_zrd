@@ -249,7 +249,6 @@ static int32_t factory_resetCb(void *arg) {
     return -1;
 }
 
-
 void uart_cmd_handler() {
 
     size_t load_size = 0;

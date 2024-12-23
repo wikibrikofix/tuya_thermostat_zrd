@@ -5,7 +5,7 @@
  *
  * id, type, len, divisor, remote_commands_functionCb, local_commands_functionCb
  */
-data_point_st_t data_point_model1[DP_IDX_MAXNUM] = {
+data_point_st_t data_point_model2[DP_IDX_MAXNUM] = {
         {DP_TYPE2_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_2, local_cmd_onoff_state_2},                // onoff
         {DP_TYPE2_ID_18, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_2},                                // local temperature
         {DP_TYPE2_ID_10, DP_VAL,  4,    10, remote_cmd_heating_set_2, local_cmd_heating_set_2},             // heat setpoint
