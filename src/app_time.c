@@ -51,6 +51,8 @@ static int32_t app_clockCb(void *arg) {
 
 int32_t app_time_cmdCb(void *arg) {
 
+    //printf("app_time_cmdCb(). time_sent: %d\r\n", time_sent);
+
     if(zb_isDeviceJoinedNwk()) {
         epInfo_t dstEpInfo;
         TL_SETSTRUCTCONTENT(dstEpInfo, 0);
@@ -76,7 +78,7 @@ int32_t app_time_cmdCb(void *arg) {
 
             ev_buf_free((uint8_t *)pReadCmd);
 
-            return TIMEOUT_60MIN;
+            if (time_sent) return TIMEOUT_60MIN;
         }
 
     }
