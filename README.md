@@ -3,8 +3,6 @@
 **Tuya Thermostat model**
 
 1. Model r01
-	- "[_TZE200_u9bfwha0](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r01/README.md)"
-	- "[_TZE200_aoclfnxz](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r01/README.md)"
 	- "[_TZE204_u9bfwha0](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r01/README.md)"
 	- "[_TZE204_aoclfnxz](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r01/README.md)"
 2. Model r02
