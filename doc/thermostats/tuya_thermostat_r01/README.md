@@ -1,7 +1,5 @@
 ## Краткое описание термостатов, с сигнатурами
 
-	"_TZE200_u9bfwha0"
-	"_TZE200_aoclfnxz"
 	"_TZE204_u9bfwha0"
 	"_TZE204_aoclfnxz"
 	
