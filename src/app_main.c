@@ -137,6 +137,22 @@ void user_app_init(void)
 
 }
 
+void report_handler(void)
+{
+    if(zb_isDeviceJoinedNwk()){
+        if(zcl_reportingEntryActiveNumGet()){
+            u16 second = 1;//TODO: fix me
+
+            reportNoMinLimit();
+
+            //start report timer
+            reportAttrTimerStart(second);
+        }else{
+            //stop report timer
+            reportAttrTimerStop();
+        }
+    }
+}
 
 void app_task(void) {
 
@@ -242,8 +258,8 @@ void user_init(bool isRetention) {
     bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_THERMOSTAT,
                             ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_TEMPERATURE, 0, 3600, (uint8_t *)&reportableChange);
 
-    /* custom reporting application (non SDK) */
-    app_reporting_init();
+//    /* custom reporting application (non SDK) */
+//    app_reporting_init();
 
     /* Initialize BDB */
     bdb_init((af_simple_descriptor_t *)&app_ep1Desc, &g_bdbCommissionSetting, &g_zbBdbCb, 1);
