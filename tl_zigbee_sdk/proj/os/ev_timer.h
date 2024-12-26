@@ -29,7 +29,9 @@
 /**
  *  @brief Definition for timer event
  */
-#define TIMER_EVENT_NUM				(24)
+#ifndef TIMER_EVENT_NUM
+#define TIMER_EVENT_NUM             (24)
+#endif
 #define TIMER_EVENT_ENOUGH_NUM		(TIMER_EVENT_NUM - 4)
 
 /**

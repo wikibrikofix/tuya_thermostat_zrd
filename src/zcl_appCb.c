@@ -507,6 +507,9 @@ static void app_zclIdentifyQueryRspCmdHandler(uint8_t endpoint, uint16_t srcAddr
  */
 status_t app_identifyCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload)
 {
+
+//    printf("app_identifyCb()\r\n");
+
 	if(pAddrInfo->dstEp == APP_ENDPOINT1){
 		if(pAddrInfo->dirCluster == ZCL_FRAME_CLIENT_SERVER_DIR){
 			switch(cmdId){
