@@ -317,21 +317,21 @@ static void app_zclDfltRspCmd(uint16_t clusterId, zclDefaultRspCmd_t *pDftRspCmd
 static void app_zclCfgReportCmd(uint8_t endPoint, uint16_t clusterId, zclCfgReportCmd_t *pCfgReportCmd)
 {
     //printf("app_zclCfgReportCmd\r\n");
-    for(uint8_t i = 0; i < pCfgReportCmd->numAttr; i++) {
-        for (uint8_t ii = 0; ii < ZCL_REPORTING_TABLE_NUM; ii++) {
-            if (app_reporting[ii].pEntry->used) {
-                if (app_reporting[ii].pEntry->endPoint == endPoint && app_reporting[ii].pEntry->attrID == pCfgReportCmd->attrList[i].attrID) {
-                    if (app_reporting[ii].timerReportMinEvt) {
-                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMinEvt);
-                    }
-                    if (app_reporting[ii].timerReportMaxEvt) {
-                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMaxEvt);
-                    }
-                    return;
-                }
-            }
-        }
-    }
+//    for(uint8_t i = 0; i < pCfgReportCmd->numAttr; i++) {
+//        for (uint8_t ii = 0; ii < ZCL_REPORTING_TABLE_NUM; ii++) {
+//            if (app_reporting[ii].pEntry->used) {
+//                if (app_reporting[ii].pEntry->endPoint == endPoint && app_reporting[ii].pEntry->attrID == pCfgReportCmd->attrList[i].attrID) {
+//                    if (app_reporting[ii].timerReportMinEvt) {
+//                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMinEvt);
+//                    }
+//                    if (app_reporting[ii].timerReportMaxEvt) {
+//                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMaxEvt);
+//                    }
+//                    return;
+//                }
+//            }
+//        }
+//    }
 }
 
 /*********************************************************************
