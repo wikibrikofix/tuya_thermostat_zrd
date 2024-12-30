@@ -33,11 +33,12 @@
 #include "lib/include/aoa.h"
 #include "lib/include/hadm.h"
 #include "lib/include/hadm_drv.h"
+#include "lib/include/pmp.h"
 
 #include "lib/include/pke/pke.h"
 #include "lib/include/pke/pke_algorithm.h"
 
-#include "emi.h"
+#include "lib/include/emi.h"
 #include "audio.h"
 #include "analog.h"
 #include "dma.h"
@@ -50,7 +51,7 @@
 #include "usbhw.h"
 #include "watchdog.h"
 #include "s7816.h"
-#include "nds_intrinsic.h"
+#include "core.h"
 #include "mdec.h"
 
 #include "uart.h"

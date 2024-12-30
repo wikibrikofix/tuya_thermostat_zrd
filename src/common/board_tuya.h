@@ -15,8 +15,6 @@
 *    UART_RX_PC5 = GPIO_PC5,
 *    UART_RX_PD6 = GPIO_PD6,
 */
-
-/**************************** UART for Tuya ZT3L ***********************************/
 #define BAUDRATE_UART           115200
 #define GPIO_UART_TX            UART_TX_PB1
 #define GPIO_UART_RX            UART_RX_PB7
@@ -24,7 +22,7 @@
 /**************************** Configure UART ***************************************/
 #if UART_PRINTF_MODE
 #define DEBUG_INFO_TX_PIN       GPIO_PB5
-#define BAUDRATE                115200
+#define DEBUG_BAUDRATE          115200
 #endif /* UART_PRINTF_MODE */
 
 
