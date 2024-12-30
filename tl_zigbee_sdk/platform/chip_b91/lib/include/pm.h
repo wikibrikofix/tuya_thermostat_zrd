@@ -51,8 +51,9 @@
  * 	      Reset these analog registers by watchdog, software reboot (sys_reboot()), RESET Pin, power cycle
  */
 /**
- * Customers cannot use [bit0] of analog register 0x38 because driver and chip functions are occupied, details are as follows:
+ * Customers cannot use analog register 0x38 because driver and chip functions are occupied, details are as follows:
  * [Bit0]: If this bit is 1, it means that reboot or power on has occurred. If this bit is 0, it means that sleep has occurred.
+ * [Bit1~7]: These bits are used by the driver and cannot be used by the customer.
  */
 #define PM_ANA_REG_WD_CLR_BUF0 			0x38 // initial value 0xff.
 
@@ -61,11 +62,12 @@
  * 	      Reset these analog registers only by power cycle,RESET Pin
  */
 /**
- * Customers cannot use [bit0],[bit1],[bit2] of analog register 0x39 because driver and chip functions are occupied, details are as follows:
+ * Customers cannot use analog register 0x39 because driver and chip functions are occupied, details are as follows:
  * [Bit0]: If this bit is 1, it means that reboot has occurred. This bit will be 1 for any reboot caused by any reason.
  * [Bit1]: If this bit is 1, it means that a deep sleep has occurred after reboot. After reboot, there will be a deep to resolve clock problem, 
  * 			so this bit is used to distinguish between regular deep and deep after reboot.
  * [Bit2]: If this bit is 1, it means that the software calls the function sys_reboot() when the crystal oscillator does not start up normally.
+ * [Bit3~7]: These bits are used by the driver and cannot be used by the customer.
  */
 #define PM_ANA_REG_POWER_ON_CLR_BUF0 	0x39 // initial value 0x00
 #define PM_ANA_REG_POWER_ON_CLR_BUF1 	0x3a // initial value 0x00
@@ -340,6 +342,7 @@ _attribute_ram_code_sec_noinline_ void pm_stimer_recover(void);
 									  If the wakeup_tick_type is PM_TICK_32K, then wakeup_tick is converted to 32K. The range of tick that can be set is approximately:
 									  64~0xffffffff, and the corresponding sleep time is approximately: 2ms~37hours.It cannot go to sleep normally when it exceeds this range.
  * @return		indicate whether the cpu is wake up successful.
+ * @attention   Must ensure that all GPIOs cannot be floating status before going to sleep to prevent power leakage.
  */
 _attribute_text_sec_ int pm_sleep_wakeup(pm_sleep_mode_e sleep_mode,  pm_sleep_wakeup_src_e wakeup_src, pm_wakeup_tick_type_e wakeup_tick_type, unsigned int  wakeup_tick);
 

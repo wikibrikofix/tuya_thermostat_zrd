@@ -3,23 +3,18 @@
 
 #include "app_main.h"
 
-uint8_t mcuBootAddrGet(void);
-//uint32_t mcuBootAddrGet(void);
+//uint8_t mcuBootAddrGet(void);
+uint32_t mcuBootAddrGet(void);
 
 void start_message() {
+
 #ifdef ZCL_OTA
-    if (mcuBootAddrGet()) {
 #if UART_PRINTF_MODE
-        printf("OTA mode enabled. MCU boot from address: 0x%x\r\n", FLASH_ADDR_OF_OTA_IMAGE);
+        printf("OTA mode enabled. MCU boot from address: 0x%x\r\n", mcuBootAddrGet());
 #endif /* UART_PRINTF_MODE */
-    } else {
-#if UART_PRINTF_MODE
-        printf("OTA mode enabled. MCU boot from address: 0x%x\r\n", FLASH_ADDR_OF_APP_FW);
-#endif /* UART_PRINTF_MODE */
-    }
 #else
 #if UART_PRINTF_MODE
-    printf("OTA mode desabled. MCU boot from address: 0x%x\r\n", FLASH_ADDR_OF_APP_FW);
+    printf("OTA mode desabled. MCU boot from address: 0x%x\r\n", mcuBootAddrGet());
 #endif /* UART_PRINTF_MODE */
 #endif
 
