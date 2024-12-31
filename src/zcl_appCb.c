@@ -210,51 +210,51 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
     if (clusterId == ZCL_CLUSTER_HAVC_THERMOSTAT) {
         for (uint32_t i = 0; i < numAttr; i++) {
             if (attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE) {
-                uint8_t sys_mode = attr->attrData[0];
+                uint8_t sys_mode = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_ONOFF].remote_cmd)
                     data_point_model[DP_IDX_ONOFF].remote_cmd(&sys_mode);
             } else if (attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT) {
-                uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                uint16_t temp = BUILD_S16(attr[i].attrData[0], attr[i].attrData[1]);
                 if (data_point_model[DP_IDX_SETPOINT].remote_cmd)
                     data_point_model[DP_IDX_SETPOINT].remote_cmd(&temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION) {
-                int8_t temp = (int8_t)attr->attrData[0];
+                int8_t temp = (int8_t)attr[i].attrData[0];
                 if (data_point_model[DP_IDX_CALIBRATION].remote_cmd)
                     data_point_model[DP_IDX_CALIBRATION].remote_cmd(&temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED) {
-                uint8_t sensor_used = attr->attrData[0];
+                uint8_t sensor_used = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_SENSOR].remote_cmd)
                     data_point_model[DP_IDX_SENSOR].remote_cmd(&sensor_used);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND) {
-                uint8_t dead_band = attr->attrData[0];
+                uint8_t dead_band = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_DEADZONE].remote_cmd)
                     data_point_model[DP_IDX_DEADZONE].remote_cmd(&dead_band);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT) {
-                uint16_t min_temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                uint16_t min_temp = BUILD_S16(attr[i].attrData[0], attr[i].attrData[1]);
                 if (data_point_model[DP_IDX_MIN].remote_cmd)
                     data_point_model[DP_IDX_MIN].remote_cmd(&min_temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT) {
-                uint16_t max_temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                uint16_t max_temp = BUILD_S16(attr[i].attrData[0], attr[i].attrData[1]);
                 if (data_point_model[DP_IDX_MAX].remote_cmd)
                     data_point_model[DP_IDX_MAX].remote_cmd(&max_temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE) {
-                uint8_t oper_mode = attr->attrData[0];
+                uint8_t oper_mode = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_PROG].remote_cmd)
                     data_point_model[DP_IDX_PROG].remote_cmd(&oper_mode);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT) {
-                uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                uint16_t temp = BUILD_S16(attr[i].attrData[0], attr[i].attrData[1]);
                 if (data_point_model[DP_IDX_FROST_PROTECT].remote_cmd)
                     data_point_model[DP_IDX_FROST_PROTECT].remote_cmd(&temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT) {
-                uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                uint16_t temp = BUILD_S16(attr[i].attrData[0], attr[i].attrData[1]);
                 if (data_point_model[DP_IDX_HEAT_PROTECT].remote_cmd)
                     data_point_model[DP_IDX_HEAT_PROTECT].remote_cmd(&temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE) {
-                uint8_t eco_mode = attr->attrData[0];
+                uint8_t eco_mode = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_ECO_MODE].remote_cmd)
                     data_point_model[DP_IDX_ECO_MODE].remote_cmd(&eco_mode);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_TEMPERATURE) {
-                uint16_t temp = BUILD_S16(attr->attrData[0], attr->attrData[1]);
+                uint16_t temp = BUILD_S16(attr[i].attrData[0], attr[i].attrData[1]);
                 if (data_point_model[DP_IDX_ECO_TEMP].remote_cmd)
                     data_point_model[DP_IDX_ECO_TEMP].remote_cmd(&temp);
             }
@@ -264,10 +264,10 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
     if (clusterId == ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG) {
         for (uint32_t i = 0; i < numAttr; i++) {
             if (attr[i].attrID == ZCL_ATTRID_HVAC_TEMPERATURE_DISPLAY_MODE) {
-//                uint8_t display_mode = attr->attrData[0];
+//                uint8_t display_mode = attr[i].attrData[0];
 //                remote_cmd_display_mode(display_mode);
             } else if (attr[i].attrID == ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT) {
-                uint8_t keylock = attr->attrData[0];
+                uint8_t keylock = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_LOCKUNLOCK].remote_cmd)
                     data_point_model[DP_IDX_LOCKUNLOCK].remote_cmd(&keylock);
             }
@@ -317,21 +317,21 @@ static void app_zclDfltRspCmd(uint16_t clusterId, zclDefaultRspCmd_t *pDftRspCmd
 static void app_zclCfgReportCmd(uint8_t endPoint, uint16_t clusterId, zclCfgReportCmd_t *pCfgReportCmd)
 {
     //printf("app_zclCfgReportCmd\r\n");
-    for(uint8_t i = 0; i < pCfgReportCmd->numAttr; i++) {
-        for (uint8_t ii = 0; ii < ZCL_REPORTING_TABLE_NUM; ii++) {
-            if (app_reporting[ii].pEntry->used) {
-                if (app_reporting[ii].pEntry->endPoint == endPoint && app_reporting[ii].pEntry->attrID == pCfgReportCmd->attrList[i].attrID) {
-                    if (app_reporting[ii].timerReportMinEvt) {
-                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMinEvt);
-                    }
-                    if (app_reporting[ii].timerReportMaxEvt) {
-                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMaxEvt);
-                    }
-                    return;
-                }
-            }
-        }
-    }
+//    for(uint8_t i = 0; i < pCfgReportCmd->numAttr; i++) {
+//        for (uint8_t ii = 0; ii < ZCL_REPORTING_TABLE_NUM; ii++) {
+//            if (app_reporting[ii].pEntry->used) {
+//                if (app_reporting[ii].pEntry->endPoint == endPoint && app_reporting[ii].pEntry->attrID == pCfgReportCmd->attrList[i].attrID) {
+//                    if (app_reporting[ii].timerReportMinEvt) {
+//                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMinEvt);
+//                    }
+//                    if (app_reporting[ii].timerReportMaxEvt) {
+//                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMaxEvt);
+//                    }
+//                    return;
+//                }
+//            }
+//        }
+//    }
 }
 
 /*********************************************************************

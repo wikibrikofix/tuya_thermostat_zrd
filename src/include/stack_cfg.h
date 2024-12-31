@@ -33,7 +33,7 @@
 /**
  *  @brief Definition for timer event
  */
-#define TIMER_EVENT_NUM                         (48)
+//#define TIMER_EVENT_NUM                         (48)
 
 
 /**

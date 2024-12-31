@@ -30,7 +30,6 @@
 extern "C" {
 #endif
 
-
 // BUTTON
 #define BUTTON1               		GPIO_PB2//SW2
 #define PB2_FUNC			  		AS_GPIO
@@ -78,18 +77,21 @@ extern "C" {
 #define LED_POWER					LED_R
 #define LED_PERMIT					LED_G
 
-#define	PM_WAKEUP_LEVEL		  		PM_WAKEUP_LEVEL_HIGH
+#define	PM_WAKEUP_LEVEL		  		PM_WAKEUP_LEVEL_LOW
 
-#define VOLTAGE_DETECT_PIN			ADC_GPIO_PD0
+// ADC
+#if VOLTAGE_DETECT_ENABLE
+#define VOLTAGE_DETECT_ADC_PIN		ADC_GPIO_PD0
+#endif
 
 // UART
 #if ZBHCI_UART
-	#error please configurate uart PIN!!!!!!
+#error please configurate uart PIN!!!!!!
 #endif
 
 // DEBUG
 #if UART_PRINTF_MODE
-	#define	DEBUG_INFO_TX_PIN	    GPIO_PE5//print
+#define	DEBUG_INFO_TX_PIN	    	GPIO_PE5//print
 #endif
 
 enum{
