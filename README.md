@@ -41,13 +41,13 @@
 
 ## Как обновить.
 
-Сначала подключаем к z2m два внешних [конвертора](https://github.com/slacky1965/tuya_thermostat_zrd/tree/main/zigbee2mqtt/convertors) `tuya_thermostat_orig.js` и `tuya_thermostat.js`. Первый активирует OTA в z2m для термостата с прошивкой от Tuya. Второй - для термостата с кастомной прошивкой. В конверторах менять ничего не надо, все должно подхватиться автоматом.
+Сначала подключаем к z2m два внешних [конвертора](https://github.com/slacky1965/tuya_thermostat_zrd/tree/main/zigbee2mqtt/convertors) `tuya_thermostat_orig.js` и `tuya_thermostat.js`. Первый активирует OTA в z2m для термостата с прошивкой от Tuya. Второй нужен для термостата с уже обновленной (кастомной) прошивкой. В конверторах менять ничего не надо, все должно подхватиться автоматом.
 
 Далее нужно добавить локальное хранилище обновлений. 
 
 Создаем директорию в директории z2m `images` и кладем туда файл `1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee`.
 
-Копируем в директории z2m файл [local_ota_index.json](https://github.com/slacky1965/tuya_thermostat_zrd/blob/development/zigbee2mqtt/local_ota_index.json)
+Копируем в директорию z2m файл [local_ota_index.json](https://github.com/slacky1965/tuya_thermostat_zrd/blob/development/zigbee2mqtt/local_ota_index.json)
 
 Далее добавляем это все в конфиг z2m (configuration.yaml). Должно получиться что-то в этом роде.
 
