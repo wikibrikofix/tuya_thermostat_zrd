@@ -1,5 +1,7 @@
 # <a id="Top">Tuya Thermostat for Floor Heating Zigbee with custom firmware</a>
 
+### Custom firmware for Tuya thermostat
+
 **Tuya Thermostat model**
 
 1. Model r01
