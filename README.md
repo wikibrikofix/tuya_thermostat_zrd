@@ -46,7 +46,7 @@
 
 Далее нужно добавить локальное хранилище обновлений. 
 
-Создаем директорию в директории z2m `images` и кладем туда файл `[1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee](https://github.com/slacky1965/tuya_thermostat_zrd/raw/refs/heads/development/bin/1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee)`.
+Создаем директорию в директории z2m `images` и кладем туда файл [1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee](https://github.com/slacky1965/tuya_thermostat_zrd/raw/refs/heads/development/bin/1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee).
 
 Копируем в директорию z2m файл [local_ota_index.json](https://github.com/slacky1965/tuya_thermostat_zrd/blob/development/zigbee2mqtt/local_ota_index.json)
 
