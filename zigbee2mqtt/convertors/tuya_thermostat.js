@@ -318,8 +318,8 @@ const definition = [
       .withRunningState(['idle', 'heat'], ea.STATE)
       .withWeeklySchedule(['heat'], ea.STATE_ALL),
   ],
-              
-  ota: ota.zigbeeOTA,
+  meta: {},
+  ota: true,
 },
 {
   zigbeeModel: ['Tuya_Thermostat_r02'],
@@ -451,8 +451,8 @@ const definition = [
       .withRunningState(['idle', 'heat'], ea.STATE)
       .withWeeklySchedule(['heat'], ea.STATE_ALL),
   ],
-              
-  ota: ota.zigbeeOTA,
+  meta: {},
+  ota: true,
 },
 {
   zigbeeModel: ['Tuya_Thermostat_r03'],
@@ -626,7 +626,8 @@ const definition = [
       .withRunningState(['idle', 'heat'], ea.STATE)
       .withWeeklySchedule(['heat'], ea.STATE_ALL),
   ],
-  ota: ota.zigbeeOTA,
+  meta: {},
+  ota: true,
 },
 {
   zigbeeModel: ['Tuya_Thermostat_r04'],
@@ -790,7 +791,8 @@ const definition = [
       .withRunningState(['idle', 'heat'], ea.STATE)
       .withWeeklySchedule(['heat'], ea.STATE_ALL),
   ],
-  ota: ota.zigbeeOTA,
+  meta: {},
+  ota: true,
 }
 
 ];

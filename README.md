@@ -49,7 +49,7 @@
 
 Копируем в директорию z2m файл [local_ota_index.json](https://github.com/slacky1965/tuya_thermostat_zrd/blob/development/zigbee2mqtt/local_ota_index.json)
 
-Далее добавляем это все в конфиг z2m (configuration.yaml). Должно получиться что-то в этом роде.
+Если у вас версия z2m ниже 2.0, то добавляем это все в конфиг z2m (configuration.yaml). Должно получиться что-то в этом роде.
 
 ```
 external_converters:
@@ -58,6 +58,15 @@ external_converters:
 ota:
   zigbee_ota_override_index_location: local_ota_index.json
 ```
+
+Если же версия 2.0 и выше, то в конфиг z2m (configuration.yaml) добавляем только локальное хранилище
+
+```
+ota:
+  zigbee_ota_override_index_location: local_ota_index.json
+```
+
+А два конвертора кладем в директорию `external_converters`, которую нужно создать в корне z2m.
 
 Далее перегружаем z2m. И видим у нас новое устройство (если термостат уже был в сети и виден в z2m).
 
@@ -115,6 +124,9 @@ Use modelId: Tuya_Thermostat_r02
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_tuya_update_recfg_3.jpg"/>
 
 Все, термостат готов к работе.
+
+> [!WARNING]
+> Внимание!!! Если после успешного обновления и всех выполненных указаний выше термостат остается со старым именем, то удалите его принудительно из сети, перегрузите z2m и сделайте сопряжение по-новой. Если в процессе сопряжения термостат моргает значком сети, но ничего не происходит, нужно снять питание с термостата (обесточить) и подать питание заново.
 
 В Home Assistant это выглядит так
 

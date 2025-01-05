@@ -28,5 +28,8 @@
         "modelId": "TS0601",
         "manufacturerName": ["_TZE204_xyugziqv"],
         "force": true
+    },
+    {
+        "url": "images/tuya_thermostat_zrd.zigbee"
     }
 ]

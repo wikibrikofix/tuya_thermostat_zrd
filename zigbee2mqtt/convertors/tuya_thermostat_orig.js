@@ -13,9 +13,9 @@ const definition = {
     description: 'Original Tuya thermostat ready for custom Firmware update',
     extend: [
       identify(),
-      ota(),
     ],
     meta: {},
+    ota: true,
 };
 
 module.exports = definition;
