@@ -57,6 +57,7 @@ void local_cmd_oper_mode_1(void *args) {
     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
                    ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, mode);
 
+    thermostat_settings_save();
 }
 
 void local_cmd_set_schedule_1(void *args) {
@@ -94,7 +95,6 @@ void local_cmd_set_schedule_1(void *args) {
     }
 
     thermostat_settings_save();
-
 }
 
 /*

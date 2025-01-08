@@ -110,4 +110,12 @@ extern zcl_sceneAttr_t g_zcl_scene1Attrs;
 extern zcl_thermostatAttr_t g_zcl_thermostatAttrs;
 extern zcl_levelAttr_t g_zcl_levelAttrs;
 
+/*
+ *
+ * Save and restore settings
+ *
+ */
+nv_sts_t thermostat_settings_save();
+nv_sts_t thermostat_settings_restore();
+
 #endif /* SRC_INCLUDE_APP_ENDPOINT_CFG_H_ */

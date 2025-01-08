@@ -221,6 +221,8 @@ static int32_t check_answerCb(void *arg) {
         printf("no answer, uart reinit\r\n");
 #endif
         app_uart_init();
+        no_answer = false;
+
 //#if UART_PRINTF_MODE
 //        printf("no answer, reboot\r\n");
 //#endif
@@ -320,7 +322,6 @@ void uart_cmd_handler() {
             }
 
             if (complete) {
-                no_answer = false;
                 pkt->pkt_len = load_size;
                 pkt_tuya_t *send_pkt = &cmd_queue.cmd_queue[0].pkt;
                 uint8_t crc = checksum((uint8_t*)pkt, pkt->pkt_len-1);
