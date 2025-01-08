@@ -49,6 +49,7 @@ typedef struct __attribute__((packed)) {
     uint8_t     dead_band;                      // 1 ... 5 °C
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off
+//    uint8_t     test;
     uint8_t     crc;
 } thermostat_settings_t;
 

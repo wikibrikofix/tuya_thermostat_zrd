@@ -710,6 +710,7 @@ nv_sts_t thermostat_settings_save() {
 
 
     if(st == NV_SUCC && crc == checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1)) {
+
         if (memcmp(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t)) != 0) {
             memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
             save = true;
@@ -773,7 +774,8 @@ nv_sts_t thermostat_settings_save() {
             print_setting_sr(&thermostat_settings, true);
 
         }
-    } else if (st == NV_ITEM_NOT_FOUND) {
+    } else if (st == NV_ITEM_NOT_FOUND ||
+            (st == NV_SUCC && crc != checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1))) {
 
         memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
         thermostat_settings.minHeatSetpointLimit = minHeatSetpointLimit;
@@ -812,7 +814,9 @@ nv_sts_t thermostat_settings_restore() {
     st = nv_flashReadNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
 
     if (st == NV_SUCC && thermostat_settings.crc == checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1)) {
+
         memcpy(&g_zcl_scheduleData, &thermostat_settings.schedule_data, sizeof(zcl_scheduleData_t));
+
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*)&thermostat_settings.minHeatSetpointLimit);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)&thermostat_settings.maxHeatSetpointLimit);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION, (uint8_t*)&thermostat_settings.localTemperatureCalibration);
@@ -824,10 +828,9 @@ nv_sts_t thermostat_settings_restore() {
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, (uint8_t*)&thermostat_settings.manual_progMode);
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG, ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT, (uint8_t*)&thermostat_settings.keypadLockout);
 #if UART_PRINTF_MODE && DEBUG_SAVE
-    print_setting_sr(&thermostat_settings, false);
+        print_setting_sr(&thermostat_settings, false);
 #endif
     }
-
 
 #else
     st = NV_ENABLE_PROTECT_ERROR;
