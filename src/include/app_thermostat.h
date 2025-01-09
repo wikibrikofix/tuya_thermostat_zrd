@@ -49,6 +49,10 @@ typedef struct __attribute__((packed)) {
     uint8_t     dead_band;                      // 1 ... 5 °C
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off
+    uint8_t     currentLevelA;
+    uint8_t     currentLevelB;
+    uint8_t     ecoMode;                        // 1 - ecoMode on, 0 - ecoMode off
+    int16_t     ecoModeTemperature;             // 20°C * 100
     uint8_t     crc;
 } thermostat_settings_t;
 
@@ -293,13 +297,5 @@ void local_cmd_level_night_3(void *args);
  * common function
  */
 //void set_zcl_modelId(uint8_t *signature);
-
-/*
- *
- * Save and restore settings
- *
- */
-nv_sts_t thermostat_settings_save();
-nv_sts_t thermostat_settings_restore();
 
 #endif /* SRC_INCLUDE_APP_THERMOSTAT_H_ */

@@ -357,3 +357,216 @@ const zcl_specClusterInfo_t g_appEp2ClusterList[] = {
 
 uint8_t APP_EP2_CB_CLUSTER_NUM = (sizeof(g_appEp2ClusterList)/sizeof(g_appEp2ClusterList[0]));
 
+
+static void print_setting_sr(nv_sts_t st, thermostat_settings_t *thermostat_settings, bool save) {
+#if UART_PRINTF_MODE && DEBUG_SAVE
+
+    printf("Settings %s. Return: %s\r\n", save?"saved":"restored", st==NV_SUCC?"Ok":"Error");
+
+    printf("occupiedHeatingSetpoint:     %d\r\n", thermostat_settings->occupiedHeatingSetpoint);
+    printf("localTemperatureCalibration: %d\r\n", thermostat_settings->localTemperatureCalibration);
+    printf("sensor_used:                 %d\r\n", thermostat_settings->sensor_used);
+    printf("dead_band:                   %d\r\n", thermostat_settings->dead_band);
+    printf("manual_progMode:             %d\r\n", thermostat_settings->manual_progMode);
+    printf("minHeatSetpointLimit:        %d\r\n", thermostat_settings->minHeatSetpointLimit);
+    printf("maxHeatSetpointLimit:        %d\r\n", thermostat_settings->maxHeatSetpointLimit);
+    printf("frostProtect:                %d\r\n", thermostat_settings->frostProtect);
+    printf("heatProtect:                 %d\r\n", thermostat_settings->heatProtect);
+    printf("keypadLockout:               %d\r\n", thermostat_settings->keypadLockout);
+    printf("ecoMode:                     %s\r\n", thermostat_settings->ecoMode?"On":"Off");
+    printf("ecoModeTemperature:          %d\r\n", thermostat_settings->ecoModeTemperature);
+    printf("currentLevelA:               %d\r\n", thermostat_settings->currentLevelA);
+    printf("currentLevelB:               %d\r\n", thermostat_settings->currentLevelB);
+#endif
+}
+
+
+nv_sts_t thermostat_settings_save() {
+    nv_sts_t st = NV_SUCC;
+
+#ifdef ZCL_THERMOSTAT
+#if NV_ENABLE
+
+    thermostat_settings_t thermostat_settings;
+    uint8_t     crc;
+    bool        save = false;
+
+    st = nv_flashReadNew(1, NV_MODULE_APP, NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
+
+    crc = thermostat_settings.crc;
+
+    if(st == NV_SUCC && crc == checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1)) {
+
+        if (memcmp(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t)) != 0) {
+            memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
+            save = true;
+        }
+
+        if (thermostat_settings.minHeatSetpointLimit != g_zcl_thermostatAttrs.minHeatSetpointLimit) {
+            thermostat_settings.minHeatSetpointLimit = g_zcl_thermostatAttrs.minHeatSetpointLimit;
+            save = true;
+//            printf("minHeatSetpointLimit changed\r\n");
+        }
+
+        if (thermostat_settings.maxHeatSetpointLimit != g_zcl_thermostatAttrs.maxHeatSetpointLimit) {
+            thermostat_settings.maxHeatSetpointLimit = g_zcl_thermostatAttrs.maxHeatSetpointLimit;
+            save = true;
+//            printf("maxHeatSetpointLimit changed\r\n");
+        }
+
+        if (thermostat_settings.localTemperatureCalibration != g_zcl_thermostatAttrs.localTemperatureCalibration) {
+            thermostat_settings.localTemperatureCalibration = g_zcl_thermostatAttrs.localTemperatureCalibration;
+            save = true;
+//            printf("localTemperatureCalibration changed\r\n");
+        }
+
+        if (thermostat_settings.occupiedHeatingSetpoint != g_zcl_thermostatAttrs.occupiedHeatingSetpoint) {
+            thermostat_settings.occupiedHeatingSetpoint = g_zcl_thermostatAttrs.occupiedHeatingSetpoint;
+            save = true;
+//            printf("occupiedHeatingSetpoint changed\r\n");
+        }
+
+        if (thermostat_settings.manual_progMode != g_zcl_thermostatAttrs.manual_progMode) {
+            thermostat_settings.manual_progMode = g_zcl_thermostatAttrs.manual_progMode;
+            save = true;
+//            printf("manual_progMode changed\r\n");
+        }
+
+        if (thermostat_settings.sensor_used != g_zcl_thermostatAttrs.sensor_used) {
+            thermostat_settings.sensor_used = g_zcl_thermostatAttrs.sensor_used;
+            save = true;
+//            printf("sensor_used changed\r\n");
+        }
+
+        if (thermostat_settings.dead_band != g_zcl_thermostatAttrs.dead_band) {
+            thermostat_settings.dead_band = g_zcl_thermostatAttrs.dead_band;
+            save = true;
+//            printf("dead_band changed\r\n");
+        }
+
+        if (thermostat_settings.frostProtect != g_zcl_thermostatAttrs.frostProtect) {
+            thermostat_settings.frostProtect = g_zcl_thermostatAttrs.frostProtect;
+            save = true;
+//            printf("frostProtect changed\r\n");
+        }
+
+        if (thermostat_settings.heatProtect != g_zcl_thermostatAttrs.heatProtect) {
+            thermostat_settings.heatProtect = g_zcl_thermostatAttrs.heatProtect;
+            save = true;
+//            printf("heatProtect changed\r\n");
+        }
+
+        if (thermostat_settings.keypadLockout != g_zcl_thermostatAttrs.keypadLockout) {
+            thermostat_settings.keypadLockout = g_zcl_thermostatAttrs.keypadLockout;
+            save = true;
+//            printf("keypadLockout changed\r\n");
+        }
+
+        if (thermostat_settings.ecoMode != g_zcl_thermostatAttrs.ecoMode) {
+            thermostat_settings.ecoMode = g_zcl_thermostatAttrs.ecoMode;
+            save = true;
+//            printf("ecoMode changed\r\n");
+        }
+
+        if (thermostat_settings.ecoModeTemperature != g_zcl_thermostatAttrs.ecoModeTemperature) {
+            thermostat_settings.ecoModeTemperature = g_zcl_thermostatAttrs.ecoModeTemperature;
+            save = true;
+//            printf("ecoModeTemperature changed\r\n");
+        }
+
+        if (thermostat_settings.currentLevelA != g_zcl_levelAttrs.currentLevelA) {
+            thermostat_settings.currentLevelA = g_zcl_levelAttrs.currentLevelA;
+            save = true;
+//            printf("currentLevelA changed\r\n");
+        }
+
+        if (thermostat_settings.currentLevelB != g_zcl_levelAttrs.currentLevelB) {
+            thermostat_settings.currentLevelB = g_zcl_levelAttrs.currentLevelB;
+            save = true;
+//            printf("currentLevelB changed\r\n");
+        }
+
+        if (save) {
+
+            thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
+            st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
+
+            print_setting_sr(st, &thermostat_settings, true);
+
+        }
+    } else if (st == NV_ITEM_NOT_FOUND ||
+            (st == NV_SUCC && crc != checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1))) {
+
+        memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
+        thermostat_settings.minHeatSetpointLimit = g_zcl_thermostatAttrs.minHeatSetpointLimit;
+        thermostat_settings.maxHeatSetpointLimit = g_zcl_thermostatAttrs.maxHeatSetpointLimit;
+        thermostat_settings.localTemperatureCalibration = g_zcl_thermostatAttrs.localTemperatureCalibration;
+        thermostat_settings.occupiedHeatingSetpoint = g_zcl_thermostatAttrs.occupiedHeatingSetpoint;
+        thermostat_settings.manual_progMode = g_zcl_thermostatAttrs.manual_progMode;
+        thermostat_settings.sensor_used = g_zcl_thermostatAttrs.sensor_used;
+        thermostat_settings.dead_band = g_zcl_thermostatAttrs.dead_band;
+        thermostat_settings.frostProtect = g_zcl_thermostatAttrs.frostProtect;
+        thermostat_settings.heatProtect = g_zcl_thermostatAttrs.heatProtect;
+        thermostat_settings.keypadLockout = g_zcl_thermostatAttrs.keypadLockout;
+        thermostat_settings.ecoMode = g_zcl_thermostatAttrs.ecoMode;
+        thermostat_settings.ecoModeTemperature = g_zcl_thermostatAttrs.ecoModeTemperature;
+        thermostat_settings.currentLevelA = g_zcl_levelAttrs.currentLevelA;
+        thermostat_settings.currentLevelB = g_zcl_levelAttrs.currentLevelB;
+        thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
+
+        st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
+
+        print_setting_sr(st, &thermostat_settings, true);
+
+    }
+#else
+    st = NV_ENABLE_PROTECT_ERROR;
+#endif
+#endif
+
+    return st;
+}
+
+nv_sts_t thermostat_settings_restore() {
+    nv_sts_t st = NV_SUCC;
+
+#ifdef ZCL_THERMOSTAT
+#if NV_ENABLE
+
+    thermostat_settings_t thermostat_settings;
+
+    st = nv_flashReadNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
+
+    if (st == NV_SUCC && thermostat_settings.crc == checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1)) {
+
+        memcpy(&g_zcl_scheduleData, &thermostat_settings.schedule_data, sizeof(zcl_scheduleData_t));
+
+        g_zcl_thermostatAttrs.minHeatSetpointLimit = thermostat_settings.minHeatSetpointLimit;
+        g_zcl_thermostatAttrs.maxHeatSetpointLimit = thermostat_settings.maxHeatSetpointLimit;
+        g_zcl_thermostatAttrs.localTemperatureCalibration = thermostat_settings.localTemperatureCalibration;
+        g_zcl_thermostatAttrs.occupiedHeatingSetpoint = thermostat_settings.occupiedHeatingSetpoint;
+        g_zcl_thermostatAttrs.manual_progMode = thermostat_settings.manual_progMode;
+        g_zcl_thermostatAttrs.sensor_used = thermostat_settings.sensor_used;
+        g_zcl_thermostatAttrs.frostProtect = thermostat_settings.frostProtect;
+        g_zcl_thermostatAttrs.heatProtect = thermostat_settings.heatProtect;
+        g_zcl_thermostatAttrs.dead_band = thermostat_settings.dead_band;
+        g_zcl_thermostatAttrs.ecoMode = thermostat_settings.ecoMode;
+        g_zcl_thermostatAttrs.ecoModeTemperature = thermostat_settings.ecoModeTemperature;
+        g_zcl_thermostatAttrs.keypadLockout = thermostat_settings.keypadLockout;
+
+        g_zcl_levelAttrs.currentLevelA = thermostat_settings.currentLevelA;
+        g_zcl_levelAttrs.currentLevelB = thermostat_settings.currentLevelB;
+
+#if UART_PRINTF_MODE && DEBUG_SAVE
+        print_setting_sr(st, &thermostat_settings, false);
+#endif
+    }
+
+#else
+    st = NV_ENABLE_PROTECT_ERROR;
+#endif
+#endif
+
+    return st;
+}
+

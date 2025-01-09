@@ -62,6 +62,7 @@ void local_cmd_oper_mode_2(void *args) {
     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
                    ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE, mode);
 
+    thermostat_settings_save();
 }
 
 void local_cmd_frost_protect_2(void *args) {
@@ -89,10 +90,6 @@ void local_cmd_frost_protect_2(void *args) {
 
         thermostat_settings_save();
     }
-
-
-
-
 }
 
 void local_cmd_heat_protect_2(void *args) {

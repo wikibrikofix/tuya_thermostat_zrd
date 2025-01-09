@@ -28,6 +28,8 @@ uint8_t checksum(uint8_t *data, uint16_t length) {
 
 void add_cmd_queue(pkt_tuya_t *pkt, uint8_t confirm_need) {
 
+//    printf("cmd_queue.cmd_num: %d\r\n", cmd_queue.cmd_num);
+
     memset(&cmd_queue.cmd_queue[cmd_queue.cmd_num], 0, sizeof(cmd_queue_cell_t));
 
     cmd_queue.cmd_queue[cmd_queue.cmd_num].confirm_need = confirm_need;
@@ -219,6 +221,8 @@ static int32_t check_answerCb(void *arg) {
         printf("no answer, uart reinit\r\n");
 #endif
         app_uart_init();
+        no_answer = false;
+
 //#if UART_PRINTF_MODE
 //        printf("no answer, reboot\r\n");
 //#endif
@@ -311,11 +315,13 @@ void uart_cmd_handler() {
                         }
                     }
                 }
+#if (MODULE_WATCHDOG_ENABLE)
+                drv_wd_clear();
+#endif
                 sleep_ms(10);
             }
 
             if (complete) {
-                no_answer = false;
                 pkt->pkt_len = load_size;
                 pkt_tuya_t *send_pkt = &cmd_queue.cmd_queue[0].pkt;
                 uint8_t crc = checksum((uint8_t*)pkt, pkt->pkt_len-1);
@@ -388,6 +394,8 @@ void uart_cmd_handler() {
 
                                 zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId_arr[manuf_name]);
                                 data_point_model = data_point_model_arr[manuf_name];
+
+//                                set_command(COMMAND28, seq_num, true);
 
                                 break;
                             case COMMAND02:
