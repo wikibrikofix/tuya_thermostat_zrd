@@ -137,7 +137,7 @@ Use modelId: Tuya_Thermostat_r02
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/HA_2.jpg"/>
 
-## Как в уже обновленный термостат залить новую версю прошивки.
+## Как в уже обновленный термостат залить новую версию прошивки.
 Берем последний файл прошивки **OTA** с именем `6565-0391-xxxxxxxx-tuya_thermostat_zrd.zigbee` и переименовываем его в `tuya_thermostat_zrd.zigbee`. Далее переименованный файл кладем в директорию `images`, которая у вас должна уже быть в корне `zigbee2mqtt`. Проверяем обновление на нужном термостате и обновляемся.
 
 Все.
