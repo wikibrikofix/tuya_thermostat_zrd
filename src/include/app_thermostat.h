@@ -71,6 +71,7 @@ extern data_point_st_t data_point_model1[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model2[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model3[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model4[DP_IDX_MAXNUM];
+extern data_point_st_t data_point_model5[DP_IDX_MAXNUM];
 extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
@@ -178,6 +179,28 @@ void remote_cmd_level_night_3(void *args);
 #define remote_cmd_eco_mode_temp_4      remote_cmd_eco_mode_temp_3
 
 void remote_cmd_level_4(void *args);
+
+/*
+ *  remote_cmd for signarure
+ *  "5toc8efa"
+ *
+ *  model5 - name_5
+ */
+#define remote_cmd_sys_mode_5           remote_cmd_sys_mode_2
+#define remote_cmd_heating_set_5        remote_cmd_heating_set_2
+#define remote_cmd_temp_calibration_5   remote_cmd_temp_calibration_2
+#define remote_cmd_sensor_used_5        remote_cmd_sensor_used_2
+#define remote_cmd_keylock_5            remote_cmd_keylock_2
+#define remote_cmd_deadband_5           remote_cmd_deadband_2
+#define remote_cmd_min_setpoint_5       remote_cmd_min_setpoint_2
+#define remote_cmd_max_setpoint_5       remote_cmd_max_setpoint_2
+#define remote_cmd_oper_mode_5          remote_cmd_oper_mode_2
+#define remote_cmd_frost_protect_5      remote_cmd_frost_protect_2
+#define remote_cmd_heat_protect_5       remote_cmd_heat_protect_2
+#define remote_cmd_set_schedule_5       remote_cmd_set_schedule_2
+#define remote_cmd_get_schedule_5       remote_cmd_get_schedule_2
+
+
 
 /*
  * common functions local_cmd
@@ -291,6 +314,30 @@ void local_cmd_level_night_3(void *args);
 #define local_cmd_eco_mode_4            local_cmd_eco_mode_3
 #define local_cmd_eco_mode_temp_4       local_cmd_eco_mode_temp_3
 #define local_cmd_level_4               local_cmd_level_day_3
+
+
+/*
+ *  local_cmd for signarure
+ *  "5toc8efa"
+ *
+ *  model5 - name_5
+ */
+#define local_cmd_inner_sensor_5        local_cmd_inner_sensor_2
+#define local_cmd_heating_set_5         local_cmd_heating_set_2
+#define local_cmd_temp_calibration_5    local_cmd_temp_calibration_2
+#define local_cmd_min_setpoint_5        local_cmd_min_setpoint_2
+#define local_cmd_max_setpoint_5        local_cmd_max_setpoint_2
+#define local_cmd_deadband_5            local_cmd_deadband_2
+#define local_cmd_keylock_5             local_cmd_keylock_2
+#define local_cmd_sensor_used_5         local_cmd_sensor_used_2
+#define local_cmd_set_run_state_5       local_cmd_set_run_state_2
+#define local_cmd_onoff_state_5         local_cmd_onoff_state_2
+#define local_cmd_oper_mode_5           local_cmd_oper_mode_2
+#define local_cmd_frost_protect_5       local_cmd_frost_protect_2
+#define local_cmd_heat_protect_5        local_cmd_heat_protect_2
+#define local_cmd_outdoor_sensor_5      local_cmd_outdoor_sensor_2
+#define local_cmd_set_schedule_5        local_cmd_set_schedule_2
+
 
 /*
  *

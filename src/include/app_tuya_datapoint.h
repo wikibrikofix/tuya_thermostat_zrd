@@ -123,11 +123,41 @@ typedef enum {
     DP_TYPE4_ID_75    = 0x75,     // protection min temperature
 } data_point_id_type4_t;
 
+/* data point for manufacturer id -
+ * "5toc8efa"
+ *
+ * type2 (model5)
+ */
+#define DP_TYPE5_ID_00 DP_TYPE2_ID_00
+#define DP_TYPE5_ID_01 DP_TYPE2_ID_01
+#define DP_TYPE5_ID_02 DP_TYPE2_ID_02
+#define DP_TYPE5_ID_10 DP_TYPE2_ID_10
+#define DP_TYPE5_ID_13 DP_TYPE2_ID_13
+#define DP_TYPE5_ID_18 DP_TYPE2_ID_18
+#define DP_TYPE5_ID_1A DP_TYPE2_ID_1A
+#define DP_TYPE5_ID_1B DP_TYPE2_ID_1B
+#define DP_TYPE5_ID_24 DP_TYPE2_ID_24
+#define DP_TYPE5_ID_28 DP_TYPE2_ID_28
+#define DP_TYPE5_ID_2B DP_TYPE2_ID_2B
+#define DP_TYPE5_ID_67 DP_TYPE2_ID_67
+#define DP_TYPE5_ID_68 DP_TYPE2_ID_68
+#define DP_TYPE5_ID_65 DP_TYPE2_ID_65
+#define DP_TYPE5_ID_66 DP_TYPE2_ID_66
+#define DP_TYPE5_ID_69 DP_TYPE2_ID_69
+#define DP_TYPE5_ID_6A DP_TYPE2_ID_6A
+#define DP_TYPE5_ID_6B DP_TYPE2_ID_6B
+#define DP_TYPE5_ID_6C DP_TYPE2_ID_6C
+#define DP_TYPE5_ID_6D DP_TYPE2_ID_6D
+#define DP_TYPE5_ID_6E DP_TYPE2_ID_6E
+
+typedef data_point_id_type2_t data_point_id_type5_t;
+
 typedef enum {
     MANUF_NAME_1 = 0,
     MANUF_NAME_2,
     MANUF_NAME_3,
     MANUF_NAME_4,
+    MANUF_NAME_5,
     MANUF_NAME_MAX
 } manuf_name_t;
 

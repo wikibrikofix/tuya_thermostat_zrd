@@ -53,7 +53,7 @@ typedef struct {
 
 typedef struct {
     uint8_t cmd_num;
-    cmd_queue_cell_t cmd_queue[5];
+    cmd_queue_cell_t cmd_queue[10];
 } cmd_queue_t;
 
 uint8_t checksum(uint8_t *data, uint16_t length);
