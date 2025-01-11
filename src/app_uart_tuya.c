@@ -29,7 +29,7 @@ uint8_t checksum(uint8_t *data, uint16_t length) {
 
 void add_cmd_queue(pkt_tuya_t *pkt, uint8_t confirm_need) {
 
-    printf("cmd_queue.cmd_num: %d\r\n", cmd_queue.cmd_num);
+//    printf("cmd_queue.cmd_num: %d\r\n", cmd_queue.cmd_num);
 
     memset(&cmd_queue.cmd_queue[cmd_queue.cmd_num], 0, sizeof(cmd_queue_cell_t));
 
