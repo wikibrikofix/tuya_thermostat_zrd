@@ -54,7 +54,7 @@ void local_cmd_oper_mode_2(void *args) {
         *mode = 1;
     }
 #if UART_PRINTF_MODE && DEBUG_CMD
-            printf("Thermostat in %s mode\r\n", *mode?"programming":"manual");
+            printf("Thermostat in %s mode\r\n", *mode?"manual":"programming");
 #endif
 
 

@@ -12,6 +12,7 @@ static uint8_t      no_answer = false;
 static uint8_t      factory_reset_cnt = 0;
 static uint8_t      factory_reset_status = 0;
 static ev_timer_event_t *factory_resetTimerEvt = NULL;
+static ev_timer_event_t *check_answerTimerEvt = NULL;
 
 cmd_queue_t cmd_queue = {0};
 
@@ -28,7 +29,7 @@ uint8_t checksum(uint8_t *data, uint16_t length) {
 
 void add_cmd_queue(pkt_tuya_t *pkt, uint8_t confirm_need) {
 
-//    printf("cmd_queue.cmd_num: %d\r\n", cmd_queue.cmd_num);
+    printf("cmd_queue.cmd_num: %d\r\n", cmd_queue.cmd_num);
 
     memset(&cmd_queue.cmd_queue[cmd_queue.cmd_num], 0, sizeof(cmd_queue_cell_t));
 
@@ -264,7 +265,7 @@ void uart_cmd_handler() {
     if (first_start) {
         set_command(COMMAND01, seq_num, true);
         data_point_model_init();
-        TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_15SEC);
+        check_answerTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_15SEC);
 
         first_start = false;
 
@@ -336,7 +337,10 @@ void uart_cmd_handler() {
                             data_point->dp_id == data_point_model[DP_IDX_ONOFF].id) {
                             set_default_answer(COMMAND06, reverse16(pkt->seq_num));
                         }
+                    } else if (send_pkt->command == COMMAND28) {
+                        cmd_queue.cmd_queue[0].confirm_rec = true;
                     } else if (pkt->command == send_pkt->command /*&& pkt->seq_num == send_pkt->seq_num*/) {
+                        printf("command: 0%x\r\n", pkt->command);
                         switch(pkt->command) {
                             case COMMAND01:
 
@@ -395,7 +399,13 @@ void uart_cmd_handler() {
                                 zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId_arr[manuf_name]);
                                 data_point_model = data_point_model_arr[manuf_name];
 
-//                                set_command(COMMAND28, seq_num, true);
+                                if (manuf_name == MANUF_NAME_5) {
+                                    set_command(COMMAND28, seq_num, true);
+                                    if (check_answerTimerEvt) {
+                                        TL_ZB_TIMER_CANCEL(&check_answerTimerEvt);
+                                    }
+                                    check_answerTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_1MIN30SEC);
+                                }
 
                                 break;
                             case COMMAND02:
@@ -507,6 +517,8 @@ void uart_cmd_handler() {
                     set_command(pkt->command, pkt->seq_num, false);
 //                    zb_factoryReset();
 //                    TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_3SEC);
+//                } else if (pkt->command == COMMAND02) {
+//                    printf("input COMMAND02\r\n");
                 } else if (pkt->command == COMMAND24) {
 #if UART_PRINTF_MODE
                     printf("command 0x24. Sync Time\r\n");

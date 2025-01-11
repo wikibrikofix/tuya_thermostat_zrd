@@ -1142,6 +1142,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                     case MANUF_NAME_2:
                     case MANUF_NAME_3:
                     case MANUF_NAME_4:
+                    case MANUF_NAME_5:
                         for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
                             if (i == 4) {
                                 break;
@@ -1209,7 +1210,8 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                     if (getWeeklyDay == 3) getWeeklyDay = 0;
                 } else if (manuf_name == MANUF_NAME_2 ||
                            manuf_name == MANUF_NAME_3 ||
-                           manuf_name == MANUF_NAME_4) {
+                           manuf_name == MANUF_NAME_4 ||
+                           manuf_name == MANUF_NAME_5) {
                     remote_cmd_get_schedule_2(getWeeklyDay);
                     getWeeklyDay++;
                     if (getWeeklyDay == 7) getWeeklyDay = 0;

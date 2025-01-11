@@ -12,11 +12,14 @@
 	- ["_TZE204_tagezcph"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r03/README.md)
 4. Model r04	
 	- ["_TZE204_xyugziqv"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r04/README.md)
+4. Model r05
+	- ["_TZE204_5toc8efa"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r05/README.md)
 
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/TYBAC-006.png"/>
+<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model1.png"/>
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model3_1.png"/>
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model3_2.png"/>
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model4.png"/>
+<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model5.png"/>
 
 **Автор не несет никакой отвественности, если вы, воспользовавшись этим проектом, превратите свой умный термостат в полоумный.**
 
@@ -203,6 +206,10 @@ P.S. В реальной работе не проверялось, требуе�
 	- Устранен баг с сохранением настроек и с последующим их восстановлением при подаче питания.
 	- Добавлена очистка `watchdog` в работу uart. Могла произойти такая ситуация - при продолжительном неответе MCU ZTU перегружался.
 	- Обновлены конверторы для версии `zigbee2mqtt` 2.0.0
+	- Обновлена инструкция.
+- 1.0.10
+	- Добавлен термостат с сигнатурой `_TZE204_5toc8efa` производства BSEED.
+	- Обновлены конверторы и файл локальной загрузки обновлений.
 	- Обновлена инструкция.
 
 [Наверх](#Top)
