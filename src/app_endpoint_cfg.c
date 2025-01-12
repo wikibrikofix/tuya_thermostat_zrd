@@ -215,26 +215,30 @@ zcl_levelAttr_t g_zcl_levelAttrs = {
     .maxLevelA = 8,
     .minLevelB = 0,
     .maxLevelB = 8,
+    .optionsA  = 1,
+    .optionsB  = 1,
 };
 
 const zclAttrInfo_t levelA_attrTbl[] =
 {
-    { ZCL_ATTRID_LEVEL_CURRENT_LEVEL,       ZCL_UINT8,  RR, (uint8_t*)&g_zcl_levelAttrs.currentLevelA },
-    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.minLevelA },
-    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.maxLevelA },
+    { ZCL_ATTRID_LEVEL_CURRENT_LEVEL,       ZCL_UINT8,      RR, (uint8_t*)&g_zcl_levelAttrs.currentLevelA },
+    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,      R,  (uint8_t*)&g_zcl_levelAttrs.minLevelA     },
+    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,      R,  (uint8_t*)&g_zcl_levelAttrs.maxLevelA     },
+    { ZCL_ATTRID_LEVEL_OPTIONS,             ZCL_BITMAP8,    RW, (uint8_t*)&g_zcl_levelAttrs.optionsA      },
 
-    { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,   ZCL_UINT16, R,  (u8*)&zcl_attr_global_clusterRevision},
+    { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,   ZCL_UINT16,     R,  (u8*)&zcl_attr_global_clusterRevision     },
 };
 
 #define ZCL_LEVEL_A_ATTR_NUM   sizeof(levelA_attrTbl) / sizeof(zclAttrInfo_t)
 
 const zclAttrInfo_t levelB_attrTbl[] =
 {
-    { ZCL_ATTRID_LEVEL_CURRENT_LEVEL,       ZCL_UINT8,  RR, (uint8_t*)&g_zcl_levelAttrs.currentLevelB },
-    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.minLevelB },
-    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,  R,  (uint8_t*)&g_zcl_levelAttrs.maxLevelB },
+    { ZCL_ATTRID_LEVEL_CURRENT_LEVEL,       ZCL_UINT8,      RR, (uint8_t*)&g_zcl_levelAttrs.currentLevelB },
+    { ZCL_ATTRID_LEVEL_MIN_LEVEL,           ZCL_UINT8,      R,  (uint8_t*)&g_zcl_levelAttrs.minLevelB     },
+    { ZCL_ATTRID_LEVEL_MAX_LEVEL,           ZCL_UINT8,      R,  (uint8_t*)&g_zcl_levelAttrs.maxLevelB     },
+    { ZCL_ATTRID_LEVEL_OPTIONS,             ZCL_BITMAP8,    RW, (uint8_t*)&g_zcl_levelAttrs.optionsB      },
 
-    { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,   ZCL_UINT16, R,  (u8*)&zcl_attr_global_clusterRevision},
+    { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,   ZCL_UINT16,     R,  (u8*)&zcl_attr_global_clusterRevision     },
 };
 
 #define ZCL_LEVEL_B_ATTR_NUM   sizeof(levelB_attrTbl) / sizeof(zclAttrInfo_t)
