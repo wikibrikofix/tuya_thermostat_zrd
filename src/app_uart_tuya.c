@@ -392,6 +392,17 @@ void uart_cmd_handler() {
 #endif
 //                                    set_zcl_modelId(ptr);
                                 }
+
+#if 0
+                                /* Only for test */
+                                manuf_name = MANUF_NAME_1;
+//                                manuf_name = MANUF_NAME_2;
+//                                manuf_name = MANUF_NAME_3;
+//                                manuf_name = MANUF_NAME_4;
+//                                manuf_name = MANUF_NAME_5;
+
+#endif
+
 #if UART_PRINTF_MODE
                                 printf("Use modelId: %s\r\n", zb_modelId_arr[manuf_name]+1);
 #endif
