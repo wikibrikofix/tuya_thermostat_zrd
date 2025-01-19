@@ -21,6 +21,15 @@ uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE] = {
 
 uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 
+void (*answer_weekly_schedule[MANUF_NAME_MAX])(void) = {
+   remote_cmd_get_schedule_6,
+   remote_cmd_get_schedule_6,
+   remote_cmd_get_schedule_6,
+   remote_cmd_get_schedule_6,
+   remote_cmd_get_schedule_6,
+   remote_cmd_get_schedule_6,
+};
+
 /*
  *
  *  common remote_cmd functions
@@ -422,7 +431,7 @@ void local_cmd_inner_sensor(void *args) {
     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMPERATURE, (uint8_t*)temp);
 
 #if UART_PRINTF_MODE && DEBUG_CMD
-            printf("Local Temperature: %d\r\n", temp);
+            printf("Local Temperature: %d\r\n", *temp);
 #endif
 
 }

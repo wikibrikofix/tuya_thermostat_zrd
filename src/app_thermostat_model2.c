@@ -632,7 +632,7 @@ static void remote_cmd_set_schedule_sun() {
 
 void remote_cmd_set_schedule_2(void *args) {
 
-    if (data_point_model[DP_IDX_SCHEDULE].remote_cmd == NULL) return;
+//    if (data_point_model[DP_IDX_SCHEDULE].remote_cmd == NULL) return;
 
     uint8_t *dayOfWeek = (uint8_t*)args;
 

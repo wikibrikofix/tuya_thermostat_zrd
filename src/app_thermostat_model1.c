@@ -51,7 +51,7 @@ void local_cmd_oper_mode_1(void *args) {
     uint8_t *mode = (uint8_t*)args;
 
 #if UART_PRINTF_MODE && DEBUG_CMD
-            printf("Thermostat mode %s\r\n", mode?"programming":"manual");
+            printf("Thermostat mode %s\r\n", *mode?"programming":"manual");
 #endif
 
     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT,
