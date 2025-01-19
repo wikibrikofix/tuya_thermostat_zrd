@@ -7,6 +7,8 @@ uint8_t  ring_buff[RING_BUFF_SIZE];
 uint16_t ring_head, ring_tail;
 uint8_t uart_msg_err;
 
+static uint32_t uart_baudrate = UART_BAUDRATE_9600;
+
 #if UART_PRINTF_MODE && DEBUG_PKT
 
 static void print_pkt(uint8_t *data, uint32_t len) {
@@ -186,5 +188,13 @@ void app_uart_init() {
     flush_ring_buff();
     drv_uart_pin_set(GPIO_UART_TX, GPIO_UART_RX);
 
-    drv_uart_init(BAUDRATE_UART, (uint8_t*)&rec_buff, sizeof(uart_data_t), app_uartRecvCb);
+    drv_uart_init(uart_baudrate, (uint8_t*)&rec_buff, sizeof(uart_data_t), app_uartRecvCb);
+}
+
+uint32_t get_uart_baudrate() {
+    return uart_baudrate;
+}
+
+void set_uart_baudrate(uint32_t baudrate) {
+    uart_baudrate = baudrate;
 }

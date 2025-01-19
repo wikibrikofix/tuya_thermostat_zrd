@@ -15,7 +15,6 @@
 *    UART_RX_PC5 = GPIO_PC5,
 *    UART_RX_PD6 = GPIO_PD6,
 */
-#define BAUDRATE_UART           115200
 #define GPIO_UART_TX            UART_TX_PB1
 #define GPIO_UART_RX            UART_RX_PB7
 

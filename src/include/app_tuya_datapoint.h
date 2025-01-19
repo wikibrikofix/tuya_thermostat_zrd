@@ -179,8 +179,6 @@ typedef enum {
     DP_TYPE6_ID_6F    = 0x6F,     // inversion of output
 } data_point_id_type6_t;
 
-
-
 typedef enum {
     MANUF_NAME_1 = 0,
     MANUF_NAME_2,

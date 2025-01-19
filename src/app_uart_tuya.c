@@ -175,7 +175,7 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             out_pkt->pkt_len++;
             out_pkt->pkt_len++;
             out_pkt->data[0] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-            add_cmd_queue(out_pkt, true);
+            add_cmd_queue(out_pkt, false);
             break;
         case COMMANDXX:
 //            printf("COMMMANDXX\r\n");
@@ -322,9 +322,10 @@ void uart_cmd_handler() {
                 sleep_ms(10);
             }
 
+            pkt_tuya_t *send_pkt = &cmd_queue.cmd_queue[0].pkt;
+
             if (complete) {
                 pkt->pkt_len = load_size;
-                pkt_tuya_t *send_pkt = &cmd_queue.cmd_queue[0].pkt;
                 uint8_t crc = checksum((uint8_t*)pkt, pkt->pkt_len-1);
 
 //                printf("complete.inCRC: 0x%x, outCRC: 0x%x\r\n", crc, answer_buff[pkt->pkt_len-1]);
@@ -334,13 +335,14 @@ void uart_cmd_handler() {
                     if (send_pkt->command == COMMAND04 && pkt->command == COMMAND06 /*&& pkt->seq_num == send_pkt->seq_num*/) {
                         cmd_queue.cmd_queue[0].confirm_rec = true;
                         if (data_point->dp_id == data_point_model[DP_IDX_SETPOINT].id ||
-                            data_point->dp_id == data_point_model[DP_IDX_ONOFF].id) {
+                            data_point->dp_id == data_point_model[DP_IDX_ONOFF].id ||
+                            data_point->dp_id == data_point_model[DP_IDX_SCHEDULE].id) {
                             set_default_answer(COMMAND06, reverse16(pkt->seq_num));
                         }
                     } else if (send_pkt->command == COMMAND28) {
                         cmd_queue.cmd_queue[0].confirm_rec = true;
                     } else if (pkt->command == send_pkt->command /*&& pkt->seq_num == send_pkt->seq_num*/) {
-                        printf("command: 0%x\r\n", pkt->command);
+//                        printf("command: 0%x\r\n", pkt->command);
                         switch(pkt->command) {
                             case COMMAND01:
 
@@ -410,12 +412,14 @@ void uart_cmd_handler() {
                                 zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId_arr[manuf_name]);
                                 data_point_model = data_point_model_arr[manuf_name];
 
-                                if (manuf_name == MANUF_NAME_5) {
+                                if (manuf_name == MANUF_NAME_5 || manuf_name == MANUF_NAME_6) {
                                     set_command(COMMAND28, seq_num, true);
-                                    if (check_answerTimerEvt) {
-                                        TL_ZB_TIMER_CANCEL(&check_answerTimerEvt);
+                                    if (manuf_name == MANUF_NAME_5) {
+                                        if (check_answerTimerEvt) {
+                                            TL_ZB_TIMER_CANCEL(&check_answerTimerEvt);
+                                        }
+                                        check_answerTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_1MIN30SEC);
                                     }
-                                    check_answerTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_1MIN30SEC);
                                 }
 
                                 break;
@@ -453,6 +457,16 @@ void uart_cmd_handler() {
                 }
 
                 no_answer = true;
+
+                if (send_pkt->command == COMMAND01) {
+                    uint32_t baudrate = get_uart_baudrate();
+                    if (baudrate == UART_BAUDRATE_9600) {
+                        set_uart_baudrate(UART_BAUDRATE_115200);
+                    } else {
+                        set_uart_baudrate(UART_BAUDRATE_9600);
+                    }
+                    app_uart_init();
+                }
             }
         } else {
             cmd_queue.cmd_queue[0].confirm_rec = true;
@@ -556,6 +570,9 @@ void uart_cmd_handler() {
 
                         if (data_point->dp_id == data_point_model[DP_IDX_ONOFF].id &&
                                 data_point->dp_type == data_point_model[DP_IDX_ONOFF].type) {
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP OnOff\r\n");
+#endif
 
                             uint8_t onoff = data_point->data[0];
                             if (data_point_model[DP_IDX_ONOFF].local_cmd)
@@ -564,6 +581,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_PROG].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_PROG].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP ProgMode\r\n");
+#endif
                             uint8_t mode = data_point->data[0];
                             if (data_point_model[DP_IDX_PROG].local_cmd) data_point_model[DP_IDX_PROG].local_cmd(&mode);
 
@@ -573,6 +593,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SETPOINT].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SETPOINT].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP HeatSetPoint\r\n");
+#endif
                             uint16_t temp = int32_from_str(data_point->data) & 0xffff;
 
                             if (data_point_model[DP_IDX_SETPOINT].local_cmd)
@@ -581,6 +604,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_MIN].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_MIN].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP MinHeatSet\r\n");
+#endif
                             int16_t temp = int32_from_str(data_point->data) & 0xffff;
 
                             if (data_point_model[DP_IDX_MIN].local_cmd)
@@ -589,6 +615,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_MAX].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_MAX].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP MaxHeatSet\r\n");
+#endif
                             int16_t temp = int32_from_str(data_point->data) & 0xffff;
 
                             if (data_point_model[DP_IDX_MAX].local_cmd)
@@ -597,14 +626,27 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_FROST_PROTECT].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_FROST_PROTECT].type) {
 
-                            uint32_t temp = int32_from_str(data_point->data) & 0xffff;
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP FrostProtect\r\n");
+#endif
+                            if (manuf_name == MANUF_NAME_6) {
+                                uint8_t frost = data_point->data[0];
 
-                            if (data_point_model[DP_IDX_FROST_PROTECT].local_cmd)
-                                data_point_model[DP_IDX_FROST_PROTECT].local_cmd(&temp);
+                                if (data_point_model[DP_IDX_FROST_PROTECT].local_cmd)
+                                    data_point_model[DP_IDX_FROST_PROTECT].local_cmd(&frost);
+                            } else {
+                                uint32_t temp = int32_from_str(data_point->data) & 0xffff;
+
+                                if (data_point_model[DP_IDX_FROST_PROTECT].local_cmd)
+                                    data_point_model[DP_IDX_FROST_PROTECT].local_cmd(&temp);
+                            }
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_HEAT_PROTECT].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_HEAT_PROTECT].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP HeatProtect\r\n");
+#endif
                             int16_t temp = int32_from_str(data_point->data) & 0xffff;
 
                             if (data_point_model[DP_IDX_HEAT_PROTECT].local_cmd)
@@ -613,6 +655,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_TEMP_OUT].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_TEMP_OUT].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP OutTemp\r\n");
+#endif
                             int16_t temp = int32_from_str(data_point->data) & 0xffff;
 
                             if (data_point_model[DP_IDX_TEMP_OUT].local_cmd)
@@ -621,6 +666,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_TEMP].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_TEMP].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP LocalTemp\r\n");
+#endif
                             int16_t temp = int32_from_str(data_point->data) & 0xffff;
 
                             if (data_point_model[DP_IDX_TEMP].local_cmd)
@@ -629,6 +677,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_DEADZONE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_DEADZONE].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP DeadZone\r\n");
+#endif
                             int16_t temp = int32_from_str(data_point->data) & 0xFFFF;
 
                             if (data_point_model[DP_IDX_DEADZONE].local_cmd)
@@ -637,6 +688,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_CALIBRATION].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_CALIBRATION].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Calibration\r\n");
+#endif
                             int8_t temp = int32_from_str(data_point->data) &0xff;
 
                             if (data_point_model[DP_IDX_CALIBRATION].local_cmd)
@@ -645,12 +699,23 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_RUNSTATE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_RUNSTATE].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP RunState\r\n");
+#endif
                             run_state_bit_t run_state_bit;
                             run_state_bit.bit_num = RUN_STATE_HEAT_BIT;
                             if (data_point->data[0]) {
-                                run_state_bit.set = OFF;
+                                if (manuf_name == MANUF_NAME_6) {
+                                    run_state_bit.set = ON;
+                                } else {
+                                    run_state_bit.set = OFF;
+                                }
                             } else {
-                                run_state_bit.set = ON;
+                                if (manuf_name == MANUF_NAME_6) {
+                                    run_state_bit.set = OFF;
+                                } else {
+                                    run_state_bit.set = ON;
+                                }
                             }
 
                             if (data_point_model[DP_IDX_RUNSTATE].local_cmd)
@@ -659,6 +724,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_LOCKUNLOCK].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_LOCKUNLOCK].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP KeyLock\r\n");
+#endif
                             uint8_t lock = data_point->data[0];
 
                             if (data_point_model[DP_IDX_LOCKUNLOCK].local_cmd)
@@ -667,6 +735,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SENSOR].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SENSOR].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP SensorUsed\r\n");
+#endif
                             uint8_t sensor_used = data_point->data[0];
 
                             if (data_point_model[DP_IDX_SENSOR].local_cmd)
@@ -675,6 +746,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_ECO_MODE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_ECO_MODE].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP EcoMode\r\n");
+#endif
                             uint8_t eco_mode = data_point->data[0];
 
                             if (data_point_model[DP_IDX_ECO_MODE].local_cmd)
@@ -683,6 +757,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_ECO_TEMP].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_ECO_TEMP].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP EcoModeTemp\r\n");
+#endif
                             int16_t temp = int32_from_str(data_point->data) & 0xffff;
 
                             if (data_point_model[DP_IDX_ECO_TEMP].local_cmd)
@@ -691,7 +768,16 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_LEVEL_A].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_LEVEL_A].type) {
 
-                            uint8_t level = int32_from_str(data_point->data) & 0xff;
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP LevelA\r\n");
+#endif
+                            uint8_t level = 0;
+
+                            if (manuf_name == MANUF_NAME_6) {
+                                level = data_point->data[0];
+                            } else {
+                                level = int32_from_str(data_point->data) & 0xff;
+                            }
 
                             if (data_point_model[DP_IDX_LEVEL_A].local_cmd)
                                 data_point_model[DP_IDX_LEVEL_A].local_cmd(&level);
@@ -699,32 +785,83 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_LEVEL_B].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_LEVEL_B].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP LevelB\r\n");
+#endif
                             uint8_t level = int32_from_str(data_point->data) & 0xff;
 
                             if (data_point_model[DP_IDX_LEVEL_B].local_cmd)
                                 data_point_model[DP_IDX_LEVEL_B].local_cmd(&level);
 
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_SOUND].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_SOUND].type) {
+
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Sound\r\n");
+#endif
+                            uint8_t sound = data_point->data[0];
+
+                            if (data_point_model[DP_IDX_SOUND].local_cmd)
+                                data_point_model[DP_IDX_SOUND].local_cmd(&sound);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_SETTINGS_RESET].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_SETTINGS_RESET].type) {
+
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Settings Reset\r\n");
+#endif
+                            uint8_t sreset = data_point->data[0];
+
+                            if (data_point_model[DP_IDX_SETTINGS_RESET].local_cmd)
+                                data_point_model[DP_IDX_SETTINGS_RESET].local_cmd(&sreset);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_INVERSION].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_INVERSION].type) {
+
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Inversion\r\n");
+#endif
+                            uint8_t inversion = data_point->data[0];
+
+                            if (data_point_model[DP_IDX_INVERSION].local_cmd)
+                                data_point_model[DP_IDX_INVERSION].local_cmd(&inversion);
+
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Schedule\r\n");
+#endif
                             if (data_point_model[DP_IDX_SCHEDULE].local_cmd)
                                 data_point_model[DP_IDX_SCHEDULE].local_cmd(data_point);
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_MON].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_MON].type) {
 
-                            schedule_args_model2_t schedule_args = {
-                                    .data_point = data_point,
-                                    .idx = DP_IDX_SCHEDULE_MON,
-                                    .heatMode = g_zcl_scheduleData.schedule_mon
-                            };
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Schedule Mon\r\n");
+#endif
+                            if (manuf_name == MANUF_NAME_6) {
+                                uint8_t mode = data_point->data[0];
+                                if (data_point_model[DP_IDX_SCHEDULE_MON].local_cmd)
+                                    data_point_model[DP_IDX_SCHEDULE_MON].local_cmd(&mode);
+                            } else {
+                                schedule_args_model2_t schedule_args = {
+                                        .data_point = data_point,
+                                        .idx = DP_IDX_SCHEDULE_MON,
+                                        .heatMode = g_zcl_scheduleData.schedule_mon
+                                };
 
-                            if (data_point_model[DP_IDX_SCHEDULE_MON].local_cmd)
-                                data_point_model[DP_IDX_SCHEDULE_MON].local_cmd(&schedule_args);
+                                if (data_point_model[DP_IDX_SCHEDULE_MON].local_cmd)
+                                    data_point_model[DP_IDX_SCHEDULE_MON].local_cmd(&schedule_args);
+                            }
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_TUE].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_TUE].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Schedule Tue\r\n");
+#endif
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_TUE,
@@ -737,6 +874,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_WED].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_WED].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Schedule Wed\r\n");
+#endif
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_WED,
@@ -749,6 +889,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_THU].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_THU].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Schedule Thu\r\n");
+#endif
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_THU,
@@ -761,6 +904,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_FRI].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_FRI].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Schedule Fri\r\n");
+#endif
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_FRI,
@@ -773,6 +919,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_SAT].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_SAT].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Schedule Sat\r\n");
+#endif
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_SAT,
@@ -785,6 +934,9 @@ void uart_cmd_handler() {
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_SUN].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_SUN].type) {
 
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP Schedule Sun\r\n");
+#endif
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_SUN,

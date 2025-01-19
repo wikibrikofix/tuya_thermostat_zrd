@@ -287,6 +287,11 @@ zcl_thermostatAttr_t g_zcl_thermostatAttrs = {
     .dailyTransNum = 4,
     .ecoMode = 0,                           // 0 - off, 1 - on
     .ecoModeTemperature = 2000,             // 20°C * 100
+    .sound = 1,
+    .schedule_mode = 1,
+    .frost_protect_onoff = 0,
+    .level = 3,
+    .settings_reset = 0,
 };
 
 
@@ -312,6 +317,12 @@ const zclAttrInfo_t thermostat_attrTbl[] = {
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT,           ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.heatProtect                },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE,               ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.ecoMode                    },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_TEMPERATURE,   ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.ecoModeTemperature         },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT_ONOFF,    ZCL_BOOLEAN,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.frost_protect_onoff        },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SETTINGS_RESET,         ZCL_BOOLEAN,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.settings_reset             },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SOUND,                  ZCL_BOOLEAN,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.sound                      },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_INVERSION,              ZCL_BOOLEAN,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.inversion                  },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SCHEDULE_MODE,          ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.schedule_mode              },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_LEVEL,                  ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.level                      },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,                       ZCL_UINT16,     R,      (uint8_t*)&zcl_attr_global_clusterRevision                  },
 };
@@ -381,6 +392,11 @@ static void print_setting_sr(nv_sts_t st, thermostat_settings_t *thermostat_sett
     printf("ecoModeTemperature:          %d\r\n", thermostat_settings->ecoModeTemperature);
     printf("currentLevelA:               %d\r\n", thermostat_settings->currentLevelA);
     printf("currentLevelB:               %d\r\n", thermostat_settings->currentLevelB);
+    printf("frost_protect_onoff:         %d\r\n", thermostat_settings->frost_protect_onoff);
+    printf("inversion:                   %d\r\n", thermostat_settings->inversion);
+    printf("schedule_mode:               %d\r\n", thermostat_settings->schedule_mode);
+    printf("sound:                       %d\r\n", thermostat_settings->sound);
+    printf("level:                       %d\r\n", thermostat_settings->level);
 #endif
 }
 
@@ -490,6 +506,31 @@ nv_sts_t thermostat_settings_save() {
 //            printf("currentLevelB changed\r\n");
         }
 
+        if (thermostat_settings.frost_protect_onoff != g_zcl_thermostatAttrs.frost_protect_onoff) {
+            thermostat_settings.frost_protect_onoff = g_zcl_thermostatAttrs.frost_protect_onoff;
+            save = true;
+        }
+
+        if (thermostat_settings.inversion != g_zcl_thermostatAttrs.inversion) {
+            thermostat_settings.inversion = g_zcl_thermostatAttrs.inversion;
+            save = true;
+        }
+
+        if (thermostat_settings.level != g_zcl_thermostatAttrs.level) {
+            thermostat_settings.level = g_zcl_thermostatAttrs.level;
+            save = true;
+        }
+
+        if (thermostat_settings.schedule_mode != g_zcl_thermostatAttrs.schedule_mode) {
+            thermostat_settings.schedule_mode = g_zcl_thermostatAttrs.schedule_mode;
+            save = true;
+        }
+
+        if (thermostat_settings.sound != g_zcl_thermostatAttrs.sound) {
+            thermostat_settings.sound = g_zcl_thermostatAttrs.sound;
+            save = true;
+        }
+
         if (save) {
 
             thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
@@ -516,6 +557,11 @@ nv_sts_t thermostat_settings_save() {
         thermostat_settings.ecoModeTemperature = g_zcl_thermostatAttrs.ecoModeTemperature;
         thermostat_settings.currentLevelA = g_zcl_levelAttrs.currentLevelA;
         thermostat_settings.currentLevelB = g_zcl_levelAttrs.currentLevelB;
+        thermostat_settings.frost_protect_onoff = g_zcl_thermostatAttrs.frost_protect_onoff;
+        thermostat_settings.inversion = g_zcl_thermostatAttrs.inversion;
+        thermostat_settings.level = g_zcl_thermostatAttrs.level;
+        thermostat_settings.schedule_mode = g_zcl_thermostatAttrs.schedule_mode;
+        thermostat_settings.sound = g_zcl_thermostatAttrs.sound;
         thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
 
         st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
@@ -557,6 +603,11 @@ nv_sts_t thermostat_settings_restore() {
         g_zcl_thermostatAttrs.ecoMode = thermostat_settings.ecoMode;
         g_zcl_thermostatAttrs.ecoModeTemperature = thermostat_settings.ecoModeTemperature;
         g_zcl_thermostatAttrs.keypadLockout = thermostat_settings.keypadLockout;
+        g_zcl_thermostatAttrs.frost_protect_onoff = thermostat_settings.frostProtect;
+        g_zcl_thermostatAttrs.inversion = thermostat_settings.inversion;
+        g_zcl_thermostatAttrs.level = thermostat_settings.level;
+        g_zcl_thermostatAttrs.schedule_mode = thermostat_settings.schedule_mode;
+        g_zcl_thermostatAttrs.sound = thermostat_settings.sound;
 
         g_zcl_levelAttrs.currentLevelA = thermostat_settings.currentLevelA;
         g_zcl_levelAttrs.currentLevelB = thermostat_settings.currentLevelB;
