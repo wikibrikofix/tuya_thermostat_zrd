@@ -72,6 +72,11 @@ typedef struct {
     heatMode_t      *heatMode;
 } schedule_args_model2_t;
 
+extern uint8_t w_mon;
+extern uint8_t w_sat;
+extern uint8_t w_sun;
+extern uint8_t w_day;
+
 extern data_point_st_t data_point_model1[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model2[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model3[DP_IDX_MAXNUM];
@@ -112,7 +117,7 @@ void remote_cmd_max_setpoint(void *args);
 #define remote_cmd_max_setpoint_1       remote_cmd_max_setpoint
 void remote_cmd_oper_mode_1(void *args);
 void remote_cmd_set_schedule_1(void *args);
-void remote_cmd_get_schedule_1(uint8_t day);
+void remote_cmd_get_schedule_1();
 
 
 /*

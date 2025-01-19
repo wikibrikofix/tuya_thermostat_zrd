@@ -1166,7 +1166,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 
                         if (save) {
                             if (data_point_model[DP_IDX_SCHEDULE].remote_cmd)
-                                data_point_model[DP_IDX_SCHEDULE].remote_cmd(NULL);
+                                data_point_model[DP_IDX_SCHEDULE].remote_cmd(&cmd->dayOfWeekForSequence);
                         }
                         break;
                     case MANUF_NAME_2:
@@ -1267,9 +1267,10 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                 printf("CMD Get Weekly Schedule\r\n");
 #endif
                 if (manuf_name == MANUF_NAME_1) {
-                    remote_cmd_get_schedule_1(getWeeklyDay);
-                    getWeeklyDay++;
-                    if (getWeeklyDay == 3) getWeeklyDay = 0;
+                    answer_weekly_schedule[manuf_name]();
+//                    remote_cmd_get_schedule_1(getWeeklyDay);
+//                    getWeeklyDay++;
+//                    if (getWeeklyDay == 3) getWeeklyDay = 0;
                 } else if (manuf_name == MANUF_NAME_2 ||
                            manuf_name == MANUF_NAME_3 ||
                            manuf_name == MANUF_NAME_4 ||

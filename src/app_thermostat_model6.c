@@ -46,10 +46,6 @@ data_point_st_t data_point_model6[DP_IDX_MAXNUM] = {
  *
  */
 
-static uint8_t sun = DAY_SUN;
-static uint8_t mon = DAY_MON;
-static uint8_t day;
-
 static void get_schedule(void *args) {
 
     if (!zb_isDeviceJoinedNwk()) return;
@@ -226,8 +222,8 @@ void local_cmd_set_schedule_6(void *args) {
 
     thermostat_settings_save();
 
-    TL_SCHEDULE_TASK(get_schedule, &sun);
-    TL_SCHEDULE_TASK(get_schedule, &mon);
+    TL_SCHEDULE_TASK(get_schedule, &w_sun);
+    TL_SCHEDULE_TASK(get_schedule, &w_mon);
 }
 
 
@@ -773,7 +769,7 @@ void remote_cmd_set_schedule_6(void *args) {
 
     uint8_t *arg = (uint8_t*)args;
 
-    day = *arg;
+    w_day = *arg;
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
@@ -831,11 +827,11 @@ void remote_cmd_set_schedule_6(void *args) {
 
     thermostat_settings_save();
 
-    TL_SCHEDULE_TASK(get_schedule, &day);
+    TL_SCHEDULE_TASK(get_schedule, &w_day);
 }
 
 void remote_cmd_get_schedule_6() {
-    TL_SCHEDULE_TASK(get_schedule, &sun);
-    TL_SCHEDULE_TASK(get_schedule, &mon);
+    TL_SCHEDULE_TASK(get_schedule, &w_sun);
+    TL_SCHEDULE_TASK(get_schedule, &w_mon);
 }
 
