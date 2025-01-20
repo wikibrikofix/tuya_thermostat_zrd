@@ -53,6 +53,11 @@ typedef struct __attribute__((packed)) {
     uint8_t     currentLevelB;
     uint8_t     ecoMode;                        // 1 - ecoMode on, 0 - ecoMode off
     int16_t     ecoModeTemperature;             // 20°C * 100
+    uint8_t     sound;                          // 0 - off, 1 - on
+    uint8_t     schedule_mode;                  // enum off, 5+2, 6+1, 7
+    uint8_t     level;                          // enum off, low, medium, high
+    uint8_t     inversion;                      // 0 - off, 1 - on
+    uint8_t     frost_protect_onoff;            // 0 - off, 1 - on
     uint8_t     crc;
 } thermostat_settings_t;
 
@@ -65,16 +70,28 @@ typedef struct {
     data_point_t    *data_point;
     uint16_t        idx;
     heatMode_t      *heatMode;
+    uint8_t         w_day;
 } schedule_args_model2_t;
+
+extern uint8_t w_mon;
+extern uint8_t w_tue;
+extern uint8_t w_wed;
+extern uint8_t w_thu;
+extern uint8_t w_fri;
+extern uint8_t w_sat;
+extern uint8_t w_sun;
+extern uint8_t w_day;
 
 extern data_point_st_t data_point_model1[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model2[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model3[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model4[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model5[DP_IDX_MAXNUM];
+extern data_point_st_t data_point_model6[DP_IDX_MAXNUM];
 extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
+extern void (*answer_weekly_schedule[MANUF_NAME_MAX])(void);
 
 /*
  * common functions remote_cmd
@@ -105,7 +122,7 @@ void remote_cmd_max_setpoint(void *args);
 #define remote_cmd_max_setpoint_1       remote_cmd_max_setpoint
 void remote_cmd_oper_mode_1(void *args);
 void remote_cmd_set_schedule_1(void *args);
-void remote_cmd_get_schedule_1(uint8_t day);
+void remote_cmd_get_schedule_1();
 
 
 /*
@@ -126,7 +143,7 @@ void remote_cmd_oper_mode_2(void *args);
 void remote_cmd_frost_protect_2(void *args);
 void remote_cmd_heat_protect_2(void *args);
 void remote_cmd_set_schedule_2(void *args);
-void remote_cmd_get_schedule_2(uint8_t day);
+void remote_cmd_get_schedule_2();
 
 /*
  *  remote_cmd for signarure
@@ -200,7 +217,29 @@ void remote_cmd_level_4(void *args);
 #define remote_cmd_set_schedule_5       remote_cmd_set_schedule_2
 #define remote_cmd_get_schedule_5       remote_cmd_get_schedule_2
 
-
+/*
+ *  remote_cmd for signarure
+ *  "lzriup1j"
+ *
+ *  model6 - name_6
+ */
+#define remote_cmd_sys_mode_6           remote_cmd_sys_mode
+#define remote_cmd_heating_set_6        remote_cmd_heating_set
+#define remote_cmd_keylock_6            remote_cmd_keylock
+#define remote_cmd_oper_mode_6          remote_cmd_oper_mode_1
+void remote_cmd_sensor_used_6(void *args);
+void remote_cmd_temp_calibration_6(void *args);
+void remote_cmd_deadband_6(void *args);
+void remote_cmd_max_setpoint_6(void *args);
+void remote_cmd_frost_protect_6(void *args);
+void remote_cmd_heat_protect_6(void *args);
+void remote_cmd_set_schedule_6(void *args);
+void remote_cmd_get_schedule_6();
+void remote_cmd_schedule_mode_6(void *args);
+void remote_cmd_inversion_6(void *args);
+void remote_cmd_level_6(void *args);
+void remote_cmd_sound_6(void *args);
+void remote_cmd_setting_reset_6(void *args);
 
 /*
  * common functions local_cmd
@@ -338,6 +377,31 @@ void local_cmd_level_night_3(void *args);
 #define local_cmd_outdoor_sensor_5      local_cmd_outdoor_sensor_2
 #define local_cmd_set_schedule_5        local_cmd_set_schedule_2
 
+/*
+ *  local_cmd for signarure
+ *  "lzriup1j"
+ *
+ *  model6 - name_6
+ */
+#define local_cmd_inner_sensor_6        local_cmd_inner_sensor
+#define local_cmd_heating_set_6         local_cmd_heating_set
+#define local_cmd_max_setpoint_6        local_cmd_max_setpoint
+#define local_cmd_deadband_6            local_cmd_deadband
+#define local_cmd_keylock_6             local_cmd_keylock
+#define local_cmd_set_run_state_6       local_cmd_set_run_state
+#define local_cmd_onoff_state_6         local_cmd_onoff_state
+#define local_cmd_oper_mode_6           local_cmd_oper_mode_1
+#define local_cmd_heat_protect_6        local_cmd_heat_protect_2
+
+void local_cmd_sensor_used_6(void *args);
+void local_cmd_temp_calibration_6(void *args);
+void local_cmd_frost_protect_6(void *args);
+void local_cmd_inversion_6(void *args);
+void local_cmd_level_6(void *args);
+void local_cmd_sound_6(void *args);
+void local_cmd_setting_reset_6(void *args);
+void local_cmd_schedule_mode_6(void *args);
+void local_cmd_set_schedule_6(void *args);
 
 /*
  *

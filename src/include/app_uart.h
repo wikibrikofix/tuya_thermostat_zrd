@@ -2,12 +2,13 @@
 #define SRC_INCLUDE_APP_UART_H_
 
 
-//#define UART_DATA_LEN  188
 #define UART_DATA_LEN  512
 
-#define RING_BUFF_SIZE      1024              /* size ring buffer  */
-#define RING_BUFF_MASK      RING_BUFF_SIZE-1  /* mask ring buffer  */
+#define RING_BUFF_SIZE                      1024              /* size ring buffer  */
+#define RING_BUFF_MASK                      RING_BUFF_SIZE-1  /* mask ring buffer  */
 
+#define UART_BAUDRATE_9600                  9600
+#define UART_BAUDRATE_115200                115200
 
 #define UART_MSG_STATUS_ERROR_START_CHAR    0xE0
 #define UART_MSG_STATUS_MSG_OVERFLOW        0xE1
@@ -32,6 +33,9 @@ typedef enum {
 extern uint8_t uart_msg_err;
 
 void app_uart_init();
+uint32_t get_uart_baudrate();
+void set_uart_baudrate(uint32_t baudrate);
+
 uartTx_err app_uart_txMsg(uint8_t *data, uint8_t len);
 //uint8_t checksum(uint8_t *data, uint16_t length);
 //void print_pkt(uint8_t *data, uint32_t len, uint8_t dir);

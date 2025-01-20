@@ -68,6 +68,8 @@ typedef struct {
     uint8_t     maxLevelA;
     uint8_t     minLevelB;
     uint8_t     maxLevelB;
+    uint8_t     optionsA;
+    uint8_t     optionsB;
 } zcl_levelAttr_t;
 
 /**
@@ -97,6 +99,12 @@ typedef struct {
     int16_t     ecoModeTemperature;             // 20°C * 100
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off
+    uint8_t     sound;                          // 0 - off, 1 - on
+    uint8_t     schedule_mode;                  // enum off, 5+2, 6+1, 7
+    uint8_t     settings_reset;                 // 1 - reset
+    uint8_t     level;                          // enum off, low, medium, high
+    uint8_t     inversion;                      // 0 - off, 1 - on
+    uint8_t     frost_protect_onoff;            // 0 - off, 1 - on
 } zcl_thermostatAttr_t;
 
 extern uint8_t APP_EP1_CB_CLUSTER_NUM;

@@ -35,6 +35,77 @@ data_point_st_t data_point_model2[DP_IDX_MAXNUM] = {
         {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},
 };
 
+/*
+ *
+ * Local variables and functions
+ *
+ */
+
+static void get_schedule(void *args) {
+
+    if(!zb_isDeviceJoinedNwk()) return;
+
+    uint8_t *day = (uint8_t*)args;
+
+    epInfo_t dstEpInfo;
+    TL_SETSTRUCTCONTENT(dstEpInfo, 0);
+
+    dstEpInfo.profileId = HA_PROFILE_ID;
+#if FIND_AND_BIND_SUPPORT
+    dstEpInfo.dstAddrMode = APS_DSTADDR_EP_NOTPRESETNT;
+#else
+    dstEpInfo.dstAddrMode = APS_SHORT_DSTADDR_WITHEP;
+    dstEpInfo.dstEp = APP_ENDPOINT1;
+    dstEpInfo.dstAddr.shortAddr = 0x0;
+#endif
+
+    zcl_thermostat_setWeeklyScheduleCmd_t cmd;
+    heatMode_t *heat_mode;
+
+    cmd.dayOfWeekForSequence = 0;
+
+        if (*day & DAY_MON) {
+            //mon
+            heat_mode =  g_zcl_scheduleData.schedule_mon;
+            cmd.dayOfWeekForSequence = DAY_MON;
+        } else if (*day & DAY_TUE) {
+            //tue
+            heat_mode =  g_zcl_scheduleData.schedule_tue;
+            cmd.dayOfWeekForSequence = DAY_TUE;
+        } else if (*day & DAY_WED) {
+            //wed
+            heat_mode =  g_zcl_scheduleData.schedule_wed;
+            cmd.dayOfWeekForSequence = DAY_WED;
+        } else if (*day & DAY_THU) {
+            //thu
+            heat_mode =  g_zcl_scheduleData.schedule_thu;
+            cmd.dayOfWeekForSequence = DAY_THU;
+        } else if (*day & DAY_FRI) {
+            //fri
+            heat_mode =  g_zcl_scheduleData.schedule_fri;
+            cmd.dayOfWeekForSequence = DAY_FRI;
+        } else if (*day & DAY_SAT) {
+            //sat
+            heat_mode =  g_zcl_scheduleData.schedule_sat;
+            cmd.dayOfWeekForSequence = DAY_SAT;
+        } else if (*day & DAY_SUN) {
+            //sun
+            heat_mode =  g_zcl_scheduleData.schedule_sun;
+            cmd.dayOfWeekForSequence = DAY_SUN;
+        } else {
+            return;
+        }
+
+        cmd.numOfTransForSequence = 4;
+        cmd.sequenceMode.pHeatMode = heat_mode;
+        cmd.modeForSequence = HEAT_SERPOINT_FIELD_PRESENT;
+
+//        for (uint8_t i = 0; i < cmd.numOfTransForSequence; i++) {
+//            printf("i: %d, time: %d, temp: %d\r\n", i, cmd.sequenceMode.pHeatMode[i].transTime, cmd.sequenceMode.pHeatMode[i].heatSetpoint);
+//        }
+
+    zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
+}
 
 
 /*
@@ -157,6 +228,10 @@ void local_cmd_set_schedule_2(void *args) {
     }
 
     thermostat_settings_save();
+
+    w_day = schedule_args->w_day;
+
+    TL_SCHEDULE_TASK(get_schedule, &w_day);
 }
 
 /*
@@ -352,6 +427,8 @@ static void remote_cmd_set_schedule_mon() {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    TL_SCHEDULE_TASK(get_schedule, &w_mon);
 }
 
 static void remote_cmd_set_schedule_tue() {
@@ -398,6 +475,8 @@ static void remote_cmd_set_schedule_tue() {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    TL_SCHEDULE_TASK(get_schedule, &w_tue);
 }
 
 static void remote_cmd_set_schedule_wed() {
@@ -444,6 +523,8 @@ static void remote_cmd_set_schedule_wed() {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    TL_SCHEDULE_TASK(get_schedule, &w_wed);
 }
 
 static void remote_cmd_set_schedule_thu() {
@@ -490,6 +571,8 @@ static void remote_cmd_set_schedule_thu() {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    TL_SCHEDULE_TASK(get_schedule, &w_thu);
 }
 
 static void remote_cmd_set_schedule_fri() {
@@ -536,6 +619,8 @@ static void remote_cmd_set_schedule_fri() {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    TL_SCHEDULE_TASK(get_schedule, &w_fri);
 }
 
 static void remote_cmd_set_schedule_sat() {
@@ -582,6 +667,8 @@ static void remote_cmd_set_schedule_sat() {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    TL_SCHEDULE_TASK(get_schedule, &w_sat);
 }
 
 static void remote_cmd_set_schedule_sun() {
@@ -628,11 +715,13 @@ static void remote_cmd_set_schedule_sun() {
     add_cmd_queue(out_pkt, true);
 
     set_seq_num(seq_num);
+
+    TL_SCHEDULE_TASK(get_schedule, &w_sun);
 }
 
 void remote_cmd_set_schedule_2(void *args) {
 
-    if (data_point_model[DP_IDX_SCHEDULE].remote_cmd == NULL) return;
+//    if (data_point_model[DP_IDX_SCHEDULE].remote_cmd == NULL) return;
 
     uint8_t *dayOfWeek = (uint8_t*)args;
 
@@ -667,68 +756,14 @@ void remote_cmd_set_schedule_2(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_get_schedule_2(uint8_t day) {
+void remote_cmd_get_schedule_2() {
 
-    if(!zb_isDeviceJoinedNwk()) return;
-
-    epInfo_t dstEpInfo;
-    TL_SETSTRUCTCONTENT(dstEpInfo, 0);
-
-    dstEpInfo.profileId = HA_PROFILE_ID;
-#if FIND_AND_BIND_SUPPORT
-    dstEpInfo.dstAddrMode = APS_DSTADDR_EP_NOTPRESETNT;
-#else
-    dstEpInfo.dstAddrMode = APS_SHORT_DSTADDR_WITHEP;
-    dstEpInfo.dstEp = APP_ENDPOINT1;
-    dstEpInfo.dstAddr.shortAddr = 0x0;
-#endif
-
-    zcl_thermostat_setWeeklyScheduleCmd_t cmd;
-    heatMode_t *heat_mode;
-
-    cmd.dayOfWeekForSequence = 0;
-
-        if (day == 0) {
-            //mon
-            heat_mode =  g_zcl_scheduleData.schedule_mon;
-            cmd.dayOfWeekForSequence = DAY_MON;
-        } else if (day == 1) {
-            //tue
-            heat_mode =  g_zcl_scheduleData.schedule_tue;
-            cmd.dayOfWeekForSequence = DAY_TUE;
-        } else if (day == 2) {
-            //wed
-            heat_mode =  g_zcl_scheduleData.schedule_wed;
-            cmd.dayOfWeekForSequence = DAY_WED;
-        } else if (day == 3) {
-            //thu
-            heat_mode =  g_zcl_scheduleData.schedule_thu;
-            cmd.dayOfWeekForSequence = DAY_THU;
-        } else if (day == 4) {
-            //fri
-            heat_mode =  g_zcl_scheduleData.schedule_fri;
-            cmd.dayOfWeekForSequence = DAY_FRI;
-        } else if (day == 5) {
-            //sat
-            heat_mode =  g_zcl_scheduleData.schedule_sat;
-            cmd.dayOfWeekForSequence = DAY_SAT;
-        } else if (day == 6) {
-            //sun
-            heat_mode =  g_zcl_scheduleData.schedule_sun;
-            cmd.dayOfWeekForSequence = DAY_SUN;
-        } else {
-            return;
-        }
-
-        cmd.numOfTransForSequence = 4;
-        cmd.sequenceMode.pHeatMode = heat_mode;
-        cmd.modeForSequence = HEAT_SERPOINT_FIELD_PRESENT;
-
-//        for (uint8_t i = 0; i < cmd.numOfTransForSequence; i++) {
-//            printf("i: %d, time: %d, temp: %d\r\n", i, cmd.sequenceMode.pHeatMode[i].transTime, cmd.sequenceMode.pHeatMode[i].heatSetpoint);
-//        }
-
-    zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
-
+    TL_SCHEDULE_TASK(get_schedule, &w_mon);
+    TL_SCHEDULE_TASK(get_schedule, &w_tue);
+    TL_SCHEDULE_TASK(get_schedule, &w_wed);
+    TL_SCHEDULE_TASK(get_schedule, &w_thu);
+    TL_SCHEDULE_TASK(get_schedule, &w_fri);
+    TL_SCHEDULE_TASK(get_schedule, &w_sat);
+    TL_SCHEDULE_TASK(get_schedule, &w_sun);
 }
 

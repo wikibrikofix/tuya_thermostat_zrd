@@ -257,6 +257,30 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 uint16_t temp = BUILD_S16(attr[i].attrData[0], attr[i].attrData[1]);
                 if (data_point_model[DP_IDX_ECO_TEMP].remote_cmd)
                     data_point_model[DP_IDX_ECO_TEMP].remote_cmd(&temp);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT_ONOFF) {
+                uint8_t frost = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_FROST_PROTECT].remote_cmd)
+                    data_point_model[DP_IDX_FROST_PROTECT].remote_cmd(&frost);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SOUND) {
+                uint8_t sound = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_SOUND].remote_cmd)
+                    data_point_model[DP_IDX_SOUND].remote_cmd(&sound);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_LEVEL) {
+                uint8_t level = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_LEVEL_A].remote_cmd)
+                    data_point_model[DP_IDX_LEVEL_A].remote_cmd(&level);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SCHEDULE_MODE) {
+                uint8_t mode = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_SCHEDULE_MON].remote_cmd)
+                    data_point_model[DP_IDX_SCHEDULE_MON].remote_cmd(&mode);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_INVERSION) {
+                uint8_t inversion = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_INVERSION].remote_cmd)
+                    data_point_model[DP_IDX_INVERSION].remote_cmd(&inversion);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SETTINGS_RESET) {
+                uint8_t sreset = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_SETTINGS_RESET].remote_cmd)
+                    data_point_model[DP_IDX_SETTINGS_RESET].remote_cmd(&sreset);
             }
         }
     }
@@ -317,19 +341,25 @@ static void app_zclDfltRspCmd(uint16_t clusterId, zclDefaultRspCmd_t *pDftRspCmd
 static void app_zclCfgReportCmd(uint8_t endPoint, uint16_t clusterId, zclCfgReportCmd_t *pCfgReportCmd)
 {
     //printf("app_zclCfgReportCmd\r\n");
+//    reportCfgInfo_t *pEntry;
 //    for(uint8_t i = 0; i < pCfgReportCmd->numAttr; i++) {
 //        for (uint8_t ii = 0; ii < ZCL_REPORTING_TABLE_NUM; ii++) {
-//            if (app_reporting[ii].pEntry->used) {
-//                if (app_reporting[ii].pEntry->endPoint == endPoint && app_reporting[ii].pEntry->attrID == pCfgReportCmd->attrList[i].attrID) {
-//                    if (app_reporting[ii].timerReportMinEvt) {
-//                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMinEvt);
-//                    }
-//                    if (app_reporting[ii].timerReportMaxEvt) {
-//                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMaxEvt);
-//                    }
-//                    return;
-//                }
+//            pEntry = &reportingTab.reportCfgInfo[ii];
+//            if (pEntry->used) {
+//                printf("attrId: 0x%x, maxInterval: %d, minInterval: %d\r\n", pEntry->attrID, pEntry->maxInterval, pEntry->minInterval);
+//
 //            }
+////            if (app_reporting[ii].pEntry->used) {
+////                if (app_reporting[ii].pEntry->endPoint == endPoint && app_reporting[ii].pEntry->attrID == pCfgReportCmd->attrList[i].attrID) {
+////                    if (app_reporting[ii].timerReportMinEvt) {
+////                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMinEvt);
+////                    }
+////                    if (app_reporting[ii].timerReportMaxEvt) {
+////                        TL_ZB_TIMER_CANCEL(&app_reporting[ii].timerReportMaxEvt);
+////                    }
+////                    return;
+////                }
+////            }
 //        }
 //    }
 }
@@ -1057,8 +1087,6 @@ status_t app_pollCtrlCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *c
 
 #ifdef ZCL_THERMOSTAT
 
-static uint8_t getWeeklyDay = 0;
-
 status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload) {
 
 //    printf("app_thermostatCb(). pAddrInfo->dirCluster: %0x%x, cmdId: 0x%x\r\n", pAddrInfo->dirCluster, cmdId);
@@ -1136,7 +1164,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 
                         if (save) {
                             if (data_point_model[DP_IDX_SCHEDULE].remote_cmd)
-                                data_point_model[DP_IDX_SCHEDULE].remote_cmd(NULL);
+                                data_point_model[DP_IDX_SCHEDULE].remote_cmd(&cmd->dayOfWeekForSequence);
                         }
                         break;
                     case MANUF_NAME_2:
@@ -1195,6 +1223,38 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                             data_point_model[DP_IDX_SCHEDULE].remote_cmd(&cmd->dayOfWeekForSequence);
 
                         break;
+                    case MANUF_NAME_6:
+#if UART_PRINTF_MODE
+                        printf("Days other than Monday and Sunday are not supported\r\n");
+#endif
+                        for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
+                            if (cmd->dayOfWeekForSequence & DAY_SUN) {
+                                if (i == 2) {
+                                    break;
+                                }
+                                heat_mode =  g_zcl_scheduleData.schedule_sun;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                save = true;
+//                                printf("i: %d, weekday: sun, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                            if (cmd->dayOfWeekForSequence & DAY_MON) {
+                                if (i == 6) {
+                                    break;
+                                }
+                                heat_mode =  g_zcl_scheduleData.schedule_mon;
+                                heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
+                                heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
+                                save = true;
+//                                printf("i: %d, weekday: mon, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
+                            }
+                        }
+
+                        if (save) {
+                            if (data_point_model[DP_IDX_SCHEDULE].remote_cmd)
+                                data_point_model[DP_IDX_SCHEDULE].remote_cmd(&cmd->dayOfWeekForSequence);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -1204,18 +1264,8 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 #if UART_PRINTF_MODE
                 printf("CMD Get Weekly Schedule\r\n");
 #endif
-                if (manuf_name == MANUF_NAME_1) {
-                    remote_cmd_get_schedule_1(getWeeklyDay);
-                    getWeeklyDay++;
-                    if (getWeeklyDay == 3) getWeeklyDay = 0;
-                } else if (manuf_name == MANUF_NAME_2 ||
-                           manuf_name == MANUF_NAME_3 ||
-                           manuf_name == MANUF_NAME_4 ||
-                           manuf_name == MANUF_NAME_5) {
-                    remote_cmd_get_schedule_2(getWeeklyDay);
-                    getWeeklyDay++;
-                    if (getWeeklyDay == 7) getWeeklyDay = 0;
-                }
+                answer_weekly_schedule[manuf_name]();
+
                 break;
             case ZCL_CMD_THERMOSTAT_CLEAR_WEEKLY_SCHEDULE:
 #if UART_PRINTF_MODE

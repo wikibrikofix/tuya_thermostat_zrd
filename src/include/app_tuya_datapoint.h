@@ -126,7 +126,7 @@ typedef enum {
 /* data point for manufacturer id -
  * "5toc8efa"
  *
- * type2 (model5)
+ * type6 (model5)
  */
 #define DP_TYPE5_ID_00 DP_TYPE2_ID_00
 #define DP_TYPE5_ID_01 DP_TYPE2_ID_01
@@ -152,12 +152,40 @@ typedef enum {
 
 typedef data_point_id_type2_t data_point_id_type5_t;
 
+/* data point for manufacturer id -
+ * "lzriup1j"
+ *
+ * type6 (model6)
+*/
+typedef enum {
+    DP_TYPE6_ID_00    = 0x00,     // 0 - not support
+    DP_TYPE6_ID_01    = 0x01,     // on off
+    DP_TYPE6_ID_02    = 0x02,     // heat setpoint
+    DP_TYPE6_ID_03    = 0x03,     // local temperature
+    DP_TYPE6_ID_04    = 0x04,     // manual / programming / temporary
+    DP_TYPE6_ID_09    = 0x09,     // lock / unlock keys
+    DP_TYPE6_ID_0F    = 0x0F,     // max heat
+    DP_TYPE6_ID_13    = 0x13,     // calibration
+    DP_TYPE6_ID_65    = 0x65,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE6_ID_66    = 0x66,     // frost protection (on-off)
+    DP_TYPE6_ID_67    = 0x67,     // factory reset thermostat (not zigbee)
+    DP_TYPE6_ID_68    = 0x68,     // schedule off, 5+2, 6+1, 7
+    DP_TYPE6_ID_69    = 0x69,     // sound on-off
+    DP_TYPE6_ID_6A    = 0x6A,     // Sensor IN/AL/OU
+    DP_TYPE6_ID_6B    = 0x6B,     // hysteresis
+    DP_TYPE6_ID_6C    = 0x6C,     // protection max temperature
+    DP_TYPE6_ID_6D    = 0x6D,     // schedule
+    DP_TYPE6_ID_6E    = 0x6E,     // level brightness of screen (off, low, medium, high)
+    DP_TYPE6_ID_6F    = 0x6F,     // inversion of output
+} data_point_id_type6_t;
+
 typedef enum {
     MANUF_NAME_1 = 0,
     MANUF_NAME_2,
     MANUF_NAME_3,
     MANUF_NAME_4,
     MANUF_NAME_5,
+    MANUF_NAME_6,
     MANUF_NAME_MAX
 } manuf_name_t;
 
@@ -189,6 +217,9 @@ typedef enum {
     DP_IDX_LEVEL_B,
     DP_IDX_ECO_MODE,
     DP_IDX_ECO_TEMP,
+    DP_IDX_SOUND,
+    DP_IDX_SETTINGS_RESET,
+    DP_IDX_INVERSION,
     DP_IDX_MAXNUM
 } data_point_idx_t;
 
