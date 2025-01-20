@@ -1228,10 +1228,10 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                         printf("Days other than Monday and Sunday are not supported\r\n");
 #endif
                         for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
+                            if (i == 6) {
+                                break;
+                            }
                             if (cmd->dayOfWeekForSequence & DAY_SUN) {
-                                if (i == 2) {
-                                    break;
-                                }
                                 heat_mode =  g_zcl_scheduleData.schedule_sun;
                                 heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
                                 heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
@@ -1239,9 +1239,6 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 //                                printf("i: %d, weekday: sun, time: %d, temp: %d\r\n", i, heat_mode[i].transTime, heat_mode[i].heatSetpoint);
                             }
                             if (cmd->dayOfWeekForSequence & DAY_MON) {
-                                if (i == 6) {
-                                    break;
-                                }
                                 heat_mode =  g_zcl_scheduleData.schedule_mon;
                                 heat_mode[i].transTime = cmd->sequenceMode.pHeatMode[i].transTime;
                                 heat_mode[i].heatSetpoint = cmd->sequenceMode.pHeatMode[i].heatSetpoint;
