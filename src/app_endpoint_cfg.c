@@ -374,9 +374,131 @@ uint8_t APP_EP2_CB_CLUSTER_NUM = (sizeof(g_appEp2ClusterList)/sizeof(g_appEp2Clu
 
 
 static void print_setting_sr(nv_sts_t st, thermostat_settings_t *thermostat_settings, bool save) {
+
 #if UART_PRINTF_MODE && DEBUG_SAVE
 
     printf("Settings %s. Return: %s\r\n", save?"saved":"restored", st==NV_SUCC?"Ok":"Error");
+
+#if DEBUG_SCHEDULE
+
+    uint8_t i;
+
+    if (first_start) {
+
+        for(i = 0; i < 6; i++) {
+            printf("schedule_mon[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                    thermostat_settings->schedule_data.schedule_mon[i].transTime,
+                    thermostat_settings->schedule_data.schedule_mon[i].heatSetpoint);
+        }
+        for(i = 0; i < 6; i++) {
+            printf("schedule_tue[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                    thermostat_settings->schedule_data.schedule_tue[i].transTime,
+                    thermostat_settings->schedule_data.schedule_tue[i].heatSetpoint);
+        }
+        for(i = 0; i < 6; i++) {
+            printf("schedule_wed[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                    thermostat_settings->schedule_data.schedule_wed[i].transTime,
+                    thermostat_settings->schedule_data.schedule_wed[i].heatSetpoint);
+        }
+        for(i = 0; i < 6; i++) {
+            printf("schedule_thu[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                    thermostat_settings->schedule_data.schedule_thu[i].transTime,
+                    thermostat_settings->schedule_data.schedule_thu[i].heatSetpoint);
+        }
+        for(i = 0; i < 6; i++) {
+            printf("schedule_fri[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                    thermostat_settings->schedule_data.schedule_fri[i].transTime,
+                    thermostat_settings->schedule_data.schedule_fri[i].heatSetpoint);
+        }
+        for(i = 0; i < 6; i++) {
+            printf("schedule_sat[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                    thermostat_settings->schedule_data.schedule_sat[i].transTime,
+                    thermostat_settings->schedule_data.schedule_sat[i].heatSetpoint);
+        }
+        for(i = 0; i < 6; i++) {
+            printf("schedule_sun[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                    thermostat_settings->schedule_data.schedule_sun[i].transTime,
+                    thermostat_settings->schedule_data.schedule_sun[i].heatSetpoint);
+        }
+
+    } else {
+
+        switch(manuf_name) {
+            case MANUF_NAME_1:
+                for(i = 0; i < 4; i++) {
+                    printf("schedule_mon[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_mon[i].transTime,
+                            thermostat_settings->schedule_data.schedule_mon[i].heatSetpoint);
+                }
+                for(i = 0; i < 4; i++) {
+                    printf("schedule_sat[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_sat[i].transTime,
+                            thermostat_settings->schedule_data.schedule_sat[i].heatSetpoint);
+                }
+                for(i = 0; i < 4; i++) {
+                    printf("schedule_sun[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_sun[i].transTime,
+                            thermostat_settings->schedule_data.schedule_sun[i].heatSetpoint);
+                }
+                break;
+            case MANUF_NAME_2:
+            case MANUF_NAME_3:
+            case MANUF_NAME_4:
+            case MANUF_NAME_5:
+                for(i = 0; i < 4; i++) {
+                    printf("schedule_mon[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_mon[i].transTime,
+                            thermostat_settings->schedule_data.schedule_mon[i].heatSetpoint);
+                }
+                for(i = 0; i < 4; i++) {
+                    printf("schedule_tue[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_tue[i].transTime,
+                            thermostat_settings->schedule_data.schedule_tue[i].heatSetpoint);
+                }
+                for(i = 0; i < 4; i++) {
+                    printf("schedule_wed[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_wed[i].transTime,
+                            thermostat_settings->schedule_data.schedule_wed[i].heatSetpoint);
+                }
+                for(i = 0; i < 4; i++) {
+                    printf("schedule_thu[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_thu[i].transTime,
+                            thermostat_settings->schedule_data.schedule_thu[i].heatSetpoint);
+                }
+                for(i = 0; i < 4; i++) {
+                    printf("schedule_fri[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_fri[i].transTime,
+                            thermostat_settings->schedule_data.schedule_fri[i].heatSetpoint);
+                }
+                for(i = 0; i < 4; i++) {
+                    printf("schedule_sat[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_sat[i].transTime,
+                            thermostat_settings->schedule_data.schedule_sat[i].heatSetpoint);
+                }
+                for(i = 0; i < 4; i++) {
+                    printf("schedule_sun[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_sun[i].transTime,
+                            thermostat_settings->schedule_data.schedule_sun[i].heatSetpoint);
+                }
+                break;
+            case MANUF_NAME_6:
+                for(i = 0; i < 6; i++) {
+                    printf("schedule_mon[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_mon[i].transTime,
+                            thermostat_settings->schedule_data.schedule_mon[i].heatSetpoint);
+                }
+                for(i = 0; i < 2; i++) {
+                    printf("schedule_sun[%d]. transTime: 0x%x, heatSetpoint: 0x%x\r\n", i,
+                            thermostat_settings->schedule_data.schedule_sun[i].transTime,
+                            thermostat_settings->schedule_data.schedule_sun[i].heatSetpoint);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+#endif
 
     printf("occupiedHeatingSetpoint:     %d\r\n", thermostat_settings->occupiedHeatingSetpoint);
     printf("localTemperatureCalibration: %d\r\n", thermostat_settings->localTemperatureCalibration);

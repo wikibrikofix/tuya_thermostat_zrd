@@ -196,28 +196,32 @@ void local_cmd_set_schedule_6(void *args) {
 
     data_point_t *data_point = (data_point_t*)args;
 
-    uint16_t len = data_point->dp_len / 4;
     uint8_t *ptr = data_point->data;
 
-    for (uint8_t i = 0; i < len;) {
-        for (uint8_t ii = 0; ii < 6; ii++) {
-            if (i < 6) {
-                g_zcl_scheduleData.schedule_mon[ii].transTime = *ptr++ * 60;
-                g_zcl_scheduleData.schedule_mon[ii].transTime += *ptr++;
-                g_zcl_scheduleData.schedule_mon[ii].heatSetpoint = *ptr++  * 10;
-//                printf("mon. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_mon[ii].transTime,
-//                        g_zcl_scheduleData.schedule_mon[ii].heatSetpoint);
-                i++;
-            } else {
-                g_zcl_scheduleData.schedule_sun[ii].transTime = *ptr++ * 60;
-                g_zcl_scheduleData.schedule_sun[ii].transTime += *ptr++;
-                g_zcl_scheduleData.schedule_sun[ii].heatSetpoint = *ptr++ * 10;
-//                printf("sun. i: %d, time: %d, temp: %d\r\n", i, g_zcl_scheduleData.schedule_sun[ii].transTime,
-//                        g_zcl_scheduleData.schedule_sun[ii].heatSetpoint);
-                i++;
-                if (ii == 1) break;
-            }
-        }
+    dp_schedule_model6_t *schedule = (dp_schedule_model6_t*)ptr;
+
+    for (uint8_t i = 0; i < 6; i++) {
+        g_zcl_scheduleData.schedule_mon[i].transTime = schedule->hour * 60;
+        g_zcl_scheduleData.schedule_mon[i].transTime += schedule->minute;
+        g_zcl_scheduleData.schedule_mon[i].heatSetpoint = reverse16(schedule->temperature)  * 10;
+        schedule++;
+
+#if UART_PRINTF_MODE && DEBUG_SCHEDULE
+        printf("mon. i: %d, time: 0x%x, temp: 0x%x\r\n", i, g_zcl_scheduleData.schedule_mon[i].transTime,
+                g_zcl_scheduleData.schedule_mon[i].heatSetpoint);
+#endif
+    }
+
+    for (uint8_t i = 0; i < 2; i++) {
+        g_zcl_scheduleData.schedule_sun[i].transTime = schedule->hour * 60;
+        g_zcl_scheduleData.schedule_sun[i].transTime += schedule->minute;
+        g_zcl_scheduleData.schedule_sun[i].heatSetpoint = reverse16(schedule->temperature)  * 10;
+        schedule++;
+
+#if UART_PRINTF_MODE && DEBUG_SCHEDULE
+        printf("sun. i: %d, time: 0x%x, temp: 0x%x\r\n", i, g_zcl_scheduleData.schedule_sun[i].transTime,
+                g_zcl_scheduleData.schedule_sun[i].heatSetpoint);
+#endif
     }
 
     thermostat_settings_save();

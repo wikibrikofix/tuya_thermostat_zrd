@@ -273,6 +273,8 @@ typedef struct {
     uint16_t temperature;
 } dp_schedule_model2_t;
 
+typedef dp_schedule_model2_t dp_schedule_model6_t;
+
 extern uint8_t manuf_name;
 extern data_point_st_t *data_point_model;
 extern const char8_t **tuya_manuf_names[];
