@@ -12,14 +12,17 @@
 	- ["_TZE204_tagezcph"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r03/README.md)
 4. Model r04	
 	- ["_TZE204_xyugziqv"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r04/README.md)
-4. Model r05
+5. Model r05
 	- ["_TZE204_5toc8efa"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r05/README.md)
+6. Model r06
+	- ["_TZE204_lzriup1j"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r06/README.md)
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model1.png"/>
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model3_1.png"/>
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model3_2.png"/>
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model4.png"/>
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model5.png"/>
+<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model6.png"/>
 
 **Автор не несет никакой отвественности, если вы, воспользовавшись этим проектом, превратите свой умный термостат в полоумный.**
 
@@ -157,9 +160,11 @@ P.S. В реальной работе не проверялось, требуе�
 
 - [@chernyshevruslan](https://t.me/chernyshevruslan) за предоставленные термостаты _TZE204_tagezcph в двух разных исполнениях и _TZE204_xyugziqv.
 
+- [@Alleol](https://t.me/Alleol) за предоставленный термостаты _TZE204_lzriup1j.
+
 - [https://github.com/doctor64](https://github.com/doctor64) [@doctor_64](https://t.me/doctor_64) - за желание всегда помочь и направить в правильное русло.
 
-- [https://github.com/devbis](https://github.com/devbis) [@Belokobylskiy](https://t.me/Belokobylskiy) - за идеи и написание скриптов на Питоне.
+- [https://github.com/devbis](https://github.com/devbis) [@Belokobylskiy](https://t.me/Belokobylskiy) - за идеи и написание скриптов на Питоне и для конвертора z2m.
 
 - [@goofyk](https://t.me/goofyk) - за терпение и за хорошее знание z2m.
 
@@ -208,7 +213,13 @@ P.S. В реальной работе не проверялось, требуе�
 	- Обновлены конверторы для версии `zigbee2mqtt` 2.0.0
 	- Обновлена инструкция.
 - 1.0.10
-	- Добавлен термостат с сигнатурой `_TZE204_5toc8efa` производства BSEED.
+	- Добавлен термостат с сигнатурой `_TZE204_5toc8efa` производства BSEED (GL86HTEZ1B).
+	- Обновлены конверторы и файл локальной загрузки обновлений.
+	- Обновлена инструкция.
+- 1.0.11
+	- Добавлен термостат с сигнатурой `_TZE204_lzriup1j` производства Avatto (ZWT10016A).
+	- Добалено автоопределение скорости работы `UART`. По стандарту [Tuya Zigbee Serial protocol](https://developer.tuya.com/en/docs/mcu-standard-protocol/mcusdk-zigbee-uart-protocol?id=Kdg17v4544p37)  скорость может быть `9600` или `115200`.
+	- Добавлено в конвертор для z2m отображение уже имеющегося в термостате расписания.
 	- Обновлены конверторы и файл локальной загрузки обновлений.
 	- Обновлена инструкция.
 

@@ -1,0 +1,22 @@
+## Краткое описание термостата, с сигнатурой
+
+	"_TZE204_lzriup1j"
+	
+### Производитель Avatto (ZWT10016A)
+	
+### Внешний вид.
+
+<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model6.png"/>
+
+### Настройки, доступные удаленно.
+
+<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/thermostat_r06_exposes.jpg"/>
+
+### Расписание.
+
+Расписание имеет 2 вхождений. Первое вхождение имеет 6 периодов, второе имеет 2 периода.
+
+	1. Рабочая неделя (6 периодов).
+	2. Выходные (2 периода).
+
+Один период - часы, минуты и температура включения.
