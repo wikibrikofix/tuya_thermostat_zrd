@@ -827,7 +827,16 @@ void remote_cmd_set_schedule_6(void *args) {
 
     thermostat_settings_save();
 
-    TL_SCHEDULE_TASK(get_schedule, &w_day);
+    if (w_day & DAY_MON) {
+        //mon
+        TL_SCHEDULE_TASK(get_schedule, &w_mon);
+    }
+
+    if (w_day & DAY_SUN){
+        //sun
+        TL_SCHEDULE_TASK(get_schedule, &w_sun);
+    }
+
 }
 
 void remote_cmd_get_schedule_6() {
