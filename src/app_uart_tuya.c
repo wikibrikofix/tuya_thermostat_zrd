@@ -3,7 +3,7 @@
 #include "app_main.h"
 
 static uint8_t      pkt_buff[DATA_MAX_LEN*2];
-static bool         first_start = true;
+bool                first_start = true;
 static bool         answer_mcu = false;
 static uint8_t      answer_count = 0;
 static uint16_t     seq_num = 0;
@@ -842,6 +842,7 @@ void uart_cmd_handler() {
                             printf("DP Schedule Mon\r\n");
 #endif
                             if (manuf_name == MANUF_NAME_6) {
+                                /* schedule mode */
                                 uint8_t mode = data_point->data[0];
                                 if (data_point_model[DP_IDX_SCHEDULE_MON].local_cmd)
                                     data_point_model[DP_IDX_SCHEDULE_MON].local_cmd(&mode);

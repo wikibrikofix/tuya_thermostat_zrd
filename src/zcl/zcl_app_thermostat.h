@@ -39,7 +39,7 @@
 //    SENSOR_OU
 //} sensor_used_t;
 
-typedef struct {
+typedef struct __attribute__((packed)) {
     uint16_t    minute;
     uint16_t    temperature;
 } zcl_schedule_t;
