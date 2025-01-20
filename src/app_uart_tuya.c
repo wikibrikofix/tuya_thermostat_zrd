@@ -849,7 +849,8 @@ void uart_cmd_handler() {
                                 schedule_args_model2_t schedule_args = {
                                         .data_point = data_point,
                                         .idx = DP_IDX_SCHEDULE_MON,
-                                        .heatMode = g_zcl_scheduleData.schedule_mon
+                                        .heatMode = g_zcl_scheduleData.schedule_mon,
+                                        .w_day = DAY_MON
                                 };
 
                                 if (data_point_model[DP_IDX_SCHEDULE_MON].local_cmd)
@@ -865,7 +866,8 @@ void uart_cmd_handler() {
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_TUE,
-                                    .heatMode = g_zcl_scheduleData.schedule_tue
+                                    .heatMode = g_zcl_scheduleData.schedule_tue,
+                                    .w_day = DAY_TUE
                             };
 
                             if (data_point_model[DP_IDX_SCHEDULE_TUE].local_cmd)
@@ -880,7 +882,8 @@ void uart_cmd_handler() {
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_WED,
-                                    .heatMode = g_zcl_scheduleData.schedule_wed
+                                    .heatMode = g_zcl_scheduleData.schedule_wed,
+                                    .w_day = DAY_WED
                             };
 
                             if (data_point_model[DP_IDX_SCHEDULE_WED].local_cmd)
@@ -895,7 +898,8 @@ void uart_cmd_handler() {
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_THU,
-                                    .heatMode = g_zcl_scheduleData.schedule_thu
+                                    .heatMode = g_zcl_scheduleData.schedule_thu,
+                                    .w_day = DAY_THU
                             };
 
                             if (data_point_model[DP_IDX_SCHEDULE_THU].local_cmd)
@@ -910,7 +914,8 @@ void uart_cmd_handler() {
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_FRI,
-                                    .heatMode = g_zcl_scheduleData.schedule_fri
+                                    .heatMode = g_zcl_scheduleData.schedule_fri,
+                                    .w_day = DAY_FRI
                             };
 
                             if (data_point_model[DP_IDX_SCHEDULE_FRI].local_cmd)
@@ -925,7 +930,8 @@ void uart_cmd_handler() {
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_SAT,
-                                    .heatMode = g_zcl_scheduleData.schedule_sat
+                                    .heatMode = g_zcl_scheduleData.schedule_sat,
+                                    .w_day = DAY_SAT
                             };
 
                             if (data_point_model[DP_IDX_SCHEDULE_SAT].local_cmd)
@@ -940,7 +946,8 @@ void uart_cmd_handler() {
                             schedule_args_model2_t schedule_args = {
                                     .data_point = data_point,
                                     .idx = DP_IDX_SCHEDULE_SUN,
-                                    .heatMode = g_zcl_scheduleData.schedule_sun
+                                    .heatMode = g_zcl_scheduleData.schedule_sun,
+                                    .w_day = DAY_SUN
                             };
 
                             if (data_point_model[DP_IDX_SCHEDULE_SUN].local_cmd)

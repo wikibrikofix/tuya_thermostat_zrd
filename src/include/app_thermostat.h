@@ -70,9 +70,14 @@ typedef struct {
     data_point_t    *data_point;
     uint16_t        idx;
     heatMode_t      *heatMode;
+    uint8_t         w_day;
 } schedule_args_model2_t;
 
 extern uint8_t w_mon;
+extern uint8_t w_tue;
+extern uint8_t w_wed;
+extern uint8_t w_thu;
+extern uint8_t w_fri;
 extern uint8_t w_sat;
 extern uint8_t w_sun;
 extern uint8_t w_day;
@@ -138,7 +143,7 @@ void remote_cmd_oper_mode_2(void *args);
 void remote_cmd_frost_protect_2(void *args);
 void remote_cmd_heat_protect_2(void *args);
 void remote_cmd_set_schedule_2(void *args);
-void remote_cmd_get_schedule_2(uint8_t day);
+void remote_cmd_get_schedule_2();
 
 /*
  *  remote_cmd for signarure

@@ -1087,7 +1087,7 @@ status_t app_pollCtrlCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *c
 
 #ifdef ZCL_THERMOSTAT
 
-static uint8_t getWeeklyDay = 0;
+//static uint8_t getWeeklyDay = 0;
 
 status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload) {
 
@@ -1266,21 +1266,25 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 #if UART_PRINTF_MODE
                 printf("CMD Get Weekly Schedule\r\n");
 #endif
-                if (manuf_name == MANUF_NAME_1) {
-                    answer_weekly_schedule[manuf_name]();
-//                    remote_cmd_get_schedule_1(getWeeklyDay);
-//                    getWeeklyDay++;
-//                    if (getWeeklyDay == 3) getWeeklyDay = 0;
-                } else if (manuf_name == MANUF_NAME_2 ||
-                           manuf_name == MANUF_NAME_3 ||
-                           manuf_name == MANUF_NAME_4 ||
-                           manuf_name == MANUF_NAME_5) {
-                    remote_cmd_get_schedule_2(getWeeklyDay);
-                    getWeeklyDay++;
-                    if (getWeeklyDay == 7) getWeeklyDay = 0;
-                } else if (manuf_name == MANUF_NAME_6) {
-                    answer_weekly_schedule[manuf_name]();
-                }
+
+                answer_weekly_schedule[manuf_name]();
+
+//                if (manuf_name == MANUF_NAME_1) {
+//                    answer_weekly_schedule[manuf_name]();
+////                    remote_cmd_get_schedule_1(getWeeklyDay);
+////                    getWeeklyDay++;
+////                    if (getWeeklyDay == 3) getWeeklyDay = 0;
+//                } else if (manuf_name == MANUF_NAME_2 ||
+//                           manuf_name == MANUF_NAME_3 ||
+//                           manuf_name == MANUF_NAME_4 ||
+//                           manuf_name == MANUF_NAME_5) {
+//                    answer_weekly_schedule[manuf_name]();
+////                    remote_cmd_get_schedule_2(getWeeklyDay);
+////                    getWeeklyDay++;
+////                    if (getWeeklyDay == 7) getWeeklyDay = 0;
+//                } else if (manuf_name == MANUF_NAME_6) {
+//                    answer_weekly_schedule[manuf_name]();
+//                }
                 break;
             case ZCL_CMD_THERMOSTAT_CLEAR_WEEKLY_SCHEDULE:
 #if UART_PRINTF_MODE
