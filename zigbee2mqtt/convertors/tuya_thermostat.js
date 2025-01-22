@@ -88,8 +88,14 @@ const fzLocal = {
     convert: (model, msg, publish, options, meta) => {
         const result = {};
         if (msg.data.hasOwnProperty('minSetpointDeadBand')) {
-          const data = parseInt(msg.data['minSetpointDeadBand']);
-          result.deadzone_temperature = data;
+          let data;
+          if (model.model === model_r06) {
+            data = parseFloat(msg.data['minSetpointDeadBand'])/10;
+            result.histeresis_temperature = data;
+          } else {
+            data = parseInt(msg.data['minSetpointDeadBand']);
+            result.deadzone_temperature = data;  
+          }
         }
         return result;
     },
@@ -296,6 +302,17 @@ const tzLocal = {
       await entity.read('hvacThermostat', ['minSetpointDeadBand']);
     },
   },
+  thermostat_deadzone_10: {
+    key: ['histeresis_temperature'],
+    convertSet: async (entity, key, value, meta) => {
+      const minSetpointDeadBand = parseFloat(value) * 10;
+      await entity.write('hvacThermostat', {minSetpointDeadBand});
+      return {readAfterWriteTime: 250, state: {minSetpointDeadBand: value}};
+    },
+    convertGet: async (entity, key, meta) => {
+      await entity.read('hvacThermostat', ['minSetpointDeadBand']);
+    },
+  },
   thermostat_frost_protect: {
     key: ['frost_protect'],
     convertSet: async (entity, key, value, meta) => {
@@ -460,6 +477,7 @@ const localToZigbee = [
     tzLocal.thermostat_child_lock,
     tzLocal.thermostat_sensor_used,
     tzLocal.thermostat_deadzone,
+    tzLocal.thermostat_deadzone_10,
     tzLocal.thermostat_setpoint_raise_lower,
     tzLocal.thermostat_frost_protect,
     tzLocal.thermostat_heat_protect,
@@ -1048,12 +1066,12 @@ const definition = [
       .enum('sensor', ea.ALL, switchSensorUsed)
       .withDescription('Select temperature sensor to use'),
     e
-      .numeric('deadzone_temperature', ea.ALL)
+      .numeric('histeresis_temperature', ea.ALL)
       .withDescription('The delta between local_temperature and current_heating_setpoint to trigger activity')
       .withUnit('°C')
-      .withValueMin(0,5)
+      .withValueMin(0.5)
       .withValueMax(10)
-      .withValueStep(0,1),
+      .withValueStep(0.5),
     e
       .numeric('max_heat_setpoint_limit', ea.ALL)
       .withDescription('Maximum Heating set point limit')
