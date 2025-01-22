@@ -521,7 +521,7 @@ void uart_cmd_handler() {
 
                 if (pkt->command == COMMAND03) {
                     /* Reset Factory */
-#if UART_PRINTF_MODE && DEBUG_CMD
+#if UART_PRINTF_MODE // && DEBUG_CMD
                     printf("command 0x03. Factory Reset\r\n");
 #endif
                     if (factory_reset_cnt == 0 && factory_reset_status != 2) {
