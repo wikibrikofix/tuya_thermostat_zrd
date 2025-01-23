@@ -6,6 +6,8 @@
 #define SP_VERSION          0x02
 #define DATA_MAX_LEN        64          /* do not change!   */
 
+#define CMD_QUEUE_CELL_MAX  16
+
 typedef enum {
     COMMAND00   =   0x00,
     COMMAND01,                      /* Query product information    */
@@ -53,7 +55,7 @@ typedef struct {
 
 typedef struct {
     uint8_t cmd_num;
-    cmd_queue_cell_t cmd_queue[10];
+    cmd_queue_cell_t cmd_queue[CMD_QUEUE_CELL_MAX];
 } cmd_queue_t;
 
 extern bool first_start;

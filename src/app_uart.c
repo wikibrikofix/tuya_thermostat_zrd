@@ -74,7 +74,7 @@ static void print_pkt_out(uint8_t *data, uint32_t len) {
         printf("out_pkt <== 0x");
         print_pkt(data, len);
     } else {
-        if (clock_time_exceed(time_pkt, TIMEOUT_TICK_50MS)) {
+        if (clock_time_exceed(time_pkt, TIMEOUT_TICK_100MS)) {
             printf("out_pkt <== 0x");
             print_pkt(data, len);
         }
@@ -131,6 +131,8 @@ static size_t write_bytes_to_ring_buff(uint8_t *data, size_t len) {
     size_t free_space = get_freespace_ring_buff();
     size_t put_len;
 
+//    printf("free_space: %d, len: %d\r\n", free_space, len);
+
     if (free_space >= len) put_len = len;
     else put_len = free_space;
 
@@ -142,14 +144,9 @@ static size_t write_bytes_to_ring_buff(uint8_t *data, size_t len) {
     return put_len;
 }
 
-
 static void app_uartRecvCb() {
 
     uint8_t st = SUCCESS;
-
-#if PM_ENABLE
-    not_sleep = true;
-#endif
 
     if(rec_buff.dma_len == 0) {
         st = UART_MSG_STATUS_UART_EXCEPT;
@@ -168,17 +165,17 @@ static void app_uartRecvCb() {
 
 //    printf("st: 0x%x, rec_buff.dma_len: %d\r\n", st, rec_buff.dma_len);
 
-    rec_buff.dma_len = 0;
+//    rec_buff.dma_len = 0;
 
     uart_msg_err = st;
 }
 
 uartTx_err app_uart_txMsg(uint8_t *data, uint8_t len) {
 
-
     print_pkt_out(data, len);
 
     if (drv_uart_tx_start(data, len)) return UART_TX_SUCCESS;
+
 
     return UART_TX_FAILED;
 }
@@ -189,6 +186,8 @@ void app_uart_init() {
     drv_uart_pin_set(GPIO_UART_TX, GPIO_UART_RX);
 
     drv_uart_init(uart_baudrate, (uint8_t*)&rec_buff, sizeof(uart_data_t), app_uartRecvCb);
+
+    printf("uart_baudrate: %d\r\n", uart_baudrate);
 }
 
 uint32_t get_uart_baudrate() {

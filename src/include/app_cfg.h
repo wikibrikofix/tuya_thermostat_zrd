@@ -74,7 +74,7 @@ extern "C" {
 #define DEBUG_CMD                       OFF
 #define DEBUG_DP                        OFF
 #define DEBUG_TIME                      OFF
-#define DEBUG_SAVE                      OFF
+#define DEBUG_SAVE                      ON
 #define DEBUG_SCHEDULE                  OFF
 #define DEBUG_PM                        OFF
 #define DEBUG_REPORTING                 OFF
@@ -182,7 +182,7 @@ extern "C" {
 
 
 /* Watch dog module */
-#define MODULE_WATCHDOG_ENABLE						ON
+#define MODULE_WATCHDOG_ENABLE						OFF
 
 /* UART module */
 #define	MODULE_UART_ENABLE							OFF

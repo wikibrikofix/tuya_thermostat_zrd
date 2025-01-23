@@ -4,8 +4,9 @@
 
 static uint8_t      pkt_buff[DATA_MAX_LEN*2];
 bool                first_start = true;
-static bool         answer_mcu = false;
+//static bool         answer_mcu = false;
 static uint8_t      answer_count = 0;
+static uint32_t     time_output_pkt;
 static uint16_t     seq_num = 0;
 static status_net_t status_net = STATUS_NET_UNKNOWN;
 static uint8_t      no_answer = false;
@@ -13,6 +14,7 @@ static uint8_t      factory_reset_cnt = 0;
 static uint8_t      factory_reset_status = 0;
 static ev_timer_event_t *factory_resetTimerEvt = NULL;
 static ev_timer_event_t *check_answerTimerEvt = NULL;
+static ev_timer_event_t *check_answerMcuTimerEvt = NULL;
 
 cmd_queue_t cmd_queue = {0};
 
@@ -31,12 +33,13 @@ void add_cmd_queue(pkt_tuya_t *pkt, uint8_t confirm_need) {
 
 //    printf("cmd_queue.cmd_num: %d\r\n", cmd_queue.cmd_num);
 
-    memset(&cmd_queue.cmd_queue[cmd_queue.cmd_num], 0, sizeof(cmd_queue_cell_t));
+    if (cmd_queue.cmd_num < CMD_QUEUE_CELL_MAX) {
+        memset(&cmd_queue.cmd_queue[cmd_queue.cmd_num], 0, sizeof(cmd_queue_cell_t));
 
-    cmd_queue.cmd_queue[cmd_queue.cmd_num].confirm_need = confirm_need;
-    memcpy(&(cmd_queue.cmd_queue[cmd_queue.cmd_num].pkt), pkt, sizeof(pkt_tuya_t));
-    cmd_queue.cmd_num++;
-
+        cmd_queue.cmd_queue[cmd_queue.cmd_num].confirm_need = confirm_need;
+        memcpy(&(cmd_queue.cmd_queue[cmd_queue.cmd_num].pkt), pkt, sizeof(pkt_tuya_t));
+        cmd_queue.cmd_num++;
+    }
 }
 
 static void move_cmd_queue() {
@@ -59,7 +62,7 @@ static void move_cmd_queue() {
 
 static void send_command(pkt_tuya_t *pkt) {
 
-    for(uint8_t i = 0; i < 10; i++) {
+    for(uint8_t i = 0; i < 100; i++) {
         if (app_uart_txMsg((uint8_t*)pkt, pkt->pkt_len) == UART_TX_SUCCESS) break;
         sleep_ms(30);
     }
@@ -224,25 +227,36 @@ static int32_t check_answerCb(void *arg) {
         app_uart_init();
         no_answer = false;
 
-//#if UART_PRINTF_MODE
-//        printf("no answer, reboot\r\n");
-//#endif
-//        TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_1SEC);
     }
 
-    if (answer_mcu) {
+    check_answerTimerEvt = NULL;
+    return -1;
+}
+
+static int32_t check_answerMcuCb(void *arg) {
+
+//    if (answer_mcu) {
+//#if UART_PRINTF_MODE
+//        printf("answer from MCU, continue\r\n");
+//#endif
+//        answer_mcu = false;
+//    } else {
+//#if UART_PRINTF_MODE
+//        printf("no answer from MCU, uart reinit\r\n");
+//#endif
+//        app_uart_init();
+//    }
+
 #if UART_PRINTF_MODE
-        printf("answer from MCU, continue\r\n");
+    printf("no answer from MCU, uart reinit\r\n");
 #endif
-        answer_mcu = false;
-    } else {
-#if UART_PRINTF_MODE
-        printf("no answer from MCU, uart reinit\r\n");
-#endif
-        app_uart_init();
-    }
+
+    app_uart_init();
+
     return 0;
 }
+
+
 
 static int32_t factory_resetCb(void *arg) {
 
@@ -265,9 +279,11 @@ void uart_cmd_handler() {
     if (first_start) {
         set_command(COMMAND01, seq_num, true);
         data_point_model_init();
-        check_answerTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_15SEC);
+        check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, TIMEOUT_1MIN30SEC);
 
         first_start = false;
+
+        time_output_pkt = clock_time();
 
         //only for test!!!
 //        set_command(COMMANDXX, seq_num, true);
@@ -275,204 +291,232 @@ void uart_cmd_handler() {
 
     if (cmd_queue.cmd_num) {
 
-        send_command(&cmd_queue.cmd_queue[0].pkt);
+        if (clock_time_exceed(time_output_pkt, TIMEOUT_TICK_80MS)) {
 
-        if (cmd_queue.cmd_queue[0].confirm_need) {
-            /* trying to read for 1 seconds */
-            for(uint8_t i = 0; i < 100; i++ ) {
-                load_size = 0;
-                if (available_ring_buff() /*&& get_queue_len_ring_buff() >= 8*/) {
-                    while (available_ring_buff() && load_size < (DATA_MAX_LEN + 8)) {
-                        ch = read_byte_from_ring_buff();
+            printf("time_output_pkt: 0x%x\r\n", time_output_pkt);
 
-                        if (load_size == 0) {
-                            if (ch != FLAG_START1) {
-                                continue;
-                            }
-                        } else if (load_size == 1) {
-                            if (ch != FLAG_START2) {
-                                load_size = 0;
-                                continue;
-                            }
-                        }
+            send_command(&cmd_queue.cmd_queue[0].pkt);
 
-                        answer_buff[load_size++] = ch;
+            time_output_pkt = clock_time();
 
-                        if (load_size == 2) {
+            if (cmd_queue.cmd_queue[0].confirm_need) {
+                /* trying to read for 1 seconds */
+                for(uint8_t i = 0; i < 100; i++ ) {
+                    load_size = 0;
+                    if (available_ring_buff() /*&& get_queue_len_ring_buff() >= 8*/) {
+                        while (available_ring_buff() && load_size < (DATA_MAX_LEN + 8)) {
+                            ch = read_byte_from_ring_buff();
 
-                            load_size += read_bytes_from_buff(answer_buff+load_size, 6);
-
-                            if (load_size == 8) {
-                                pkt->len = reverse16(pkt->len);
-                                load_size += read_bytes_from_buff(answer_buff+load_size, pkt->len+1);
-                                i = 100;
-                                complete = true;
-                                break;
-                            } else {
-                                load_size = 0;
-                                continue;
+                            if (load_size == 0) {
+                                if (ch != FLAG_START1) {
+                                    continue;
+                                }
+                            } else if (load_size == 1) {
+                                if (ch != FLAG_START2) {
+                                    load_size = 0;
+                                    continue;
+                                }
                             }
 
+                            answer_buff[load_size++] = ch;
+
+                            if (load_size == 2) {
+
+                                load_size += read_bytes_from_buff(answer_buff+load_size, 6);
+
+                                if (load_size == 8) {
+                                    pkt->len = reverse16(pkt->len);
+                                    load_size += read_bytes_from_buff(answer_buff+load_size, pkt->len+1);
+                                    i = 100;
+                                    complete = true;
+                                    break;
+                                } else {
+                                    load_size = 0;
+                                    continue;
+                                }
+
+                            }
                         }
                     }
+    #if (MODULE_WATCHDOG_ENABLE)
+                    drv_wd_clear();
+    #endif
+                    sleep_ms(10);
                 }
-#if (MODULE_WATCHDOG_ENABLE)
-                drv_wd_clear();
-#endif
-                sleep_ms(10);
-            }
 
-            pkt_tuya_t *send_pkt = &cmd_queue.cmd_queue[0].pkt;
+                pkt_tuya_t *send_pkt = &cmd_queue.cmd_queue[0].pkt;
 
-            if (complete) {
-                pkt->pkt_len = load_size;
-                uint8_t crc = checksum((uint8_t*)pkt, pkt->pkt_len-1);
+                if (complete) {
 
-//                printf("complete.inCRC: 0x%x, outCRC: 0x%x\r\n", crc, answer_buff[pkt->pkt_len-1]);
+                    no_answer = false;
+    //                answer_mcu = true;
 
-                if (crc == answer_buff[pkt->pkt_len-1]) {
+                    pkt->pkt_len = load_size;
+                    uint8_t crc = checksum((uint8_t*)pkt, pkt->pkt_len-1);
 
-                    if (send_pkt->command == COMMAND04 && pkt->command == COMMAND06 /*&& pkt->seq_num == send_pkt->seq_num*/) {
-                        cmd_queue.cmd_queue[0].confirm_rec = true;
-                        if (data_point->dp_id == data_point_model[DP_IDX_SETPOINT].id ||
-                            data_point->dp_id == data_point_model[DP_IDX_ONOFF].id ||
-                            data_point->dp_id == data_point_model[DP_IDX_SCHEDULE].id) {
-                            set_default_answer(COMMAND06, reverse16(pkt->seq_num));
-                        }
-                    } else if (send_pkt->command == COMMAND28) {
-                        cmd_queue.cmd_queue[0].confirm_rec = true;
-                    } else if (pkt->command == send_pkt->command /*&& pkt->seq_num == send_pkt->seq_num*/) {
-//                        printf("command: 0%x\r\n", pkt->command);
-                        switch(pkt->command) {
-                            case COMMAND01:
+    //                printf("complete.inCRC: 0x%x, outCRC: 0x%x\r\n", crc, answer_buff[pkt->pkt_len-1]);
 
-                                cmd_queue.cmd_queue[0].confirm_rec = true;
+                    if (crc == answer_buff[pkt->pkt_len-1]) {
 
-                                uint8_t *p = pkt->data;
-                                uint16_t len = pkt->len;
+                        if (send_pkt->command == COMMAND04 && pkt->command == COMMAND06 /*&& pkt->seq_num == send_pkt->seq_num*/) {
+                            cmd_queue.cmd_queue[0].confirm_rec = true;
+                            if (data_point->dp_id == data_point_model[DP_IDX_SETPOINT].id ||
+                                data_point->dp_id == data_point_model[DP_IDX_ONOFF].id ||
+                                data_point->dp_id == data_point_model[DP_IDX_SCHEDULE].id) {
+                                set_default_answer(COMMAND06, reverse16(pkt->seq_num));
+                            }
+                        } else if (send_pkt->command == COMMAND28) {
+                            cmd_queue.cmd_queue[0].confirm_rec = true;
+                        } else if (pkt->command == send_pkt->command /*&& pkt->seq_num == send_pkt->seq_num*/) {
+    //                        printf("command: 0%x\r\n", pkt->command);
+                            switch(pkt->command) {
+                                case COMMAND01:
 
-                                while(*p != ':' && len != 0) {
+                                    cmd_queue.cmd_queue[0].confirm_rec = true;
+
+                                    uint8_t *p = pkt->data;
+                                    uint16_t len = pkt->len;
+
+                                    while(*p != ':' && len != 0) {
+                                        p++;
+                                        len--;
+                                    }
                                     p++;
-                                    len--;
-                                }
-                                p++;
-                                p++;
-
-                                uint8_t *ptr = p;
-                                while(*p != '"' && len != 0) {
                                     p++;
-                                    len--;
-                                }
 
-                                *p = 0;
+                                    uint8_t *ptr = p;
+                                    while(*p != '"' && len != 0) {
+                                        p++;
+                                        len--;
+                                    }
 
-                                manuf_name = MANUF_NAME_MAX;
+                                    *p = 0;
 
-                                for (uint8_t ii = 0; ii < MANUF_NAME_MAX; ii++) {
-                                    for (uint8_t i = 0; i < 255; i++) {
-                                        if (tuya_manuf_names[ii][i] == NULL) break;
-//                                        printf("tuya_manuf_names[%d][%d]: %s\r\n", ii, i, tuya_manuf_names[ii][i]);
-                                        if (strcmp(tuya_manuf_names[ii][i], (char8_t*)ptr) == 0) {
-                                            manuf_name = ii;
-                                            ii = MANUF_NAME_MAX;
-                                            break;
+                                    manuf_name = MANUF_NAME_MAX;
+
+                                    for (uint8_t ii = 0; ii < MANUF_NAME_MAX; ii++) {
+                                        for (uint8_t i = 0; i < 255; i++) {
+                                            if (tuya_manuf_names[ii][i] == NULL) break;
+    //                                        printf("tuya_manuf_names[%d][%d]: %s\r\n", ii, i, tuya_manuf_names[ii][i]);
+                                            if (strcmp(tuya_manuf_names[ii][i], (char8_t*)ptr) == 0) {
+                                                manuf_name = ii;
+                                                ii = MANUF_NAME_MAX;
+                                                break;
+                                            }
                                         }
                                     }
-                                }
 
-                                if (manuf_name == MANUF_NAME_MAX) {
-#if UART_PRINTF_MODE
-                                    printf("Known Tuya signature not found. Use default\r\n");
-#endif
+                                    if (manuf_name == MANUF_NAME_MAX) {
+    #if UART_PRINTF_MODE
+                                        printf("Known Tuya signature not found. Use default\r\n");
+    #endif
+                                        manuf_name = MANUF_NAME_1;
+
+    //                                    uint8_t signature[] = "u9bfwha0";
+    //                                    set_zcl_modelId(signature);
+                                    } else {
+    #if UART_PRINTF_MODE
+                                        printf("Tuya signature found: \"%s\"\r\n", ptr);
+    #endif
+    //                                    set_zcl_modelId(ptr);
+                                    }
+
+    //                                if (check_answerTimerEvt) {
+    //                                    TL_ZB_TIMER_CANCEL(&check_answerTimerEvt);
+    //                                }
+    //                                check_answerTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, answer_check_timeout);
+
+    #if 0
+                                    /* Only for test */
                                     manuf_name = MANUF_NAME_1;
+    //                                manuf_name = MANUF_NAME_2;
+    //                                manuf_name = MANUF_NAME_3;
+    //                                manuf_name = MANUF_NAME_4;
+    //                                manuf_name = MANUF_NAME_5;
 
-//                                    uint8_t signature[] = "u9bfwha0";
-//                                    set_zcl_modelId(signature);
-                                } else {
-#if UART_PRINTF_MODE
-                                    printf("Tuya signature found: \"%s\"\r\n", ptr);
-#endif
-//                                    set_zcl_modelId(ptr);
-                                }
+    #endif
 
-#if 0
-                                /* Only for test */
-                                manuf_name = MANUF_NAME_1;
-//                                manuf_name = MANUF_NAME_2;
-//                                manuf_name = MANUF_NAME_3;
-//                                manuf_name = MANUF_NAME_4;
-//                                manuf_name = MANUF_NAME_5;
+    #if UART_PRINTF_MODE
+                                    printf("Use modelId: %s\r\n", zb_modelId_arr[manuf_name]+1);
+    #endif
 
-#endif
+                                    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId_arr[manuf_name]);
+                                    data_point_model = data_point_model_arr[manuf_name];
 
-#if UART_PRINTF_MODE
-                                printf("Use modelId: %s\r\n", zb_modelId_arr[manuf_name]+1);
-#endif
-
-                                zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId_arr[manuf_name]);
-                                data_point_model = data_point_model_arr[manuf_name];
-
-                                if (manuf_name == MANUF_NAME_5 || manuf_name == MANUF_NAME_6) {
-                                    set_command(COMMAND28, seq_num, true);
-                                    if (manuf_name == MANUF_NAME_5) {
-                                        if (check_answerTimerEvt) {
-                                            TL_ZB_TIMER_CANCEL(&check_answerTimerEvt);
-                                        }
-                                        check_answerTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_1MIN30SEC);
+                                    if (manuf_name == MANUF_NAME_5 || manuf_name == MANUF_NAME_6) {
+                                        set_command(COMMAND28, seq_num, true);
                                     }
-                                }
 
-                                break;
-                            case COMMAND02:
-                                cmd_queue.cmd_queue[0].confirm_rec = true;
-                                break;
-                            case COMMAND00:
-                            case COMMAND03:
-                            case COMMAND04:
-                            case COMMAND05:
-                            case COMMAND06:
-                                break;
-                            case COMMAND28:
-                                cmd_queue.cmd_queue[0].confirm_rec = true;
-                                break;
-                            default:
-                                break;
+                                    break;
+                                case COMMAND02:
+                                    cmd_queue.cmd_queue[0].confirm_rec = true;
+                                    break;
+                                case COMMAND00:
+                                case COMMAND03:
+                                case COMMAND04:
+                                case COMMAND05:
+                                case COMMAND06:
+                                    break;
+                                case COMMAND28:
+                                    cmd_queue.cmd_queue[0].confirm_rec = true;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
+
+                    } else {
+    #if UART_PRINTF_MODE
+                        printf("Error CRC. inCRC: 0x%x, outCRC: 0x%x\r\n", crc, answer_buff[pkt->pkt_len-1]);
+    #endif
                     }
 
                 } else {
-#if UART_PRINTF_MODE
-                    printf("Error CRC. inCRC: 0x%x, outCRC: 0x%x\r\n", crc, answer_buff[pkt->pkt_len-1]);
-#endif
-                }
-
-            } else {
-#if UART_PRINTF_MODE
-                printf("no complete\r\n");
-#endif
-                cmd_queue.cmd_queue[0].confirm_rec = false;
-                if (answer_count++ == 5) {
-                    answer_count = 0;
-                    cmd_queue.cmd_queue[0].confirm_rec = true;
-                }
-
-                no_answer = true;
-
-                if (send_pkt->command == COMMAND01) {
-                    uint32_t baudrate = get_uart_baudrate();
-                    if (baudrate == UART_BAUDRATE_9600) {
-                        set_uart_baudrate(UART_BAUDRATE_115200);
-                    } else {
-                        set_uart_baudrate(UART_BAUDRATE_9600);
+    #if UART_PRINTF_MODE
+                    printf("no complete\r\n");
+    #endif
+                    cmd_queue.cmd_queue[0].confirm_rec = false;
+                    if (answer_count++ == 5) {
+                        answer_count = 0;
+                        cmd_queue.cmd_queue[0].confirm_rec = true;
                     }
-                    app_uart_init();
+
+                    if (!no_answer) {
+                        no_answer = true;
+
+                        if (check_answerTimerEvt) {
+                            TL_ZB_TIMER_CANCEL(&check_answerTimerEvt);
+                        }
+                        check_answerTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerCb, NULL, TIMEOUT_15SEC);
+                    }
+
+
+                    if (send_pkt->command == COMMAND01) {
+                        uint32_t baudrate = get_uart_baudrate();
+                        if (baudrate == UART_BAUDRATE_9600) {
+                            set_uart_baudrate(UART_BAUDRATE_115200);
+                        } else {
+                            set_uart_baudrate(UART_BAUDRATE_9600);
+                        }
+                        app_uart_init();
+                    }
                 }
+            } else {
+                cmd_queue.cmd_queue[0].confirm_rec = true;
             }
         } else {
-            cmd_queue.cmd_queue[0].confirm_rec = true;
+            if (cmd_queue.cmd_num > 10) {
+                printf("cmd_queue.cmd_num: %d, time_output_pkt: 0x%x\r\n", cmd_queue.cmd_num, time_output_pkt);
+                time_output_pkt = 0; //clock_time();
+            }
         }
 
+
     }
+
+#if (MODULE_WATCHDOG_ENABLE)
+    drv_wd_clear();
+#endif
 
     move_cmd_queue();
 
@@ -512,7 +556,12 @@ void uart_cmd_handler() {
 
         if (load_size == pkt->len + 9) {
 
-            answer_mcu = true;
+//            answer_mcu = true;
+
+            if (check_answerMcuTimerEvt) {
+                TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+            }
+            check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, TIMEOUT_1MIN30SEC);
 
             pkt->pkt_len = load_size;
             uint8_t crc = checksum((uint8_t*)pkt, pkt->pkt_len-1);
@@ -525,13 +574,13 @@ void uart_cmd_handler() {
                     printf("command 0x03. Factory Reset\r\n");
 #endif
                     if (factory_reset_cnt == 0 && factory_reset_status != 2) {
-//                        printf("FN1\r\n");
+                        printf("FN1\r\n");
                         zb_resetDevice2FN();
                         factory_reset_cnt++;
                         factory_reset_status = 1;
                         factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(factory_resetCb, NULL, TIMEOUT_3SEC);
                     } else {
-//                        printf("FN2\r\n");
+                        printf("FN2\r\n");
                         if (factory_resetTimerEvt && factory_reset_status == 1) {
                             TL_ZB_TIMER_CANCEL(&factory_resetTimerEvt);
                         }

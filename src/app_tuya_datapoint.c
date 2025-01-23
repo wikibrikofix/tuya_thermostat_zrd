@@ -38,6 +38,12 @@ const char8_t **tuya_manuf_names[] = {
                                       tuya_manuf_name6
 };
 
+const char8_t *answer_check_long_timeout[] = {
+                                             "aoclfnxz",
+                                             "5toc8efa",
+                                              NULL
+};
+
 uint8_t manuf_name = MANUF_NAME_1;
 
 data_point_st_t *data_point_model_arr[DP_IDX_MAXNUM] = {
