@@ -48,13 +48,15 @@ typedef struct __attribute__((packed)) {
 } pkt_tuya_t;
 
 typedef struct {
+    uint8_t    used;
     uint8_t    confirm_need;
     uint8_t    confirm_rec;
     pkt_tuya_t pkt;
 } cmd_queue_cell_t;
 
 typedef struct {
-    uint8_t cmd_num;
+    uint8_t need_confirm;                           // if there is a confirmation request
+    uint8_t not_need_confirm;                       // if there is a request without confirmation
     cmd_queue_cell_t cmd_queue[CMD_QUEUE_CELL_MAX];
 } cmd_queue_t;
 

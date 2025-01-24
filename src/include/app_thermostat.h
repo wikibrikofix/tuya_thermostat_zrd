@@ -403,10 +403,4 @@ void local_cmd_setting_reset_6(void *args);
 void local_cmd_schedule_mode_6(void *args);
 void local_cmd_set_schedule_6(void *args);
 
-/*
- *
- * common function
- */
-//void set_zcl_modelId(uint8_t *signature);
-
 #endif /* SRC_INCLUDE_APP_THERMOSTAT_H_ */

@@ -144,6 +144,8 @@ static size_t write_bytes_to_ring_buff(uint8_t *data, size_t len) {
     return put_len;
 }
 
+
+
 static void app_uartRecvCb() {
 
     uint8_t st = SUCCESS;
@@ -161,6 +163,7 @@ static void app_uartRecvCb() {
         print_pkt_inp(rec_buff.data, rec_buff.dma_len);
 
         write_bytes_to_ring_buff(rec_buff.data, rec_buff.dma_len);
+        sleep_ms(10);
     }
 
 //    printf("st: 0x%x, rec_buff.dma_len: %d\r\n", st, rec_buff.dma_len);
@@ -187,7 +190,7 @@ void app_uart_init() {
 
     drv_uart_init(uart_baudrate, (uint8_t*)&rec_buff, sizeof(uart_data_t), app_uartRecvCb);
 
-    printf("uart_baudrate: %d\r\n", uart_baudrate);
+//    printf("uart_baudrate: %d\r\n", uart_baudrate);
 }
 
 uint32_t get_uart_baudrate() {
