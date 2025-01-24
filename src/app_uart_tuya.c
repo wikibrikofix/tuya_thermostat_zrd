@@ -7,7 +7,6 @@
 
 static uint8_t      pkt_buff[DATA_MAX_LEN*2];
 bool                first_start = true;
-uint8_t             many_answer;
 static uint8_t      answer_count = 0;
 static uint16_t     seq_num = 0;
 static status_net_t status_net = STATUS_NET_UNKNOWN;
