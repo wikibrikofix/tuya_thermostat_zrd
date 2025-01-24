@@ -74,7 +74,7 @@ static void print_pkt_out(uint8_t *data, uint32_t len) {
         printf("out_pkt <== 0x");
         print_pkt(data, len);
     } else {
-        if (clock_time_exceed(time_pkt, TIMEOUT_TICK_100MS)) {
+        if (clock_time_exceed(time_pkt, TIMEOUT_TICK_50MS)) {
             printf("out_pkt <== 0x");
             print_pkt(data, len);
         }
