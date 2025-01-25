@@ -144,8 +144,6 @@ static size_t write_bytes_to_ring_buff(uint8_t *data, size_t len) {
     return put_len;
 }
 
-
-
 static void app_uartRecvCb() {
 
     uint8_t st = SUCCESS;
@@ -178,7 +176,6 @@ uartTx_err app_uart_txMsg(uint8_t *data, uint8_t len) {
     print_pkt_out(data, len);
 
     if (drv_uart_tx_start(data, len)) return UART_TX_SUCCESS;
-
 
     return UART_TX_FAILED;
 }
