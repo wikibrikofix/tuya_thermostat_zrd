@@ -4,7 +4,7 @@
 
 #define UART_DATA_LEN  512
 
-#define RING_BUFF_SIZE                      1024              /* size ring buffer  */
+#define RING_BUFF_SIZE                      4096              /* size ring buffer  */
 #define RING_BUFF_MASK                      RING_BUFF_SIZE-1  /* mask ring buffer  */
 
 #define UART_BAUDRATE_9600                  9600

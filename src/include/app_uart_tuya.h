@@ -6,6 +6,8 @@
 #define SP_VERSION          0x02
 #define DATA_MAX_LEN        64          /* do not change!   */
 
+#define CMD_QUEUE_CELL_MAX  16
+
 typedef enum {
     COMMAND00   =   0x00,
     COMMAND01,                      /* Query product information    */
@@ -46,14 +48,16 @@ typedef struct __attribute__((packed)) {
 } pkt_tuya_t;
 
 typedef struct {
+    uint8_t    used;
     uint8_t    confirm_need;
     uint8_t    confirm_rec;
     pkt_tuya_t pkt;
 } cmd_queue_cell_t;
 
 typedef struct {
-    uint8_t cmd_num;
-    cmd_queue_cell_t cmd_queue[10];
+    uint8_t need_confirm;                           // if there is a confirmation request
+    uint8_t not_need_confirm;                       // if there is a request without confirmation
+    cmd_queue_cell_t cmd_queue[CMD_QUEUE_CELL_MAX];
 } cmd_queue_t;
 
 extern bool first_start;
