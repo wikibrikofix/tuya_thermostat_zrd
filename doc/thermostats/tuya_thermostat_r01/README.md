@@ -5,11 +5,11 @@
 	
 ### Внешний вид.
 
-<img src="https://raw.githubusercontent.comtuya_thermostat_zrd/refs/heads/main/doc/images/model1-2.png"/>
+<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model1-2.png"/>
 
 Или такой от MOES
 
-<img src="https://raw.githubusercontent.comtuya_thermostat_zrd/refs/heads/main/doc/images/model1_2.png"/>
+<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model1_2.png"/>
 
 ### Настройки, доступные удаленно.
 
