@@ -85,6 +85,8 @@ void remote_cmd_sys_mode(void *args) {
         add_cmd_queue(out_pkt, true);
         set_seq_num(seq_num);
     }
+
+    thermostat_settings_save();
 }
 
 void remote_cmd_heating_set(void *args) {
@@ -645,6 +647,7 @@ void local_cmd_onoff_state(void *args) {
                        (uint8_t*)&sys_mode);
     }
 
+    thermostat_settings_save();
 }
 
 

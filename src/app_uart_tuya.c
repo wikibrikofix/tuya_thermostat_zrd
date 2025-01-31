@@ -322,6 +322,8 @@ void uart_cmd_handler() {
 
             if (current_queue) {
 
+                send_command(&current_queue->pkt);
+
                 /* trying to read for 1 seconds */
                 for(uint8_t i = 0; i < 100; i++ ) {
                     load_size = 0;
@@ -515,17 +517,6 @@ void uart_cmd_handler() {
                     }
                 }
             }
-
-            send_command(&current_queue->pkt);
-
-    //        time_output_pkt = clock_time();
-
-
-
-//            if (cmd_queue.cmd_queue[0].confirm_need) {
-//            } else {
-//                cmd_queue.cmd_queue[0].confirm_rec = true;
-//            }
         }
     }
 

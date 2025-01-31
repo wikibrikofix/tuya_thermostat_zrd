@@ -500,6 +500,7 @@ static void print_setting_sr(nv_sts_t st, thermostat_settings_t *thermostat_sett
 
 #endif
 
+    printf("systemMode                   %d\r\n", thermostat_settings->systemMode);
     printf("occupiedHeatingSetpoint:     %d\r\n", thermostat_settings->occupiedHeatingSetpoint);
     printf("localTemperatureCalibration: %d\r\n", thermostat_settings->localTemperatureCalibration);
     printf("sensor_used:                 %d\r\n", thermostat_settings->sensor_used);
@@ -542,6 +543,12 @@ nv_sts_t thermostat_settings_save() {
         if (memcmp(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t)) != 0) {
             memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
             save = true;
+        }
+
+        if (thermostat_settings.systemMode != g_zcl_thermostatAttrs.systemMode) {
+            thermostat_settings.systemMode = g_zcl_thermostatAttrs.systemMode;
+            save = true;
+//            printf("systemMode changed\r\n");
         }
 
         if (thermostat_settings.minHeatSetpointLimit != g_zcl_thermostatAttrs.minHeatSetpointLimit) {
@@ -665,6 +672,7 @@ nv_sts_t thermostat_settings_save() {
             (st == NV_SUCC && crc != checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1))) {
 
         memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
+        thermostat_settings.systemMode = g_zcl_thermostatAttrs.systemMode;
         thermostat_settings.minHeatSetpointLimit = g_zcl_thermostatAttrs.minHeatSetpointLimit;
         thermostat_settings.maxHeatSetpointLimit = g_zcl_thermostatAttrs.maxHeatSetpointLimit;
         thermostat_settings.localTemperatureCalibration = g_zcl_thermostatAttrs.localTemperatureCalibration;
@@ -713,6 +721,7 @@ nv_sts_t thermostat_settings_restore() {
 
         memcpy(&g_zcl_scheduleData, &thermostat_settings.schedule_data, sizeof(zcl_scheduleData_t));
 
+        g_zcl_thermostatAttrs.systemMode = thermostat_settings.systemMode;
         g_zcl_thermostatAttrs.minHeatSetpointLimit = thermostat_settings.minHeatSetpointLimit;
         g_zcl_thermostatAttrs.maxHeatSetpointLimit = thermostat_settings.maxHeatSetpointLimit;
         g_zcl_thermostatAttrs.localTemperatureCalibration = thermostat_settings.localTemperatureCalibration;

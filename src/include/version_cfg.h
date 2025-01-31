@@ -54,14 +54,14 @@
     #define ZCL_BASIC_MODEL_ID     {8,'T','L','S','R','8','2','6','x'}
 #endif
 
-#ifndef ZCL_BASIC_DATE_CODE
-#ifdef BUILD_DATE
-    #define ZCL_BASIC_DATE_CODE    BUILD_DATE
-#else
-    #define ZCL_BASIC_DATE_CODE    {8,'2','0','2','4','0','6','1','6'}
+#ifndef BUILD_DATE
+#define BUILD_DATE "20241120"
 #endif
 
+#ifndef ZCL_BASIC_DATE_CODE
+#define ZCL_BASIC_DATE_CODE    BUILD_DATE
 #endif
+
 #ifndef ZCL_BASIC_LOC_DESC
     #define ZCL_BASIC_LOC_DESC     {7,'U','N','K','N','O','W','N'}
 #endif
@@ -70,10 +70,6 @@
 #endif
 #ifndef ZCL_BASIC_SW_BUILD_ID //max 16 chars v1.3.02
     #define ZCL_BASIC_SW_BUILD_ID       {7,'v',(APP_RELEASE>>4)+0x30,'.',(APP_RELEASE&0xf)+0x30,'.',(APP_BUILD>>4)+0x30,(APP_BUILD&0xf)+0x30}
-#endif
-
-#ifndef BUILD_DATE
-#define BUILD_DATE "20241120"
 #endif
 
 /*
