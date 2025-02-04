@@ -41,16 +41,19 @@ static void print_pkt_inp(uint8_t *data, uint32_t len) {
     if (command != pkt->command) {
         command = pkt->command;
         time_pkt = clock_time();
+        print_time();
         printf("inp_pkt ==> 0x");
         print_pkt(data, len);
     } else {
         if (clock_time_exceed(time_pkt, TIMEOUT_TICK_50MS)) {
+            print_time();
             printf("inp_pkt ==> 0x");
             print_pkt(data, len);
         }
         time_pkt = clock_time();
     }
 #else
+    print_time();
     printf("inp_pkt ==> 0x");
     print_pkt(data, len);
 #endif
@@ -71,16 +74,19 @@ static void print_pkt_out(uint8_t *data, uint32_t len) {
     if (command != pkt->command) {
         command = pkt->command;
         time_pkt = clock_time();
+        print_time();
         printf("out_pkt <== 0x");
         print_pkt(data, len);
     } else {
         if (clock_time_exceed(time_pkt, TIMEOUT_TICK_50MS)) {
+            print_time();
             printf("out_pkt <== 0x");
             print_pkt(data, len);
         }
         time_pkt = clock_time();
     }
 #else
+    print_time();
     printf("out_pkt <== 0x");
     print_pkt(data, len);
 #endif
@@ -115,13 +121,23 @@ uint8_t read_byte_from_ring_buff() {
 }
 
 size_t read_bytes_from_buff(uint8_t *str, size_t len) {
-    size_t i;
 
-    for (i = 0; i < len; i++) {
-        str[i] = read_byte_from_ring_buff();
+    size_t i = 0;
+
+    while (i < len) {
+        /* check for empty buffer */
+        if (get_queue_len_ring_buff()) {
+            str[i++] = read_byte_from_ring_buff();
+        } else {
+            break;
+        }
     }
 
+//    for (i = 0; i < len; i++) {
+//        str[i] = read_byte_from_ring_buff();
+//    }
 
+//    printf("read_bytes_from_buff(). len: %d, i: %d\r\n", len, i);
 
     return i;
 }
