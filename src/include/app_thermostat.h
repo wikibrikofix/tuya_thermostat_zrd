@@ -38,6 +38,7 @@
 
 typedef struct __attribute__((packed)) {
     zcl_scheduleData_t schedule_data;
+    int16_t     localTemperature;               // 22°C * 100
     uint8_t     systemMode;                     // see /src/zcl/zcl_app_thermostat.h
     int16_t     minHeatSetpointLimit;           // min 5°C * 100
     int16_t     maxHeatSetpointLimit;           // max 45°C * 100

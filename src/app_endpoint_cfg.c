@@ -500,6 +500,7 @@ static void print_setting_sr(nv_sts_t st, thermostat_settings_t *thermostat_sett
 
 #endif
 
+    printf("localTemperature:            %d\r\n", thermostat_settings->localTemperature);
     printf("systemMode                   %d\r\n", thermostat_settings->systemMode);
     printf("occupiedHeatingSetpoint:     %d\r\n", thermostat_settings->occupiedHeatingSetpoint);
     printf("localTemperatureCalibration: %d\r\n", thermostat_settings->localTemperatureCalibration);
@@ -662,6 +663,8 @@ nv_sts_t thermostat_settings_save() {
 
         if (save) {
 
+            thermostat_settings.localTemperature = g_zcl_thermostatAttrs.localTemperature;
+
             thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
             st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
 
@@ -672,6 +675,7 @@ nv_sts_t thermostat_settings_save() {
             (st == NV_SUCC && crc != checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1))) {
 
         memcpy(&thermostat_settings.schedule_data, &g_zcl_scheduleData, sizeof(zcl_scheduleData_t));
+        thermostat_settings.localTemperature = g_zcl_thermostatAttrs.localTemperature;
         thermostat_settings.systemMode = g_zcl_thermostatAttrs.systemMode;
         thermostat_settings.minHeatSetpointLimit = g_zcl_thermostatAttrs.minHeatSetpointLimit;
         thermostat_settings.maxHeatSetpointLimit = g_zcl_thermostatAttrs.maxHeatSetpointLimit;
@@ -721,6 +725,7 @@ nv_sts_t thermostat_settings_restore() {
 
         memcpy(&g_zcl_scheduleData, &thermostat_settings.schedule_data, sizeof(zcl_scheduleData_t));
 
+        g_zcl_thermostatAttrs.localTemperature = thermostat_settings.localTemperature;
         g_zcl_thermostatAttrs.systemMode = thermostat_settings.systemMode;
         g_zcl_thermostatAttrs.minHeatSetpointLimit = thermostat_settings.minHeatSetpointLimit;
         g_zcl_thermostatAttrs.maxHeatSetpointLimit = thermostat_settings.maxHeatSetpointLimit;
