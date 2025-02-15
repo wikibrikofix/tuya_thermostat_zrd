@@ -96,7 +96,8 @@ typedef struct {
     int16_t     heatProtect;
     uint8_t     dead_band;                      // 1 ... 5 °C
     uint8_t     ecoMode;                        // 1 - ecoMode on, 0 - ecoMode off
-    int16_t     ecoModeTemperature;             // 20°C * 100
+    int16_t     ecoModeHeatTemperature;         // 20°C * 100
+    int16_t     ecoModeCoolTemperature;         // 20°C * 100
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off
     uint8_t     sound;                          // 0 - off, 1 - on

@@ -818,16 +818,39 @@ void uart_cmd_handler() {
                             if (data_point_model[DP_IDX_ECO_MODE].local_cmd)
                                 data_point_model[DP_IDX_ECO_MODE].local_cmd(&eco_mode);
 
-                        } else if (data_point->dp_id == data_point_model[DP_IDX_ECO_TEMP].id &&
-                                   data_point->dp_type == data_point_model[DP_IDX_ECO_TEMP].type) {
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_ECO_HEAT_TEMP].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_ECO_HEAT_TEMP].type) {
 
 #if UART_PRINTF_MODE && DEBUG_DP
-                            printf("DP EcoModeTemp\r\n");
+                            printf("DP EcoModeHeatTemp\r\n");
 #endif
                             int16_t temp = int32_from_str(data_point->data) & 0xffff;
 
-                            if (data_point_model[DP_IDX_ECO_TEMP].local_cmd)
-                                data_point_model[DP_IDX_ECO_TEMP].local_cmd(&temp);
+                            if (data_point_model[DP_IDX_ECO_HEAT_TEMP].local_cmd)
+                                data_point_model[DP_IDX_ECO_HEAT_TEMP].local_cmd(&temp);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_ECO_COOL_TEMP].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_ECO_COOL_TEMP].type) {
+
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP EcoModeCoolTemp\r\n");
+#endif
+                            int16_t temp = int32_from_str(data_point->data) & 0xffff;
+
+                            if (data_point_model[DP_IDX_ECO_COOL_TEMP].local_cmd)
+                                data_point_model[DP_IDX_ECO_COOL_TEMP].local_cmd(&temp);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_THERM_MODE].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_THERM_MODE].type) {
+
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP ThermostatMode\r\n");
+#endif
+
+                            uint8_t therm_mode = data_point->data[0];
+
+                            if (data_point_model[DP_IDX_THERM_MODE].local_cmd)
+                                data_point_model[DP_IDX_THERM_MODE].local_cmd(&therm_mode);
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_LEVEL_A].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_LEVEL_A].type) {

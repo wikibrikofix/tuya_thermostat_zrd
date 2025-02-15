@@ -33,6 +33,10 @@ data_point_st_t data_point_model4[DP_IDX_MAXNUM] = {
         {DP_TYPE4_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
         {DP_TYPE4_ID_04, DP_BOOL, 1,    1,  remote_cmd_eco_mode_4, local_cmd_eco_mode_4},           // eco mode
         {DP_TYPE4_ID_69, DP_VAL,  4,    10, remote_cmd_eco_mode_temp_4, local_cmd_eco_mode_temp_4}, // eco mode's temperature
+        {DP_TYPE4_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE4_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE4_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE4_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
 };
 
 /*

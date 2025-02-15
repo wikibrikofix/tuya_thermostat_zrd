@@ -20,21 +20,25 @@ data_point_st_t data_point_model1[DP_IDX_MAXNUM] = {
         {DP_TYPE1_ID_02, DP_ENUM, 1,    1,  remote_cmd_oper_mode_1, local_cmd_oper_mode_1},                 // manual (setpoint) / programming (schedule)
         {DP_TYPE1_ID_28, DP_BOOL, 1,    1,  remote_cmd_keylock_1, local_cmd_keylock_1},                     // lock / unlock keys (child lock)
         {DP_TYPE1_ID_65, DP_RAW,  0x24, 1,  remote_cmd_set_schedule_1, local_cmd_set_schedule_1},           // schedule
-        {DP_TYPE1_ID_03, DP_BOOL, 1,    1,  NULL, NULL},                                                    // unknown
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
+        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
 };
 
 /*

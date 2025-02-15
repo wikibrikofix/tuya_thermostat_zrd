@@ -33,6 +33,10 @@ data_point_st_t data_point_model3[DP_IDX_MAXNUM] = {
         {DP_TYPE3_ID_72, DP_VAL,  4,    1,  remote_cmd_level_night_3, local_cmd_level_night_3},     // level brightness 22:00-06:00
         {DP_TYPE3_ID_28, DP_BOOL, 1,    1,  remote_cmd_eco_mode_3, local_cmd_eco_mode_3},           // eco mode
         {DP_TYPE3_ID_70, DP_VAL,  4,    10, remote_cmd_eco_mode_temp_3, local_cmd_eco_mode_temp_3}, // eco mode's temperature
+        {DP_TYPE3_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE3_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE3_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE3_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
 };
 
 /*
@@ -56,15 +60,15 @@ void local_cmd_eco_mode_temp_3(void *args) {
     uint16_t *eco_temp = (uint16_t*)args;
     uint16_t divisor = 1;
 
-    if (data_point_model[DP_IDX_ECO_TEMP].divisor == 1) {
+    if (data_point_model[DP_IDX_ECO_HEAT_TEMP].divisor == 1) {
         divisor = 100;
-    } else if (data_point_model[DP_IDX_ECO_TEMP].divisor == 10) {
+    } else if (data_point_model[DP_IDX_ECO_HEAT_TEMP].divisor == 10) {
         divisor = 10;
     }
 
     *eco_temp *= divisor;
 
-    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_TEMPERATURE, (uint8_t*)eco_temp);
+    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_HEAT_TEMPERATURE, (uint8_t*)eco_temp);
 
     thermostat_settings_save();
 }
@@ -144,9 +148,9 @@ void remote_cmd_eco_mode_temp_3(void *args) {
     if (eco_temp < min_temp) eco_temp = min_temp;
     if (eco_temp > max_temp) eco_temp = max_temp;
 
-    if (data_point_model[DP_IDX_ECO_TEMP].divisor == 1) {
+    if (data_point_model[DP_IDX_ECO_HEAT_TEMP].divisor == 1) {
         eco_temp /= 100;
-    } else if (data_point_model[DP_IDX_ECO_TEMP].divisor == 10) {
+    } else if (data_point_model[DP_IDX_ECO_HEAT_TEMP].divisor == 10) {
         eco_temp /= 10;
     }
 
@@ -162,9 +166,9 @@ void remote_cmd_eco_mode_temp_3(void *args) {
     out_pkt->pkt_len++;
 
     data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_ECO_TEMP].id;
+    data_point->dp_id = data_point_model[DP_IDX_ECO_HEAT_TEMP].id;
     out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_ECO_TEMP].type;
+    data_point->dp_type = data_point_model[DP_IDX_ECO_HEAT_TEMP].type;
     out_pkt->pkt_len++;
     data_point->dp_len = (reverse16(4));
     out_pkt->pkt_len++;
