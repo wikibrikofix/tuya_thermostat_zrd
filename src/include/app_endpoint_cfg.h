@@ -114,7 +114,7 @@ typedef struct {
 typedef struct {
     uint8_t fanMode;
     uint8_t fanModeSequence;
-
+    uint8_t fanControl;
 } zcl_fancontrolAttr_t;
 
 extern uint8_t APP_EP1_CB_CLUSTER_NUM;

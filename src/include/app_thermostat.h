@@ -75,7 +75,7 @@ typedef struct __attribute__((packed)) {
     uint8_t     frost_protect_onoff;            // 0 - off, 1 - on
     uint8_t     dev_therm_mode;                 // 0 - cool, 1 - heat, 2 - fan
     uint8_t     fanMode;
-    uint8_t     dev_fan_control;
+    uint8_t     fanControl;
     uint8_t     crc;
 } thermostat_settings_t;
 
@@ -111,7 +111,6 @@ extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
 extern uint8_t dev_therm_mode;
-extern uint8_t dev_fan_control;
 
 extern void (*answer_weekly_schedule[MANUF_NAME_MAX])(void);
 
@@ -285,6 +284,7 @@ void remote_cmd_setting_reset_6(void *args);
 void remote_cmd_sys_mode_7(void *args);
 void remote_cmd_eco_mode_cool_temp_7(void *args);
 void remote_cmd_fan_mode_7(void* args);
+void remote_cmd_fan_control_7(void *args);
 
 /*
  * common functions local_cmd

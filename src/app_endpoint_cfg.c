@@ -349,11 +349,13 @@ const zclAttrInfo_t thermostat_ui_cfg_attrTbl[] = {
 zcl_fancontrolAttr_t g_zcl_fancontrolAttrs = {
         .fanMode = 0,
         .fanModeSequence = FANMODESEQ_LOW_MED_HIGH_AUTO,
+        .fanControl = 0,
 };
 
 const zclAttrInfo_t fancontrol_attrTbl[] = {
-        { ZCL_ATTRID_HVAC_FANCONTROL_FANMODE,       ZCL_ENUM8,  RRW,    (uint8_t*)&g_zcl_fancontrolAttrs.fanMode         },
-        { ZCL_ATTRID_HVAC_FANCONTROL_FANMODESEQ,    ZCL_ENUM8,  RW,     (uint8_t*)&g_zcl_fancontrolAttrs.fanModeSequence },
+        { ZCL_ATTRID_HVAC_FANCONTROL_FANMODE,           ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_fancontrolAttrs.fanMode         },
+        { ZCL_ATTRID_HVAC_FANCONTROL_FANMODESEQ,        ZCL_ENUM8,      RW,     (uint8_t*)&g_zcl_fancontrolAttrs.fanModeSequence },
+        { ZCL_ATTRID_HVAC_FANCONTROL_CUSTOM_CONTROL,    ZCL_BOOLEAN,    RRW,    (uint8_t*)&g_zcl_fancontrolAttrs.fanControl      },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,       ZCL_UINT16, R,      (uint8_t*)&zcl_attr_global_clusterRevision       },
 };
@@ -709,16 +711,16 @@ nv_sts_t thermostat_settings_save() {
             printf("dev_therm_mode changed: 0x%x\r\n", dev_therm_mode);
         }
 
-        if (thermostat_settings.dev_fan_control != dev_fan_control) {
-            thermostat_settings.dev_fan_control = dev_fan_control;
-            save = true;
-            printf("dev_fan_control changed: 0x%x\r\n", dev_fan_control);
-        }
-
         if (thermostat_settings.fanMode != g_zcl_fancontrolAttrs.fanMode) {
             thermostat_settings.fanMode = g_zcl_fancontrolAttrs.fanMode;
             save = true;
             printf("fanMode changed: 0x%x\r\n", thermostat_settings.fanMode);
+        }
+
+        if (thermostat_settings.fanControl != g_zcl_fancontrolAttrs.fanControl) {
+            thermostat_settings.fanControl = g_zcl_fancontrolAttrs.fanControl;
+            save = true;
+            printf("fanControl changed: 0x%x\r\n", thermostat_settings.fanControl);
         }
 
         if (save) {
@@ -759,7 +761,7 @@ nv_sts_t thermostat_settings_save() {
         thermostat_settings.sound = g_zcl_thermostatAttrs.sound;
         thermostat_settings.dev_therm_mode = dev_therm_mode;
         thermostat_settings.fanMode = g_zcl_fancontrolAttrs.fanMode;
-        thermostat_settings.dev_fan_control = dev_fan_control;
+        thermostat_settings.fanControl = g_zcl_fancontrolAttrs.fanControl;
         thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
 
         st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
@@ -814,7 +816,7 @@ nv_sts_t thermostat_settings_restore() {
         g_zcl_thermostatAttrs.schedule_mode = thermostat_settings.schedule_mode;
         g_zcl_thermostatAttrs.sound = thermostat_settings.sound;
         dev_therm_mode = thermostat_settings.dev_therm_mode;
-        dev_fan_control = thermostat_settings.dev_fan_control;
+        g_zcl_fancontrolAttrs.fanControl = thermostat_settings.fanControl;
         g_zcl_fancontrolAttrs.fanMode = thermostat_settings.fanMode;
 
         g_zcl_levelAttrs.currentLevelA = thermostat_settings.currentLevelA;

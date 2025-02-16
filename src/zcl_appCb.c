@@ -296,6 +296,10 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 uint8_t mode = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_FAN_MODE].remote_cmd)
                     data_point_model[DP_IDX_FAN_MODE].remote_cmd(&mode);
+            } else if (attr[i].attrID == ZCL_ATTRID_HVAC_FANCONTROL_CUSTOM_CONTROL) {
+                uint8_t control = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_FAN_CONTROL].remote_cmd)
+                    data_point_model[DP_IDX_FAN_CONTROL].remote_cmd(&control);
             }
         }
     }
