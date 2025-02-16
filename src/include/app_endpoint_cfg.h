@@ -108,6 +108,15 @@ typedef struct {
     uint8_t     frost_protect_onoff;            // 0 - off, 1 - on
 } zcl_thermostatAttr_t;
 
+/**
+ *  @brief Defined for Thermostat and HVAC UI CFG clusters attributes
+ */
+typedef struct {
+    uint8_t fanMode;
+    uint8_t fanModeSequence;
+
+} zcl_fancontrolAttr_t;
+
 extern uint8_t APP_EP1_CB_CLUSTER_NUM;
 extern uint8_t APP_EP2_CB_CLUSTER_NUM;
 

@@ -194,9 +194,11 @@ typedef enum {
     DP_TYPE7_ID_18    = 0x18,     // local temperature
     DP_TYPE7_ID_1A    = 0x1A,     // min heat
     DP_TYPE7_ID_1B    = 0x1B,     // calibration
+    DP_TYPE7_ID_1C    = 0x1C,     // fan mode 0x00 - low, 0x01 - mid, 0x02 - high, 0x03 - auto
     DP_TYPE7_ID_24    = 0x24,     // 0x00 - valve open, 0x01 - valve close
     DP_TYPE7_ID_28    = 0x28,     // lock / unlock keys
     DP_TYPE7_ID_65    = 0x65,     // manual / programming
+    DP_TYPE7_ID_66    = 0x66,     // fan control 0x00 - off, 0x01 - on
     DP_TYPE7_ID_67    = 0x67,     // hysteresis
     DP_TYPE7_ID_68    = 0x68,     // eco mode's cool temperature
     DP_TYPE7_ID_69    = 0x69,     // eco mode's heat temperature
@@ -253,6 +255,8 @@ typedef enum {
     DP_IDX_SETTINGS_RESET,
     DP_IDX_INVERSION,
     DP_IDX_THERM_MODE,
+    DP_IDX_FAN_MODE,
+    DP_IDX_FAN_CONTROL,
     DP_IDX_MAXNUM
 } data_point_idx_t;
 

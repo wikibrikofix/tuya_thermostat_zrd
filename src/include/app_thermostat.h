@@ -36,6 +36,14 @@
 #define DEV_THERM_MODE_HEAT         0x01
 #define DEV_THERM_MODE_FAN          0x02
 
+#define DEV_FAN_MODE_LOW            0x00
+#define DEV_FAN_MODE_MIDDLE         0x01
+#define DEV_FAN_MODE_HIGH           0x02
+#define DEV_FAN_MODE_AUTO           0x03
+
+#define DEV_FAN_CONTROL_OFF         0x00
+#define DEV_FAN_CONTROL_ON          0x01
+
 #define ZB_MODELID_ARR_NUM          16
 #define ZB_MODELID_SIZE             19
 #define ZB_MODELID_FULL_SIZE        ZB_MODELID_SIZE+2
@@ -66,6 +74,8 @@ typedef struct __attribute__((packed)) {
     uint8_t     inversion;                      // 0 - off, 1 - on
     uint8_t     frost_protect_onoff;            // 0 - off, 1 - on
     uint8_t     dev_therm_mode;                 // 0 - cool, 1 - heat, 2 - fan
+    uint8_t     fanMode;
+    uint8_t     dev_fan_control;
     uint8_t     crc;
 } thermostat_settings_t;
 
@@ -101,6 +111,7 @@ extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
 extern uint8_t dev_therm_mode;
+extern uint8_t dev_fan_control;
 
 extern void (*answer_weekly_schedule[MANUF_NAME_MAX])(void);
 
@@ -273,6 +284,7 @@ void remote_cmd_setting_reset_6(void *args);
 
 void remote_cmd_sys_mode_7(void *args);
 void remote_cmd_eco_mode_cool_temp_7(void *args);
+void remote_cmd_fan_mode_7(void* args);
 
 /*
  * common functions local_cmd
@@ -458,5 +470,7 @@ void local_cmd_eco_mode_cool_temp_7(void *args);
 void local_cmd_set_run_state_7(void *args);
 void local_cmd_therm_mode_7(void* args);
 void local_cmd_eco_mode_cool_temp_7(void *args);
+void local_cmd_fan_control_7(void* args);
+void local_cmd_fan_mode_7(void *args);
 
 #endif /* SRC_INCLUDE_APP_THERMOSTAT_H_ */

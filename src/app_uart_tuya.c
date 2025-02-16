@@ -394,6 +394,8 @@ void uart_cmd_handler() {
                                 current_queue->confirm_rec = true;
                                 if (data_point->dp_id == data_point_model[DP_IDX_SETPOINT].id ||
                                     data_point->dp_id == data_point_model[DP_IDX_ONOFF].id ||
+                                    data_point->dp_id == data_point_model[DP_IDX_FAN_MODE].id ||
+                                    data_point->dp_id == data_point_model[DP_IDX_FAN_CONTROL].id ||
                                     data_point->dp_id == data_point_model[DP_IDX_SCHEDULE].id) {
                                     set_default_answer(COMMAND06, reverse16(pkt->seq_num));
                                 }
@@ -650,6 +652,26 @@ void uart_cmd_handler() {
 #endif
                             uint8_t mode = data_point->data[0];
                             if (data_point_model[DP_IDX_PROG].local_cmd) data_point_model[DP_IDX_PROG].local_cmd(&mode);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_FAN_MODE].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_FAN_MODE].type) {
+
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP FanMode\r\n");
+#endif
+                            uint8_t mode = data_point->data[0];
+                            if (data_point_model[DP_IDX_FAN_MODE].local_cmd)
+                                data_point_model[DP_IDX_FAN_MODE].local_cmd(&mode);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_FAN_CONTROL].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_FAN_CONTROL].type) {
+
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP FanControl\r\n");
+#endif
+                            uint8_t fan_control = data_point->data[0];
+                            if (data_point_model[DP_IDX_FAN_CONTROL].local_cmd)
+                                data_point_model[DP_IDX_FAN_CONTROL].local_cmd(&fan_control);
 
 //                        } else if (data_point->dp_id == data_point_model[DP_IDX_UNKNOWN].id &&
 //                                   data_point->dp_type == data_point_model[DP_IDX_UNKNOWN].type) {

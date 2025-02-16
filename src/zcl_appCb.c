@@ -289,6 +289,17 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
         }
     }
 
+
+    if (clusterId == ZCL_CLUSTER_HAVC_FAN_CONTROL) {
+        for (uint32_t i = 0; i < numAttr; i++) {
+            if (attr[i].attrID == ZCL_ATTRID_HVAC_FANCONTROL_FANMODE) {
+                uint8_t mode = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_FAN_MODE].remote_cmd)
+                    data_point_model[DP_IDX_FAN_MODE].remote_cmd(&mode);
+            }
+        }
+    }
+
     if (clusterId == ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG) {
         for (uint32_t i = 0; i < numAttr; i++) {
             if (attr[i].attrID == ZCL_ATTRID_HVAC_TEMPERATURE_DISPLAY_MODE) {
@@ -1320,6 +1331,19 @@ status_t app_thermostat_uicCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, v
 }
 
 #endif /* ZCL_THERMOSTAT */
+
+#ifdef ZCL_FANCONTROL
+
+status_t app_fancontrolCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload) {
+
+    printf("app_thermostatCb().\r\n");
+
+    status_t status = ZCL_STA_SUCCESS;
+
+    return status;
+}
+
+#endif /* ZCL_FANCONTROL */
 
 /*********************************************************************
  * @fn      app_timeCb

@@ -256,6 +256,8 @@ void user_init(bool isRetention) {
                             ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_LEVEL, 0, 3600, (uint8_t *)&reportableChange);
     bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_THERMOSTAT,
                             ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_INVERSION, 0, 3600, (uint8_t *)&reportableChange);
+    bdb_defaultReportingCfg(APP_ENDPOINT1, HA_PROFILE_ID, ZCL_CLUSTER_HAVC_FAN_CONTROL,
+                            ZCL_ATTRID_HVAC_FANCONTROL_FANMODE, 0, 3600, (uint8_t *)&reportableChange);
 
     /* Initialize BDB */
     bdb_init((af_simple_descriptor_t *)&app_ep1Desc, &g_bdbCommissionSetting, &g_zbBdbCb, 1);

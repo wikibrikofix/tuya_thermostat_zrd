@@ -21,6 +21,7 @@ uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE] = {
 
 uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 uint8_t dev_therm_mode = DEV_THERM_MODE_COLD;
+uint8_t dev_fan_control = DEV_FAN_CONTROL_OFF;
 
 uint8_t w_mon = DAY_MON;
 uint8_t w_tue = DAY_TUE;

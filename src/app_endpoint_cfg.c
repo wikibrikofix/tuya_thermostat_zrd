@@ -55,6 +55,9 @@ const uint16_t app_ep1_inClusterList[] = {
     ZCL_CLUSTER_HAVC_THERMOSTAT,
     ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG,
 #endif
+#ifdef ZCL_FANCONTROL
+    ZCL_CLUSTER_HAVC_FAN_CONTROL,
+#endif
 };
 
 /**
@@ -341,6 +344,23 @@ const zclAttrInfo_t thermostat_ui_cfg_attrTbl[] = {
 #define ZCL_THERMOSTAT_UIC_ATTR_NUM   sizeof(thermostat_ui_cfg_attrTbl) / sizeof(zclAttrInfo_t)
 #endif
 
+#ifdef ZCL_FANCONTROL
+
+zcl_fancontrolAttr_t g_zcl_fancontrolAttrs = {
+        .fanMode = 0,
+        .fanModeSequence = FANMODESEQ_LOW_MED_HIGH_AUTO,
+};
+
+const zclAttrInfo_t fancontrol_attrTbl[] = {
+        { ZCL_ATTRID_HVAC_FANCONTROL_FANMODE,       ZCL_ENUM8,  RRW,    (uint8_t*)&g_zcl_fancontrolAttrs.fanMode         },
+        { ZCL_ATTRID_HVAC_FANCONTROL_FANMODESEQ,    ZCL_ENUM8,  RW,     (uint8_t*)&g_zcl_fancontrolAttrs.fanModeSequence },
+
+        { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,       ZCL_UINT16, R,      (uint8_t*)&zcl_attr_global_clusterRevision       },
+};
+
+#define ZCL_FANCONTROL_ATTR_NUM   sizeof(fancontrol_attrTbl) / sizeof(zclAttrInfo_t)
+
+#endif
 
 /**
  *  @brief Definition for simple switch ZCL specific cluster
@@ -361,6 +381,9 @@ const zcl_specClusterInfo_t g_appEp1ClusterList[] = {
 #ifdef ZCL_THERMOSTAT
     {ZCL_CLUSTER_HAVC_THERMOSTAT, MANUFACTURER_CODE_NONE, ZCL_THERMOSTAT_ATTR_NUM, thermostat_attrTbl, zcl_thermostat_register, app_thermostatCb},
     {ZCL_CLUSTER_HAVC_USER_INTERFACE_CONFIG, MANUFACTURER_CODE_NONE, ZCL_THERMOSTAT_UIC_ATTR_NUM, thermostat_ui_cfg_attrTbl, zcl_thermostat_ui_cfg_register, app_thermostat_uicCb},
+#endif
+#ifdef ZCL_FANCONTROL
+    {ZCL_CLUSTER_HAVC_FAN_CONTROL, MANUFACTURER_CODE_NONE, ZCL_FANCONTROL_ATTR_NUM, fancontrol_attrTbl, zcl_fancontrol_register, app_fancontrolCb},
 #endif
 };
 
@@ -686,6 +709,18 @@ nv_sts_t thermostat_settings_save() {
             printf("dev_therm_mode changed: 0x%x\r\n", dev_therm_mode);
         }
 
+        if (thermostat_settings.dev_fan_control != dev_fan_control) {
+            thermostat_settings.dev_fan_control = dev_fan_control;
+            save = true;
+            printf("dev_fan_control changed: 0x%x\r\n", dev_fan_control);
+        }
+
+        if (thermostat_settings.fanMode != g_zcl_fancontrolAttrs.fanMode) {
+            thermostat_settings.fanMode = g_zcl_fancontrolAttrs.fanMode;
+            save = true;
+            printf("fanMode changed: 0x%x\r\n", thermostat_settings.fanMode);
+        }
+
         if (save) {
 
             thermostat_settings.localTemperature = g_zcl_thermostatAttrs.localTemperature;
@@ -723,6 +758,8 @@ nv_sts_t thermostat_settings_save() {
         thermostat_settings.schedule_mode = g_zcl_thermostatAttrs.schedule_mode;
         thermostat_settings.sound = g_zcl_thermostatAttrs.sound;
         thermostat_settings.dev_therm_mode = dev_therm_mode;
+        thermostat_settings.fanMode = g_zcl_fancontrolAttrs.fanMode;
+        thermostat_settings.dev_fan_control = dev_fan_control;
         thermostat_settings.crc = checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1);
 
         st = nv_flashWriteNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
@@ -777,6 +814,8 @@ nv_sts_t thermostat_settings_restore() {
         g_zcl_thermostatAttrs.schedule_mode = thermostat_settings.schedule_mode;
         g_zcl_thermostatAttrs.sound = thermostat_settings.sound;
         dev_therm_mode = thermostat_settings.dev_therm_mode;
+        dev_fan_control = thermostat_settings.dev_fan_control;
+        g_zcl_fancontrolAttrs.fanMode = thermostat_settings.fanMode;
 
         g_zcl_levelAttrs.currentLevelA = thermostat_settings.currentLevelA;
         g_zcl_levelAttrs.currentLevelB = thermostat_settings.currentLevelB;

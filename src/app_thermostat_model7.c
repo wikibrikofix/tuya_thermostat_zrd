@@ -38,8 +38,11 @@ data_point_st_t data_point_model7[DP_IDX_MAXNUM] = {
         {DP_TYPE7_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
         {DP_TYPE7_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
         {DP_TYPE7_ID_02, DP_ENUM, 1,    1,  NULL, local_cmd_therm_mode_7},                          // thermostat local mode (cold, heat, fan)
+        {DP_TYPE7_ID_1C, DP_ENUM, 1,    1,  remote_cmd_fan_mode_7, local_cmd_fan_mode_7},           // fan mode
+        {DP_TYPE7_ID_66, DP_BOOL, 1,    1,  NULL, local_cmd_fan_control_7},                         // fan control
 };
 
+static uint8_t fan_mode_store = FANMODE_LOW;
 /*
  *
  * For models   "mpbki2zm"
@@ -55,8 +58,6 @@ void local_cmd_set_run_state_7(void *args) {
     uint16_t len;
     uint8_t sys_mode;
     uint8_t bit_num = RUN_STATE_FAN_BIT;
-
-    printf("local_cmd_set_run_state_7(). dev_therm_mode: 0x%x\r\n", dev_therm_mode);
 
     switch (dev_therm_mode) {
         case DEV_THERM_MODE_COLD:
@@ -183,6 +184,65 @@ void local_cmd_eco_mode_cool_temp_7(void *args) {
     thermostat_settings_save();
 }
 
+void local_cmd_fan_mode_7(void *args) {
+
+    uint8_t *mode = (uint8_t*)args;
+    uint8_t fan_mode;
+
+    switch(*mode) {
+        case DEV_FAN_MODE_LOW:
+            fan_mode = FANMODE_LOW;
+            break;
+        case DEV_FAN_MODE_MIDDLE:
+            fan_mode = FANMODE_MEDIUM;
+            break;
+        case DEV_FAN_MODE_HIGH:
+            fan_mode = FANMODE_HIGH;
+            break;
+        case DEV_FAN_MODE_AUTO:
+            fan_mode = FANMODE_AUTO;
+            break;
+        default:
+            return;
+            break;
+    }
+
+    fan_mode_store = fan_mode;
+
+    zcl_setAttrVal(APP_ENDPOINT1,
+                   ZCL_CLUSTER_HAVC_FAN_CONTROL,
+                   ZCL_ATTRID_HVAC_FANCONTROL_FANMODE,
+                   (uint8_t*)&fan_mode);
+
+    thermostat_settings_save();
+}
+
+void local_cmd_fan_control_7(void* args) {
+
+    uint8_t *control = (uint8_t*)args;
+    uint8_t fan_mode;
+    uint16_t len;
+
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_FAN_CONTROL, ZCL_ATTRID_HVAC_FANCONTROL_FANMODE, &len, (uint8_t*)&fan_mode);
+
+
+    if (*control) {
+        dev_fan_control = DEV_FAN_CONTROL_ON;
+        fan_mode_store = fan_mode;
+        fan_mode = FANMODE_SMART;
+    } else {
+        dev_fan_control = DEV_FAN_CONTROL_OFF;
+        fan_mode = fan_mode_store;
+    }
+
+    zcl_setAttrVal(APP_ENDPOINT1,
+                   ZCL_CLUSTER_HAVC_FAN_CONTROL,
+                   ZCL_ATTRID_HVAC_FANCONTROL_FANMODE,
+                   (uint8_t*)&fan_mode);
+
+    thermostat_settings_save();
+}
+
 /*
  *
  * For models   "mpbki2zm"
@@ -251,8 +311,6 @@ void remote_cmd_sys_mode_7(void *args) {
     if (*mode != SYS_MODE_OFF && *mode != SYS_MODE_HEAT && *mode != SYS_MODE_COOL && *mode != SYS_MODE_FAN) {
         return;
     }
-
-    printf("remote_cmd_sys_mode_7(). mode: 0x%x\r\n", *mode);
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
@@ -341,4 +399,93 @@ void remote_cmd_eco_mode_cool_temp_7(void *args) {
     thermostat_settings_save();
 }
 
+void remote_cmd_fan_mode_7(void* args) {
 
+    uint8_t *mode = (uint8_t*)args;
+
+    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
+    uint16_t seq_num = get_seq_num();
+
+    if (*mode != FANMODE_SMART && dev_fan_control == DEV_FAN_CONTROL_ON) {
+
+        seq_num = get_seq_num();
+        seq_num++;
+
+        set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
+
+        out_pkt->len = reverse16(5);
+        out_pkt->pkt_len++;
+        out_pkt->pkt_len++;
+
+        data_point_t *data_point = (data_point_t*)out_pkt->data;
+        data_point->dp_id = DP_TYPE7_ID_66;
+        out_pkt->pkt_len++;
+        data_point->dp_type = DP_BOOL;
+        out_pkt->pkt_len++;
+        data_point->dp_len = (reverse16(1));
+        out_pkt->pkt_len++;
+        out_pkt->pkt_len++;
+
+        data_point->data[0] = DEV_FAN_CONTROL_OFF;
+        dev_fan_control = DEV_FAN_CONTROL_OFF;
+
+        out_pkt->pkt_len++;
+        data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+        add_cmd_queue(out_pkt, true);
+        set_seq_num(seq_num);
+
+    }
+
+    seq_num++;
+
+    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
+
+    out_pkt->len = reverse16(5);
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+    data_point_t *data_point = (data_point_t*)out_pkt->data;
+    data_point->dp_id = data_point_model[DP_IDX_FAN_MODE].id;
+    out_pkt->pkt_len++;
+    data_point->dp_type = data_point_model[DP_IDX_FAN_MODE].type;
+    out_pkt->pkt_len++;
+    data_point->dp_len = (reverse16(1));
+    out_pkt->pkt_len++;
+    out_pkt->pkt_len++;
+
+
+    switch(*mode) {
+        case FANMODE_LOW:
+            data_point->data[0] = DEV_FAN_MODE_LOW;
+            fan_mode_store = FANMODE_LOW;
+            break;
+        case FANMODE_MEDIUM:
+            data_point->data[0] = DEV_FAN_MODE_MIDDLE;
+            fan_mode_store = FANMODE_MEDIUM;
+            break;
+        case FANMODE_HIGH:
+            data_point->data[0] = DEV_FAN_MODE_HIGH;
+            fan_mode_store = FANMODE_HIGH;
+            break;
+        case FANMODE_AUTO:
+            data_point->data[0] = DEV_FAN_MODE_AUTO;
+            fan_mode_store = FANMODE_AUTO;
+            break;
+        case FANMODE_SMART:
+            data_point->dp_id = data_point_model[DP_IDX_FAN_CONTROL].id;
+            data_point->dp_type = data_point_model[DP_IDX_FAN_CONTROL].type;
+            data_point->data[0] = DEV_FAN_CONTROL_ON;
+            dev_fan_control = DEV_FAN_CONTROL_ON;
+            break;
+        default:
+            return;
+            break;
+    }
+
+    out_pkt->pkt_len++;
+    data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+    add_cmd_queue(out_pkt, true);
+    set_seq_num(seq_num);
+
+    thermostat_settings_save();
+}

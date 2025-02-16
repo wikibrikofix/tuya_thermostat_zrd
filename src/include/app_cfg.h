@@ -201,6 +201,7 @@ extern "C" {
 #define ZCL_LEVEL_CTRL_SUPPORT                      ON
 #define ZCL_THERMOSTAT_SUPPORT                      ON
 #define ZCL_THERMOSTAT_UI_CFG_SUPPORT               ON
+#define ZCL_FANCONTROL_SUPPORT                      ON
 #define ZCL_TIME_SUPPORT                            ON
 #if TOUCHLINK_SUPPORT
 #define ZCL_ZLL_COMMISSIONING_SUPPORT               ON
