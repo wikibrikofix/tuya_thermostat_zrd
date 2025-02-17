@@ -29,10 +29,17 @@ data_point_st_t data_point_model2[DP_IDX_MAXNUM] = {
         {DP_TYPE2_ID_6A, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_2},                        // schedule fri
         {DP_TYPE2_ID_69, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_2},                        // schedule sat
         {DP_TYPE2_ID_65, DP_RAW,  0x11, 10, NULL, local_cmd_set_schedule_2},                        // schedule sun
-        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
 };
 
 /*

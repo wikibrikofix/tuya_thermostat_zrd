@@ -126,7 +126,7 @@ typedef enum {
 /* data point for manufacturer id -
  * "5toc8efa"
  *
- * type6 (model5)
+ * type5 (model5)
  */
 #define DP_TYPE5_ID_00 DP_TYPE2_ID_00
 #define DP_TYPE5_ID_01 DP_TYPE2_ID_01
@@ -179,6 +179,38 @@ typedef enum {
     DP_TYPE6_ID_6F    = 0x6F,     // inversion of output
 } data_point_id_type6_t;
 
+/* data point for manufacturer id -
+ * "mpbki2zm"
+ *
+ * type7 (model7)
+*/
+typedef enum {
+    DP_TYPE7_ID_00    = 0x00,     // 0 - not support
+    DP_TYPE7_ID_01    = 0x01,     // on off
+    DP_TYPE7_ID_02    = 0x02,     // thermostat local mode (cold, heat, fan)
+    DP_TYPE7_ID_04    = 0x04,     // eco mode
+    DP_TYPE7_ID_10    = 0x10,     // heat setpoint
+    DP_TYPE7_ID_13    = 0x13,     // max heat
+    DP_TYPE7_ID_18    = 0x18,     // local temperature
+    DP_TYPE7_ID_1A    = 0x1A,     // min heat
+    DP_TYPE7_ID_1B    = 0x1B,     // calibration
+    DP_TYPE7_ID_1C    = 0x1C,     // fan mode 0x00 - low, 0x01 - mid, 0x02 - high, 0x03 - auto
+    DP_TYPE7_ID_24    = 0x24,     // 0x00 - valve open, 0x01 - valve close
+    DP_TYPE7_ID_28    = 0x28,     // lock / unlock keys
+    DP_TYPE7_ID_65    = 0x65,     // manual / programming
+    DP_TYPE7_ID_66    = 0x66,     // fan control 0x00 - off, 0x01 - on
+    DP_TYPE7_ID_67    = 0x67,     // hysteresis
+    DP_TYPE7_ID_68    = 0x68,     // eco mode's cool temperature
+    DP_TYPE7_ID_69    = 0x69,     // eco mode's heat temperature
+    DP_TYPE7_ID_6A    = 0x6A,     // schedule sun
+    DP_TYPE7_ID_6B    = 0x6B,     // schedule sat
+    DP_TYPE7_ID_6C    = 0x6C,     // schedule fri
+    DP_TYPE7_ID_6D    = 0x6D,     // schedule thu
+    DP_TYPE7_ID_6E    = 0x6E,     // schedule wed
+    DP_TYPE7_ID_6F    = 0x6F,     // schedule tue
+    DP_TYPE7_ID_70    = 0x70,     // schedule mon
+} data_point_id_type7_t;
+
 typedef enum {
     MANUF_NAME_1 = 0,
     MANUF_NAME_2,
@@ -186,6 +218,7 @@ typedef enum {
     MANUF_NAME_4,
     MANUF_NAME_5,
     MANUF_NAME_6,
+    MANUF_NAME_7,
     MANUF_NAME_MAX
 } manuf_name_t;
 
@@ -216,10 +249,14 @@ typedef enum {
     DP_IDX_LEVEL_A,
     DP_IDX_LEVEL_B,
     DP_IDX_ECO_MODE,
-    DP_IDX_ECO_TEMP,
+    DP_IDX_ECO_HEAT_TEMP,
+    DP_IDX_ECO_COOL_TEMP,
     DP_IDX_SOUND,
     DP_IDX_SETTINGS_RESET,
     DP_IDX_INVERSION,
+    DP_IDX_THERM_MODE,
+    DP_IDX_FAN_MODE,
+    DP_IDX_FAN_CONTROL,
     DP_IDX_MAXNUM
 } data_point_idx_t;
 

@@ -16,6 +16,7 @@
 #include "zcl_app_thermostat.h"
 #include "app_thermostat.h"
 #include "zcl_thermostat_ui_cfg.h"
+#include "zcl_app_fancontrol.h"
 #include "app_time.h"
 #include "app_bootloader.h"
 
@@ -81,6 +82,7 @@ status_t app_sceneCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdP
 status_t app_pollCtrlCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload);
 status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload);
 status_t app_thermostat_uicCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload);
+status_t app_fancontrolCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload);
 status_t app_timeCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload);
 status_t app_displayLevelCb(zclIncomingAddrInfo_t *pAddrInfo, u8 cmdId, void *cmdPayload);
 
@@ -90,7 +92,8 @@ status_t app_displayLevelCb(zclIncomingAddrInfo_t *pAddrInfo, u8 cmdId, void *cm
 #define zcl_onoff2AttrGet()         &g_zcl_onOff2Attrs
 #define zcl_levelAttrGet()          &g_zcl_levelAttrs
 #define zcl_colorAttrGet()          &g_zcl_colorCtrlAttrs
-#define zcl_thermostatAttrGet()    &g_zcl_thermostatAttrs
+#define zcl_thermostatAttrGet()     &g_zcl_thermostatAttrs
+#define zcl_fancontrolAttrGet()     &g_zcl_fancontrolAttrs
 
 void app_leaveCnfHandler(nlme_leave_cnf_t *pLeaveCnf);
 void app_leaveIndHandler(nlme_leave_ind_t *pLeaveInd);

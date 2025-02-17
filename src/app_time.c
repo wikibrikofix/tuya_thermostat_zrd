@@ -1,6 +1,7 @@
 #include "app_main.h"
 
 static bool time_sent = false;
+uint8_t str_time[32] = {0};
 
 void get_time(uint32_t *utc_time, uint32_t *local_time) {
 
@@ -98,4 +99,41 @@ void set_time_sent() {
 bool get_time_sent() {
 
     return time_sent;
+}
+
+void print_time() {
+    ftime_t ftime;
+    uint32_t ace;
+    uint8_t b;
+    uint8_t d;
+    uint8_t m;
+
+    uint16_t attr_len;
+    uint32_t counter;
+
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_TIME, ZCL_ATTRID_LOCAL_TIME, &attr_len, (uint8_t*)&counter);
+
+    if (counter != 0xFFFFFFFF) {
+        ace = (counter / 86400) + 32044 + JD0;
+        b = (4 * ace + 3) / 146097; // может ли произойти потеря точности из-за переполнения 4*ace ??
+        ace = ace - ((146097 * b) / 4);
+        d = (4 * ace + 3) / 1461;
+        ace = ace - ((1461 * d) / 4);
+        m = (5 * ace + 2) / 153;
+        ftime.day = ace - ((153 * m + 2) / 5) + 1;
+        ftime.month = m + 3 - (12 * (m / 10));
+        ftime.year = 100 * b + d - 4800 + (m / 10);
+        ftime.hour = (counter / 3600) % 24;
+        ftime.minute = (counter / 60) % 60;
+        ftime.second = (counter % 60);
+#if UART_PRINTF_MODE
+        printf("[%d-%s%d-%s%d %s%d:%s%d:%s%d] ",
+                    ftime.year,
+                    ftime.month<10?"0":"", ftime.month,
+                    ftime.day<10?"0":"", ftime.day,
+                    ftime.hour<10?"0":"", ftime.hour,
+                    ftime.minute<10?"0":"", ftime.minute,
+                    ftime.second<10?"0":"", ftime.second);
+#endif
+    }
 }

@@ -70,11 +70,11 @@ extern "C" {
 #define USB_PRINTF_MODE         		OFF
 
 #define DEBUG_PKT                       ON
-#define DEBUG_PKT_FILTER                ON
+#define DEBUG_PKT_FILTER                OFF
 #define DEBUG_CMD                       OFF
 #define DEBUG_DP                        OFF
 #define DEBUG_TIME                      OFF
-#define DEBUG_SAVE                      ON
+#define DEBUG_SAVE                      OFF
 #define DEBUG_SCHEDULE                  OFF
 #define DEBUG_PM                        OFF
 #define DEBUG_REPORTING                 OFF
@@ -201,6 +201,7 @@ extern "C" {
 #define ZCL_LEVEL_CTRL_SUPPORT                      ON
 #define ZCL_THERMOSTAT_SUPPORT                      ON
 #define ZCL_THERMOSTAT_UI_CFG_SUPPORT               ON
+#define ZCL_FANCONTROL_SUPPORT                      ON
 #define ZCL_TIME_SUPPORT                            ON
 #if TOUCHLINK_SUPPORT
 #define ZCL_ZLL_COMMISSIONING_SUPPORT               ON

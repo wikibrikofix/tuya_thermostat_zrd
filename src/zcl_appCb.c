@@ -253,10 +253,14 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 uint8_t eco_mode = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_ECO_MODE].remote_cmd)
                     data_point_model[DP_IDX_ECO_MODE].remote_cmd(&eco_mode);
-            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_TEMPERATURE) {
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_HEAT_TEMPERATURE) {
                 uint16_t temp = BUILD_S16(attr[i].attrData[0], attr[i].attrData[1]);
-                if (data_point_model[DP_IDX_ECO_TEMP].remote_cmd)
-                    data_point_model[DP_IDX_ECO_TEMP].remote_cmd(&temp);
+                if (data_point_model[DP_IDX_ECO_HEAT_TEMP].remote_cmd)
+                    data_point_model[DP_IDX_ECO_HEAT_TEMP].remote_cmd(&temp);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_COOL_TEMPERATURE) {
+                uint16_t temp = BUILD_S16(attr[i].attrData[0], attr[i].attrData[1]);
+                if (data_point_model[DP_IDX_ECO_COOL_TEMP].remote_cmd)
+                    data_point_model[DP_IDX_ECO_COOL_TEMP].remote_cmd(&temp);
             } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT_ONOFF) {
                 uint8_t frost = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_FROST_PROTECT].remote_cmd)
@@ -281,6 +285,21 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 uint8_t sreset = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_SETTINGS_RESET].remote_cmd)
                     data_point_model[DP_IDX_SETTINGS_RESET].remote_cmd(&sreset);
+            }
+        }
+    }
+
+
+    if (clusterId == ZCL_CLUSTER_HAVC_FAN_CONTROL) {
+        for (uint32_t i = 0; i < numAttr; i++) {
+            if (attr[i].attrID == ZCL_ATTRID_HVAC_FANCONTROL_FANMODE) {
+                uint8_t mode = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_FAN_MODE].remote_cmd)
+                    data_point_model[DP_IDX_FAN_MODE].remote_cmd(&mode);
+            } else if (attr[i].attrID == ZCL_ATTRID_HVAC_FANCONTROL_CUSTOM_CONTROL) {
+                uint8_t control = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_FAN_CONTROL].remote_cmd)
+                    data_point_model[DP_IDX_FAN_CONTROL].remote_cmd(&control);
             }
         }
     }
@@ -1171,6 +1190,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                     case MANUF_NAME_3:
                     case MANUF_NAME_4:
                     case MANUF_NAME_5:
+                    case MANUF_NAME_7:
                         for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
                             if (i == 4) {
                                 break;
@@ -1315,6 +1335,19 @@ status_t app_thermostat_uicCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, v
 }
 
 #endif /* ZCL_THERMOSTAT */
+
+#ifdef ZCL_FANCONTROL
+
+status_t app_fancontrolCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload) {
+
+    printf("app_thermostatCb().\r\n");
+
+    status_t status = ZCL_STA_SUCCESS;
+
+    return status;
+}
+
+#endif /* ZCL_FANCONTROL */
 
 /*********************************************************************
  * @fn      app_timeCb

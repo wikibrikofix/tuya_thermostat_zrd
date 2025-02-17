@@ -33,9 +33,13 @@ data_point_st_t data_point_model6[DP_IDX_MAXNUM] = {
         {DP_TYPE6_ID_00, DP_RAW,  0,    0,  NULL, NULL},
         {DP_TYPE6_ID_00, DP_RAW,  0,    0,  NULL, NULL},
         {DP_TYPE6_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE6_ID_00, DP_RAW,  0,    0,  NULL, NULL},
         {DP_TYPE6_ID_69, DP_BOOL, 1,    1,  remote_cmd_sound_6, local_cmd_sound_6},                 // sound on-off
         {DP_TYPE6_ID_67, DP_BOOL, 1,    1,  remote_cmd_setting_reset_6, local_cmd_setting_reset_6}, // settings reset
         {DP_TYPE6_ID_6F, DP_BOOL, 1,    1,  remote_cmd_inversion_6, local_cmd_inversion_6},         // inversion of output
+        {DP_TYPE6_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE6_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+        {DP_TYPE6_ID_00, DP_RAW,  0,    0,  NULL, NULL},
 };
 
 #define DP_IDX_SCHEDULE_MODE DP_IDX_SCHEDULE_MON

@@ -96,7 +96,8 @@ typedef struct {
     int16_t     heatProtect;
     uint8_t     dead_band;                      // 1 ... 5 °C
     uint8_t     ecoMode;                        // 1 - ecoMode on, 0 - ecoMode off
-    int16_t     ecoModeTemperature;             // 20°C * 100
+    int16_t     ecoModeHeatTemperature;         // 20°C * 100
+    int16_t     ecoModeCoolTemperature;         // 20°C * 100
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off
     uint8_t     sound;                          // 0 - off, 1 - on
@@ -106,6 +107,15 @@ typedef struct {
     uint8_t     inversion;                      // 0 - off, 1 - on
     uint8_t     frost_protect_onoff;            // 0 - off, 1 - on
 } zcl_thermostatAttr_t;
+
+/**
+ *  @brief Defined for Thermostat and HVAC UI CFG clusters attributes
+ */
+typedef struct {
+    uint8_t fanMode;
+    uint8_t fanModeSequence;
+    uint8_t fanControl;
+} zcl_fancontrolAttr_t;
 
 extern uint8_t APP_EP1_CB_CLUSTER_NUM;
 extern uint8_t APP_EP2_CB_CLUSTER_NUM;
