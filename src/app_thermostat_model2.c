@@ -37,6 +37,9 @@ data_point_st_t data_point_model2[DP_IDX_MAXNUM] = {
         {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
         {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
         {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
+        {DP_TYPE2_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            //
 };
 
 /*

@@ -557,10 +557,6 @@ static void print_setting_sr(nv_sts_t st, thermostat_settings_t *thermostat_sett
 nv_sts_t thermostat_settings_save() {
     nv_sts_t st = NV_SUCC;
 
-#if UART_PRINTF_MODE
-    printf("Saved settings\r\n");
-#endif
-
 #ifdef ZCL_THERMOSTAT
 #if NV_ENABLE
 
@@ -708,22 +704,26 @@ nv_sts_t thermostat_settings_save() {
         if (thermostat_settings.dev_therm_mode != dev_therm_mode) {
             thermostat_settings.dev_therm_mode = dev_therm_mode;
             save = true;
-            printf("dev_therm_mode changed: 0x%x\r\n", dev_therm_mode);
+//            printf("dev_therm_mode changed: 0x%x\r\n", dev_therm_mode);
         }
 
         if (thermostat_settings.fanMode != g_zcl_fancontrolAttrs.fanMode) {
             thermostat_settings.fanMode = g_zcl_fancontrolAttrs.fanMode;
             save = true;
-            printf("fanMode changed: 0x%x\r\n", thermostat_settings.fanMode);
+//            printf("fanMode changed: 0x%x\r\n", thermostat_settings.fanMode);
         }
 
         if (thermostat_settings.fanControl != g_zcl_fancontrolAttrs.fanControl) {
             thermostat_settings.fanControl = g_zcl_fancontrolAttrs.fanControl;
             save = true;
-            printf("fanControl changed: 0x%x\r\n", thermostat_settings.fanControl);
+//            printf("fanControl changed: 0x%x\r\n", thermostat_settings.fanControl);
         }
 
         if (save) {
+
+#if UART_PRINTF_MODE
+            printf("Saved settings\r\n");
+#endif
 
             thermostat_settings.localTemperature = g_zcl_thermostatAttrs.localTemperature;
 
@@ -780,10 +780,6 @@ nv_sts_t thermostat_settings_save() {
 nv_sts_t thermostat_settings_restore() {
     nv_sts_t st = NV_SUCC;
 
-#if UART_PRINTF_MODE
-    printf("Restored settings\r\n");
-#endif
-
     #ifdef ZCL_THERMOSTAT
 #if NV_ENABLE
 
@@ -792,6 +788,10 @@ nv_sts_t thermostat_settings_restore() {
     st = nv_flashReadNew(1, NV_MODULE_APP,  NV_ITEM_APP_USER_CFG, sizeof(thermostat_settings_t), (uint8_t*)&thermostat_settings);
 
     if (st == NV_SUCC && thermostat_settings.crc == checksum((uint8_t*)&thermostat_settings, sizeof(thermostat_settings_t)-1)) {
+
+#if UART_PRINTF_MODE
+        printf("Restored settings\r\n");
+#endif
 
         memcpy(&g_zcl_scheduleData, &thermostat_settings.schedule_data, sizeof(zcl_scheduleData_t));
 
