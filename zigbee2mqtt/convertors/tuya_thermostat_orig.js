@@ -8,9 +8,8 @@ const definition = {
                   {modelID: 'TS0601', manufacturerName: '_TZE204_tagezcph'},
                   {modelID: 'TS0601', manufacturerName: '_TZE204_xyugziqv'},
                   {modelID: 'TS0601', manufacturerName: '_TZE204_5toc8efa'},
-                  {modelID: 'TS0601', manufacturerName: '_TZE204_lzriup1j'}
-                  
-                  
+                  {modelID: 'TS0601', manufacturerName: '_TZE204_lzriup1j'},
+                  {modelID: 'TS0601', manufacturerName: '_TZE204_mpbki2zm'}
                  ],
     zigbeeModel: ['TS0601'],
     model: 'Original Tuya thermostat ready for update',
