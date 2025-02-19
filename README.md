@@ -40,6 +40,8 @@
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/about_ieee.jpg"/>
 
+**Если начало IEEE отличается от указанного, то в термостате применен другой чип в Zigbee модуле, и про обновление можно забыть.**
+
 Проверялся только в zigbee2mqtt.
 
 ## Зачем. 
