@@ -34,7 +34,7 @@
 
 **Теоретически прошивку можно адаптировать для любого термостата у которого IEEE начинается на**
 
-** `A4 C1 38`**
+**`A4 C1 38`**
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/device_ieee.jpg"/>
 
