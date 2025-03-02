@@ -13,11 +13,15 @@ static status_net_t status_net = STATUS_NET_UNKNOWN;
 static uint8_t      no_answer = false;
 static uint8_t      factory_reset_cnt = 0;
 static uint8_t      factory_reset_status = 0;
+
 static ev_timer_event_t *factory_resetTimerEvt = NULL;
 static ev_timer_event_t *check_answerTimerEvt = NULL;
 static ev_timer_event_t *check_answerMcuTimerEvt = NULL;
 
 cmd_queue_t cmd_queue = {0};
+
+temp_schedule_model8_t temp_schedule;
+
 
 uint8_t checksum(uint8_t *data, uint16_t length) {
 
@@ -169,10 +173,17 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             add_cmd_queue(out_pkt, false);
             break;
         case COMMAND04:
-            break;
         case COMMAND05:
-            break;
         case COMMAND06:
+            break;
+        case COMMAND20:
+            out_pkt->len = reverse16(1);
+            out_pkt->pkt_len++;
+            out_pkt->pkt_len++;
+            out_pkt->data[0] = status_net;
+            out_pkt->pkt_len++;
+            out_pkt->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+            add_cmd_queue(out_pkt, false);
             break;
         case COMMAND24:
             out_pkt->len = reverse16(8);
@@ -306,8 +317,11 @@ void uart_cmd_handler() {
 
         first_start = false;
 
+        memset(&schedule_model8, 0, sizeof(schedule_model8));
+
         //only for test!!!
 //        set_command(COMMANDXX, seq_num, true);
+    } else {
     }
 
     if (cmd_queue.not_need_confirm) {
@@ -442,7 +456,7 @@ void uart_cmd_handler() {
 
                                         if (manuf_name == MANUF_NAME_MAX) {
     #if UART_PRINTF_MODE
-                                            printf("Known Tuya signature not found. Use default\r\n");
+                                            printf("Unknown Tuya signature: \"%s\". Use default\r\n", ptr);
     #endif
                                             manuf_name = MANUF_NAME_1;
 
@@ -471,6 +485,16 @@ void uart_cmd_handler() {
 
                                         if (manuf_name == MANUF_NAME_5 || manuf_name == MANUF_NAME_6) {
                                             set_command(COMMAND28, seq_num, true);
+                                        }
+
+                                        if (manuf_name == MANUF_NAME_8) {
+//                                            int16_t  minHeatSet = 500;
+//                                            int16_t  maxHeatSet = 9900;
+//
+//                                            zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*)&minHeatSet);
+//                                            zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)&maxHeatSet);
+
+                                            check_schedule8TimerEvt = TL_ZB_TIMER_SCHEDULE(check_schedule8Cb, NULL, TIMEOUT_650MS);
                                         }
 
                                         break;
@@ -610,6 +634,8 @@ void uart_cmd_handler() {
 //                    TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_3SEC);
 //                } else if (pkt->command == COMMAND02) {
 //                    printf("input COMMAND02\r\n");
+                } else if (pkt->command == COMMAND20) {
+                    set_command(pkt->command, pkt->seq_num, false);
                 } else if (pkt->command == COMMAND24) {
 #if UART_PRINTF_MODE
                     printf("command 0x24. Sync Time\r\n");
@@ -950,11 +976,18 @@ void uart_cmd_handler() {
 #if UART_PRINTF_MODE && DEBUG_DP
                             printf("DP Schedule Mon\r\n");
 #endif
+                            uint8_t mode;
                             if (manuf_name == MANUF_NAME_6) {
                                 /* schedule mode */
-                                uint8_t mode = data_point->data[0];
+                                mode = data_point->data[0];
                                 if (data_point_model[DP_IDX_SCHEDULE_MON].local_cmd)
                                     data_point_model[DP_IDX_SCHEDULE_MON].local_cmd(&mode);
+                            } else if (manuf_name == MANUF_NAME_8) {
+                                /* schedule mode */
+                                mode = data_point->data[0];
+                                memset(&temp_schedule, 0, sizeof(temp_schedule));
+                                temp_schedule.week_day = mode;
+                                printf("DP_IDX_SCHEDULE_MON. week day: %d\r\n", mode);
                             } else {
                                 schedule_args_model2_t schedule_args = {
                                         .data_point = data_point,
@@ -973,31 +1006,40 @@ void uart_cmd_handler() {
 #if UART_PRINTF_MODE && DEBUG_DP
                             printf("DP Schedule Tue\r\n");
 #endif
-                            schedule_args_model2_t schedule_args = {
-                                    .data_point = data_point,
-                                    .idx = DP_IDX_SCHEDULE_TUE,
-                                    .heatMode = g_zcl_scheduleData.schedule_tue,
-                                    .w_day = DAY_TUE
-                            };
+                            if (manuf_name == MANUF_NAME_8) {
+                                temp_schedule.hour = int32_from_str(data_point->data);
+                                printf("DP_IDX_SCHEDULE_TUE. hour: %d\r\n", temp_schedule.hour);
+                            } else {
+                                schedule_args_model2_t schedule_args = {
+                                        .data_point = data_point,
+                                        .idx = DP_IDX_SCHEDULE_TUE,
+                                        .heatMode = g_zcl_scheduleData.schedule_tue,
+                                        .w_day = DAY_TUE
+                                };
 
-                            if (data_point_model[DP_IDX_SCHEDULE_TUE].local_cmd)
-                                data_point_model[DP_IDX_SCHEDULE_TUE].local_cmd(&schedule_args);
-
+                                if (data_point_model[DP_IDX_SCHEDULE_TUE].local_cmd)
+                                    data_point_model[DP_IDX_SCHEDULE_TUE].local_cmd(&schedule_args);
+                            }
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_WED].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_WED].type) {
 
 #if UART_PRINTF_MODE && DEBUG_DP
                             printf("DP Schedule Wed\r\n");
 #endif
-                            schedule_args_model2_t schedule_args = {
-                                    .data_point = data_point,
-                                    .idx = DP_IDX_SCHEDULE_WED,
-                                    .heatMode = g_zcl_scheduleData.schedule_wed,
-                                    .w_day = DAY_WED
-                            };
+                            if (manuf_name == MANUF_NAME_8) {
+                                temp_schedule.minute = int32_from_str(data_point->data);
+                                printf("DP_IDX_SCHEDULE_WED. minute: %d\r\n", temp_schedule.minute);
+                            } else {
+                                schedule_args_model2_t schedule_args = {
+                                        .data_point = data_point,
+                                        .idx = DP_IDX_SCHEDULE_WED,
+                                        .heatMode = g_zcl_scheduleData.schedule_wed,
+                                        .w_day = DAY_WED
+                                };
 
-                            if (data_point_model[DP_IDX_SCHEDULE_WED].local_cmd)
-                                data_point_model[DP_IDX_SCHEDULE_WED].local_cmd(&schedule_args);
+                                if (data_point_model[DP_IDX_SCHEDULE_WED].local_cmd)
+                                    data_point_model[DP_IDX_SCHEDULE_WED].local_cmd(&schedule_args);
+                            }
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_THU].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_THU].type) {
@@ -1005,15 +1047,20 @@ void uart_cmd_handler() {
 #if UART_PRINTF_MODE && DEBUG_DP
                             printf("DP Schedule Thu\r\n");
 #endif
-                            schedule_args_model2_t schedule_args = {
-                                    .data_point = data_point,
-                                    .idx = DP_IDX_SCHEDULE_THU,
-                                    .heatMode = g_zcl_scheduleData.schedule_thu,
-                                    .w_day = DAY_THU
-                            };
+                            if (manuf_name == MANUF_NAME_8) {
+                                temp_schedule.temperature = int32_from_str(data_point->data);
+                                printf("DP_IDX_SCHEDULE_THU. temperature: %d\r\n", temp_schedule.temperature);
+                            } else {
+                                schedule_args_model2_t schedule_args = {
+                                        .data_point = data_point,
+                                        .idx = DP_IDX_SCHEDULE_THU,
+                                        .heatMode = g_zcl_scheduleData.schedule_thu,
+                                        .w_day = DAY_THU
+                                };
 
-                            if (data_point_model[DP_IDX_SCHEDULE_THU].local_cmd)
-                                data_point_model[DP_IDX_SCHEDULE_THU].local_cmd(&schedule_args);
+                                if (data_point_model[DP_IDX_SCHEDULE_THU].local_cmd)
+                                    data_point_model[DP_IDX_SCHEDULE_THU].local_cmd(&schedule_args);
+                            }
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_FRI].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_FRI].type) {
@@ -1021,15 +1068,22 @@ void uart_cmd_handler() {
 #if UART_PRINTF_MODE && DEBUG_DP
                             printf("DP Schedule Fri\r\n");
 #endif
-                            schedule_args_model2_t schedule_args = {
-                                    .data_point = data_point,
-                                    .idx = DP_IDX_SCHEDULE_FRI,
-                                    .heatMode = g_zcl_scheduleData.schedule_fri,
-                                    .w_day = DAY_FRI
-                            };
+                            if (manuf_name == MANUF_NAME_8) {
+                                temp_schedule.time_period = data_point->data[0];
+                                printf("DP_IDX_SCHEDULE_FRI. time_period: %d\r\n", temp_schedule.time_period);
+                                if (data_point_model[DP_IDX_SCHEDULE_FRI].local_cmd)
+                                    data_point_model[DP_IDX_SCHEDULE_FRI].local_cmd(&temp_schedule);
+                            } else {
+                                schedule_args_model2_t schedule_args = {
+                                        .data_point = data_point,
+                                        .idx = DP_IDX_SCHEDULE_FRI,
+                                        .heatMode = g_zcl_scheduleData.schedule_fri,
+                                        .w_day = DAY_FRI
+                                };
 
-                            if (data_point_model[DP_IDX_SCHEDULE_FRI].local_cmd)
-                                data_point_model[DP_IDX_SCHEDULE_FRI].local_cmd(&schedule_args);
+                                if (data_point_model[DP_IDX_SCHEDULE_FRI].local_cmd)
+                                    data_point_model[DP_IDX_SCHEDULE_FRI].local_cmd(&schedule_args);
+                            }
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SCHEDULE_SAT].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SCHEDULE_SAT].type) {

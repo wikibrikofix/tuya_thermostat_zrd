@@ -211,6 +211,38 @@ typedef enum {
     DP_TYPE7_ID_70    = 0x70,     // schedule mon
 } data_point_id_type7_t;
 
+/* data point for manufacturer id -
+ * "_TZE204_7rghpoxo"
+ *
+ * type8 (model8)
+*/
+typedef enum {
+    DP_TYPE8_ID_00    = 0x00,     // 0 - not support
+    DP_TYPE8_ID_01    = 0x01,     // on off
+    DP_TYPE8_ID_02    = 0x02,     // heat setpoint
+    DP_TYPE8_ID_03    = 0x03,     // local temperature
+    DP_TYPE8_ID_09    = 0x09,     // lock / unlock keys
+    DP_TYPE8_ID_0B    = 0x0B,     // ???
+    DP_TYPE8_ID_0F    = 0x0F,     // max heat
+    DP_TYPE8_ID_10    = 0x10,     // min heat
+    DP_TYPE8_ID_13    = 0x13,     // calibration
+    DP_TYPE8_ID_65    = 0x65,     // calibration of external senor
+    DP_TYPE8_ID_66    = 0x66,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE8_ID_67    = 0x67,     // sleep mode
+    DP_TYPE8_ID_68    = 0x68,     // manual 0 / programming 1
+    DP_TYPE8_ID_69    = 0x69,     // schedule workweek, sat, sun
+    DP_TYPE8_ID_6A    = 0x6A,     // set hour of schedule
+    DP_TYPE8_ID_6B    = 0x6B,     // set minutes of schedule
+    DP_TYPE8_ID_6C    = 0x6C,     // set temperature of schedule
+    DP_TYPE8_ID_6D    = 0x6D,     // time period of schedule (in quantity 6)
+} data_point_id_type8_t;
+
+typedef enum {
+    SCHEDULE8_MON = 0,
+    SCHEDULE8_SAT,
+    SCHEDULE8_SUN,
+} schedule8_day_t;
+
 typedef enum {
     MANUF_NAME_1 = 0,
     MANUF_NAME_2,
@@ -219,6 +251,7 @@ typedef enum {
     MANUF_NAME_5,
     MANUF_NAME_6,
     MANUF_NAME_7,
+    MANUF_NAME_8,
     MANUF_NAME_MAX
 } manuf_name_t;
 
@@ -257,6 +290,7 @@ typedef enum {
     DP_IDX_THERM_MODE,
     DP_IDX_FAN_MODE,
     DP_IDX_FAN_CONTROL,
+    DP_IDX_EXT_CALIBRATION,
     DP_IDX_MAXNUM
 } data_point_idx_t;
 
@@ -311,6 +345,36 @@ typedef struct {
 } dp_schedule_model2_t;
 
 typedef dp_schedule_model2_t dp_schedule_model6_t;
+
+enum {
+    SCHEDULE_BIT_MON = 0,
+    SCHEDULE_BIT_SAT,
+    SCHEDULE_BIT_SUN,
+};
+
+enum {
+    SCHEDULE_BIT_T1 = 0,
+    SCHEDULE_BIT_T2,
+    SCHEDULE_BIT_T3,
+    SCHEDULE_BIT_T4,
+    SCHEDULE_BIT_T5,
+    SCHEDULE_BIT_T6,
+    SCHEDULE_BIT_REQ,
+};
+
+typedef struct {
+    dp_schedule_model2_t schedule[6];
+} schedule_model8_t;
+
+typedef struct {
+    uint8_t     week_day;
+    uint8_t     time_period;
+    uint32_t    hour;
+    uint32_t    minute;
+    uint32_t    temperature;
+} temp_schedule_model8_t;
+
+extern schedule_model8_t schedule_model8[3];
 
 extern uint8_t manuf_name;
 extern data_point_st_t *data_point_model;

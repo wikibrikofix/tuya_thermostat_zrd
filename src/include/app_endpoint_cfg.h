@@ -106,6 +106,7 @@ typedef struct {
     uint8_t     level;                          // enum off, low, medium, high
     uint8_t     inversion;                      // 0 - off, 1 - on
     uint8_t     frost_protect_onoff;            // 0 - off, 1 - on
+    uint8_t     extTemperatureCalibration;      // -9°C ... +9°C
 } zcl_thermostatAttr_t;
 
 /**

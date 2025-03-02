@@ -20,6 +20,7 @@ $(OUT_PATH)/$(SRC_PATH)/app_thermostat_model4.o \
 $(OUT_PATH)/$(SRC_PATH)/app_thermostat_model5.o \
 $(OUT_PATH)/$(SRC_PATH)/app_thermostat_model6.o \
 $(OUT_PATH)/$(SRC_PATH)/app_thermostat_model7.o \
+$(OUT_PATH)/$(SRC_PATH)/app_thermostat_model8.o \
 $(OUT_PATH)/$(SRC_PATH)/app_endpoint_cfg.o \
 $(OUT_PATH)/$(SRC_PATH)/app_utility.o \
 $(OUT_PATH)/$(SRC_PATH)/app_time.o \

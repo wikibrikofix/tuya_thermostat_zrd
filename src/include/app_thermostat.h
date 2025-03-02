@@ -76,6 +76,7 @@ typedef struct __attribute__((packed)) {
     uint8_t     dev_therm_mode;                 // 0 - cool, 1 - heat, 2 - fan
     uint8_t     fanMode;
     uint8_t     fanControl;
+    uint8_t     extTemperatureCalibration;
     uint8_t     crc;
 } thermostat_settings_t;
 
@@ -107,13 +108,13 @@ extern data_point_st_t data_point_model4[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model5[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model6[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model7[DP_IDX_MAXNUM];
+extern data_point_st_t data_point_model8[DP_IDX_MAXNUM];
 extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
 extern uint8_t dev_therm_mode;
 
 extern void (*answer_weekly_schedule[MANUF_NAME_MAX])(void);
-
 /*
  * common functions remote_cmd
  */
@@ -286,6 +287,25 @@ void remote_cmd_eco_mode_cool_temp_7(void *args);
 void remote_cmd_fan_mode_7(void* args);
 void remote_cmd_fan_control_7(void *args);
 
+/*
+ *  remote_cmd for signarure
+ *  "7rghpoxo"
+ *
+ *  model8 - name_8
+ */
+#define remote_cmd_sys_mode_8           remote_cmd_sys_mode
+#define remote_cmd_heating_set_8        remote_cmd_heating_set
+#define remote_cmd_temp_calibration_8   remote_cmd_temp_calibration
+#define remote_cmd_keylock_8            remote_cmd_keylock
+#define remote_cmd_min_setpoint_8       remote_cmd_min_setpoint
+#define remote_cmd_max_setpoint_8       remote_cmd_max_setpoint
+#define remote_cmd_oper_mode_8          remote_cmd_oper_mode_1
+//#define remote_cmd_set_schedule_4       remote_cmd_set_schedule_2
+#define remote_cmd_eco_mode_8           remote_cmd_eco_mode_3
+
+void remote_cmd_ext_temp_calibration_8(void *args);
+void remote_cmd_get_schedule_8();
+void remote_cmd_set_schedule_8(void *args);
 /*
  * common functions local_cmd
  */
@@ -472,5 +492,29 @@ void local_cmd_therm_mode_7(void* args);
 void local_cmd_eco_mode_cool_temp_7(void *args);
 void local_cmd_fan_control_7(void* args);
 void local_cmd_fan_mode_7(void *args);
+
+/*
+ *  local_cmd for signarure
+ *  "7rghpoxo"
+ *
+ *  model8 - name_8
+ */
+#define local_cmd_inner_sensor_8        local_cmd_inner_sensor
+#define local_cmd_heating_set_8         local_cmd_heating_set
+#define local_cmd_temp_calibration_8    local_cmd_temp_calibration
+#define local_cmd_min_setpoint_8        local_cmd_min_setpoint
+#define local_cmd_max_setpoint_8        local_cmd_max_setpoint
+#define local_cmd_keylock_8             local_cmd_keylock
+#define local_cmd_set_run_state_8       local_cmd_set_run_state
+#define local_cmd_onoff_state_8         local_cmd_onoff_state
+#define local_cmd_oper_mode_8           local_cmd_oper_mode_1
+#define local_cmd_eco_mode_8            local_cmd_eco_mode_3
+
+void local_cmd_ext_temp_calibration_8(void *args);
+void local_cmd_set_period_8(void *args);
+//void check_schedule_8();
+
+extern ev_timer_event_t *check_schedule8TimerEvt;
+int32_t check_schedule8Cb(void *arg);
 
 #endif /* SRC_INCLUDE_APP_THERMOSTAT_H_ */
