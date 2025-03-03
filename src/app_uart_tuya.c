@@ -311,7 +311,6 @@ void uart_cmd_handler() {
     if (first_start) {
         reset_cmd_queue();
         set_command(COMMAND01, seq_num, true);
-        printf("set command first\r\n");
         data_point_model_init();
         check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, TIMEOUT_1MIN30SEC);
 
@@ -987,7 +986,7 @@ void uart_cmd_handler() {
                                 mode = data_point->data[0];
                                 memset(&temp_schedule, 0, sizeof(temp_schedule));
                                 temp_schedule.week_day = mode;
-                                printf("DP_IDX_SCHEDULE_MON. week day: %d\r\n", mode);
+//                                printf("DP_IDX_SCHEDULE_MON. week day: %d\r\n", mode);
                             } else {
                                 schedule_args_model2_t schedule_args = {
                                         .data_point = data_point,
@@ -1008,7 +1007,7 @@ void uart_cmd_handler() {
 #endif
                             if (manuf_name == MANUF_NAME_8) {
                                 temp_schedule.hour = int32_from_str(data_point->data);
-                                printf("DP_IDX_SCHEDULE_TUE. hour: %d\r\n", temp_schedule.hour);
+//                                printf("DP_IDX_SCHEDULE_TUE. hour: %d\r\n", temp_schedule.hour);
                             } else {
                                 schedule_args_model2_t schedule_args = {
                                         .data_point = data_point,
@@ -1028,7 +1027,7 @@ void uart_cmd_handler() {
 #endif
                             if (manuf_name == MANUF_NAME_8) {
                                 temp_schedule.minute = int32_from_str(data_point->data);
-                                printf("DP_IDX_SCHEDULE_WED. minute: %d\r\n", temp_schedule.minute);
+//                                printf("DP_IDX_SCHEDULE_WED. minute: %d\r\n", temp_schedule.minute);
                             } else {
                                 schedule_args_model2_t schedule_args = {
                                         .data_point = data_point,
@@ -1049,7 +1048,7 @@ void uart_cmd_handler() {
 #endif
                             if (manuf_name == MANUF_NAME_8) {
                                 temp_schedule.temperature = int32_from_str(data_point->data);
-                                printf("DP_IDX_SCHEDULE_THU. temperature: %d\r\n", temp_schedule.temperature);
+//                                printf("DP_IDX_SCHEDULE_THU. temperature: %d\r\n", temp_schedule.temperature);
                             } else {
                                 schedule_args_model2_t schedule_args = {
                                         .data_point = data_point,
@@ -1070,7 +1069,7 @@ void uart_cmd_handler() {
 #endif
                             if (manuf_name == MANUF_NAME_8) {
                                 temp_schedule.time_period = data_point->data[0];
-                                printf("DP_IDX_SCHEDULE_FRI. time_period: %d\r\n", temp_schedule.time_period);
+//                                printf("DP_IDX_SCHEDULE_FRI. time_period: %d\r\n", temp_schedule.time_period);
                                 if (data_point_model[DP_IDX_SCHEDULE_FRI].local_cmd)
                                     data_point_model[DP_IDX_SCHEDULE_FRI].local_cmd(&temp_schedule);
                             } else {

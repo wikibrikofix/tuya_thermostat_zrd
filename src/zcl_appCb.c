@@ -1380,7 +1380,7 @@ status_t app_thermostat_uicCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, v
 
 status_t app_fancontrolCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void *cmdPayload) {
 
-    printf("app_thermostatCb().\r\n");
+//    printf("app_thermostatCb().\r\n");
 
     status_t status = ZCL_STA_SUCCESS;
 

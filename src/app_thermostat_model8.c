@@ -421,7 +421,7 @@ static int32_t set_scheduleCb(void *args) {
 
         return 0;
     }
-    printf("exit from set_scheduleCb\r\n");
+//    printf("exit from set_scheduleCb\r\n");
 
     set_schedule8TimerEvt = NULL;
     return -1;
@@ -437,7 +437,7 @@ static int32_t set_scheduleCb(void *args) {
 
 int32_t check_schedule8Cb(void *arg) {
 
-    printf("read_schedule: %d\r\n", read_schedule);
+//    printf("read_schedule: %d\r\n", read_schedule);
 
     switch(read_schedule) {
         case READ_SCHEDULE_WW:
@@ -580,64 +580,64 @@ void local_cmd_set_period_8(void *args) {
 
     switch(temp_schedule->time_period) {
         case SCHEDULE_BIT_T1:
-            printf("SCHEDULE_BIT_T1\r\n");
+//            printf("SCHEDULE_BIT_T1\r\n");
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T1].hour = temp_schedule->hour;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T1].minute = temp_schedule->minute;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T1].temperature = temp_schedule->temperature;
 
-            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T1].hour);
-            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T1].minute);
-            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T1].temperature);
+//            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T1].hour);
+//            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T1].minute);
+//            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T1].temperature);
             break;
         case SCHEDULE_BIT_T2:
-            printf("SCHEDULE_BIT_T2\r\n");
+//            printf("SCHEDULE_BIT_T2\r\n");
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T2].hour = temp_schedule->hour;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T2].minute = temp_schedule->minute;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T2].temperature = temp_schedule->temperature;
 
-            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T2].hour);
-            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T2].minute);
-            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T2].temperature);
+//            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T2].hour);
+//            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T2].minute);
+//            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T2].temperature);
             break;
         case SCHEDULE_BIT_T3:
-            printf("SCHEDULE_BIT_T3\r\n");
+//            printf("SCHEDULE_BIT_T3\r\n");
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T3].hour = temp_schedule->hour;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T3].minute = temp_schedule->minute;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T3].temperature = temp_schedule->temperature;
 
-            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T3].hour);
-            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T3].minute);
-            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T3].temperature);
+//            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T3].hour);
+//            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T3].minute);
+//            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T3].temperature);
             break;
         case SCHEDULE_BIT_T4:
-            printf("SCHEDULE_BIT_T4\r\n");
+//            printf("SCHEDULE_BIT_T4\r\n");
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T4].hour = temp_schedule->hour;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T4].minute = temp_schedule->minute;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T4].temperature = temp_schedule->temperature;
 
-            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T4].hour);
-            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T4].minute);
-            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T4].temperature);
+//            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T4].hour);
+//            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T4].minute);
+//            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T4].temperature);
             break;
         case SCHEDULE_BIT_T5:
-            printf("SCHEDULE_BIT_T5\r\n");
+//            printf("SCHEDULE_BIT_T5\r\n");
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T5].hour = temp_schedule->hour;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T5].minute = temp_schedule->minute;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T5].temperature = temp_schedule->temperature;
 
-            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T5].hour);
-            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T5].minute);
-            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T5].temperature);
+//            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T5].hour);
+//            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T5].minute);
+//            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T5].temperature);
             break;
         case SCHEDULE_BIT_T6:
-            printf("SCHEDULE_BIT_T6\r\n");
+//            printf("SCHEDULE_BIT_T6\r\n");
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T6].hour = temp_schedule->hour;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T6].minute = temp_schedule->minute;
             schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T6].temperature = temp_schedule->temperature;
 
-            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T6].hour);
-            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T6].minute);
-            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T6].temperature);
+//            printf("hour:        %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T6].hour);
+//            printf("minute:      %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T6].minute);
+//            printf("temperature: %d\r\n", schedule_model8[temp_schedule->week_day].schedule[SCHEDULE_BIT_T6].temperature);
             break;
         default:
             return;
@@ -785,7 +785,7 @@ void remote_cmd_set_schedule_8(void *args) {
         }
     }
 
-    printf("size_schedule: %d\r\n", *size_schedule);
+//    printf("size_schedule: %d\r\n", *size_schedule);
 
     set_schedule8TimerEvt = TL_ZB_TIMER_SCHEDULE(set_scheduleCb, NULL, TIMEOUT_650MS);
 
