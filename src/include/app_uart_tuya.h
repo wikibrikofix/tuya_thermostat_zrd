@@ -16,6 +16,7 @@ typedef enum {
     COMMAND04,
     COMMAND05,
     COMMAND06,
+    COMMAND20   =   0x20,           /* Query module’s network status*/
     COMMAND24   =   0x24,           /* Sync time                    */
     COMMAND28   =   0x28,           /* Query DP data                */
     COMMANDXX   =   0xFF,           /* For test                     */
