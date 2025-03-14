@@ -48,20 +48,32 @@ typedef struct __attribute__((packed)) {
     uint16_t pkt_len;
 } pkt_tuya_t;
 
+//typedef struct {
+//    uint8_t    used;
+//    uint8_t    confirm_need;
+//    uint8_t    confirm_rec;
+//    pkt_tuya_t pkt;
+//} cmd_queue_cell_t;
+//
+//typedef struct {
+//    uint8_t need_confirm;                           // if there is a confirmation request
+//    uint8_t not_need_confirm;                       // if there is a request without confirmation
+//    cmd_queue_cell_t cmd_queue[CMD_QUEUE_CELL_MAX];
+//} cmd_queue_t;
+
 typedef struct {
-    uint8_t    used;
     uint8_t    confirm_need;
     uint8_t    confirm_rec;
     pkt_tuya_t pkt;
 } cmd_queue_cell_t;
 
 typedef struct {
-    uint8_t need_confirm;                           // if there is a confirmation request
-    uint8_t not_need_confirm;                       // if there is a request without confirmation
+    uint8_t cmd_num;
     cmd_queue_cell_t cmd_queue[CMD_QUEUE_CELL_MAX];
 } cmd_queue_t;
 
 extern bool first_start;
+extern char8_t signature[9];
 
 uint8_t checksum(uint8_t *data, uint16_t length);
 void uart_cmd_handler();
