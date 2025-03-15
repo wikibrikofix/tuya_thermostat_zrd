@@ -12,6 +12,7 @@ static status_net_t status_net = STATUS_NET_UNKNOWN;
 static uint8_t      no_answer = false;
 static uint8_t      factory_reset_cnt = 0;
 static uint8_t      factory_reset_status = 0;
+static uint32_t     uart_timeout = TIMEOUT_10SEC;
 
 static ev_timer_event_t *factory_resetTimerEvt = NULL;
 static ev_timer_event_t *check_answerTimerEvt = NULL;
@@ -439,6 +440,13 @@ void uart_cmd_handler() {
 
                                     if (manuf_name == MANUF_NAME_5 || manuf_name == MANUF_NAME_6) {
                                         set_command(COMMAND28, seq_num, true);
+                                        if (manuf_name == MANUF_NAME_5) {
+                                            if (check_answerMcuTimerEvt) {
+                                                TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                            }
+                                            uart_timeout = TIMEOUT_1MIN30SEC;
+                                            check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+                                        }
                                     }
 
                                     if (manuf_name == MANUF_NAME_8) {
@@ -555,7 +563,7 @@ void uart_cmd_handler() {
             if (check_answerMcuTimerEvt) {
                 TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
             }
-            check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, TIMEOUT_1MIN30SEC);
+            check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
 
             pkt->pkt_len = load_size;
             uint8_t crc = checksum((uint8_t*)pkt, pkt->pkt_len-1);
@@ -573,6 +581,8 @@ void uart_cmd_handler() {
                         factory_reset_cnt++;
                         factory_reset_status = 1;
                         factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(factory_resetCb, NULL, TIMEOUT_3SEC);
+                        set_command(pkt->command, pkt->seq_num, false);
+                        set_status_net(STATUS_NET_FREE);
                     } else {
                         printf("FN2\r\n");
                         if (factory_resetTimerEvt && factory_reset_status == 1) {
@@ -581,10 +591,8 @@ void uart_cmd_handler() {
                         if (factory_reset_status == 1) {
                             factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(factory_resetCb, NULL, TIMEOUT_3SEC);
                         }
+                        set_command(pkt->command, pkt->seq_num, false);
                     }
-                    set_command(pkt->command, pkt->seq_num, false);
-//                    zb_factoryReset();
-//                    TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_3SEC);
 //                } else if (pkt->command == COMMAND02) {
 //                    printf("input COMMAND02\r\n");
                 } else if (pkt->command == COMMAND20) {
@@ -1080,6 +1088,9 @@ void uart_cmd_handler() {
 #if (MODULE_WATCHDOG_ENABLE)
     drv_wd_clear();
 #endif
+
+//    printf("Stop WatchDog\r\n");
+//    while(1);
 
 }
 

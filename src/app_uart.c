@@ -178,10 +178,12 @@ static void app_uartRecvCb() {
 
         write_bytes_to_ring_buff(rec_buff.data, rec_buff.dma_len);
         if (manuf_name == MANUF_NAME_1) {
-            if (strcmp(signature, tuya_manuf_names[0][0]) == 0) {
+            if (strcmp(signature, tuya_manuf_names[0][1]) == 0) {
                 sleep_ms(10);
             }
         }
+    } else {
+        app_uart_reinit();
     }
 
 //    printf("st: 0x%x, rec_buff.dma_len: %d\r\n", st, rec_buff.dma_len);
@@ -193,11 +195,15 @@ static void app_uartRecvCb() {
 
 uartTx_err app_uart_txMsg(uint8_t *data, uint8_t len) {
 
+    uartTx_err st = UART_TX_FAILED;
+
     print_pkt_out(data, len);
 
-    if (drv_uart_tx_start(data, len)) return UART_TX_SUCCESS;
+    if (drv_uart_tx_start(data, len)) st =  UART_TX_SUCCESS;
 
-    return UART_TX_FAILED;
+    if (st == UART_TX_FAILED) app_uart_reinit();
+
+    return st;
 }
 
 void app_uart_init() {
