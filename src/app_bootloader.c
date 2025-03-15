@@ -2,23 +2,38 @@
 
 void bootloader_check() {
 
-    uint8_t marker[11] = BOOTLOAD_MARKER;
-    uint8_t buff[10] = {0};
-    uint8_t bootloader_buff[256] = {0};
+    uint8_t  marker[11] = BOOTLOAD_MARKER;
+    uint8_t  buff[10] = {0};
+    uint8_t  bootloader_buff[256] = {0};
     uint32_t bootloader_offset = 0;
     uint32_t bootloader_addr = BOOTLOADER_ADDR;
     uint32_t image_ota_addr = IMAGE_OTA_ADDR1;
 
+
     tl_header_t fw_header, boot_header;
 
-    flash_read_page(BOOTLOAD_MARKER_ADDR, marker[0], buff);
+    for (uint8_t i = 0; i < 5; i++) {
+        flash_read_page(BOOTLOAD_MARKER_ADDR, marker[0], buff);
 
-    if (memcmp(buff, marker+1, marker[0]) == 0) {
+        if (memcmp(buff, marker+1, marker[0]) == 0) {
 #if UART_PRINTF_MODE
-        printf("SDK bootloader\r\n");
+            printf("SDK bootloader\r\n");
 #endif
-        return;
+            return;
+        }
     }
+
+    for (uint8_t i = 0; i < 5; i++) {
+        flash_read_page(bootloader_addr, sizeof(tl_header_t), (uint8_t*)&boot_header);
+
+        if (boot_header.manuf_code == SLACKY_MANUF_CODE || boot_header.manuf_code == TELINK_MANUF_CODE) {
+    #if UART_PRINTF_MODE
+            printf("SDK bootloader\r\n");
+    #endif
+            return;
+        }
+    }
+
 
 #if UART_PRINTF_MODE
     printf("Tuya bootloader\r\n");
@@ -26,7 +41,7 @@ void bootloader_check() {
 
     flash_read_page(image_ota_addr, sizeof(tl_header_t), (uint8_t*)&fw_header);
 
-    if (fw_header.bin_size > 0x6F000 || memcmp(fw_header.magic, TL_MAGIC, 4) || fw_header.sig != TL_SIG) {
+    if (fw_header.bin_size > IMAGE_OTA_SIZE || memcmp(fw_header.magic, TL_MAGIC, 4) || fw_header.sig != TL_SIG) {
 #if UART_PRINTF_MODE
         printf("No fimware on address: 0x%x\r\n", image_ota_addr);
 #endif
@@ -34,7 +49,7 @@ void bootloader_check() {
 
         flash_read_page(image_ota_addr, sizeof(tl_header_t), (uint8_t*)&fw_header);
 
-        if (fw_header.bin_size > 0x6F000 || memcmp(fw_header.magic, TL_MAGIC, 4) || fw_header.sig != TL_SIG) {
+        if (fw_header.bin_size > IMAGE_OTA_SIZE || memcmp(fw_header.magic, TL_MAGIC, 4) || fw_header.sig != TL_SIG) {
 #if UART_PRINTF_MODE
             printf("No fimware on address: 0x%x\r\n", image_ota_addr);
 #endif
@@ -77,5 +92,12 @@ void bootloader_check() {
 #if UART_PRINTF_MODE
     printf("Bootloader is overwritten. Reset\r\n");
 #endif
+
+    uint32_t erase_size = IMAGE_OTA_ADDR_END - image_ota_addr;
+
+    for (uint32_t i = 0; i < erase_size; i += FLASH_SECTOR_SIZE) {
+        printf("erase_addr: 0x%x\r\n", image_ota_addr + i);
+        flash_erase(image_ota_addr + i);
+    }
     zb_resetDevice();
 }
