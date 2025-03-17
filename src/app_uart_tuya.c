@@ -456,6 +456,11 @@ void uart_cmd_handler() {
                                             check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
                                             break;
                                             case MANUF_NAME_8:
+                                                if (check_answerMcuTimerEvt) {
+                                                    TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                                }
+                                                uart_timeout = TIMEOUT_15SEC;
+                                                check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
 //                                                int16_t minHeatSet = 500;
 //                                                int16_t maxHeatSet = 9900;
 //
