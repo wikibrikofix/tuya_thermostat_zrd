@@ -283,6 +283,15 @@ void uart_cmd_handler() {
     pkt_tuya_t *pkt  = (pkt_tuya_t*)answer_buff;
     data_point_t *data_point = (data_point_t*)pkt->data;
 
+//    while (available_ring_buff()) {
+//        ch = read_byte_from_ring_buff();
+//        load_size++;
+//    }
+//
+//    if (load_size) printf("load_size: %d\r\n", load_size);
+//
+//    return;
+
     if (first_start) {
         set_command(COMMAND01, seq_num, true);
         data_point_model_init();

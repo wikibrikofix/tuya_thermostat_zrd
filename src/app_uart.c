@@ -211,6 +211,8 @@ void app_uart_init() {
     flush_ring_buff();
     drv_uart_pin_set(GPIO_UART_TX, GPIO_UART_RX);
 
+    uart_baudrate = 115200;
+
     drv_uart_init(uart_baudrate, (uint8_t*)&rec_buff, sizeof(uart_data_t), app_uartRecvCb);
 
 //    printf("uart_baudrate: %d\r\n", uart_baudrate);

@@ -4,6 +4,8 @@
 
 void bootloader_check() {
 
+    return;
+
     uint8_t  marker[11] = BOOTLOAD_MARKER;
     uint8_t  buff[10] = {0};
     uint8_t  bootloader_buff[BUFF_SIZE] = {0};

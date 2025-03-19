@@ -139,11 +139,14 @@ void user_app_init(void)
 
 void app_task(void) {
 
+    printf("enter app_task\r\n");
+
     uart_cmd_handler();
 
     if(bdb_isIdle()) {
         report_handler();
     }
+    printf("exit app_task\r\n");
 }
 
 extern volatile uint16_t T_evtExcept[4];
