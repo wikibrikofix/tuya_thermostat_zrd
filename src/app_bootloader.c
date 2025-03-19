@@ -75,6 +75,8 @@ void bootloader_check() {
 
     bootloader_offset = image_ota_addr + fw_header.bin_size;
 
+    uint8_t read_buff[BUFF_SIZE];
+
     for (uint32_t i = 0; i < boot_header.bin_size; i += BUFF_SIZE) {
         if (i % FLASH_SECTOR_SIZE == 0) {
 //            printf("erase_addr: 0x%x\r\n", i);
@@ -85,6 +87,11 @@ void bootloader_check() {
 //        printf("write_addr: 0x%x\r\n", bootloader_addr+i);
         flash_write(bootloader_addr+i, BUFF_SIZE, bootloader_buff);
 
+        flash_read_page(bootloader_addr+i, BUFF_SIZE, read_buff);
+
+        if(memcmp(read_buff, bootloader_buff, BUFF_SIZE)){
+            SYSTEM_RESET();
+        }
     }
 
     for (uint8_t i = 0; i < 10; i++) {
@@ -110,8 +117,8 @@ void bootloader_check() {
     uint32_t erase_size = IMAGE_OTA_ADDR_END - image_ota_addr;
 
     for (uint32_t i = 0; i < erase_size; i += FLASH_SECTOR_SIZE) {
-        printf("erase_addr: 0x%x\r\n", image_ota_addr + i);
+//        printf("erase_addr: 0x%x\r\n", image_ota_addr + i);
         flash_erase(image_ota_addr + i);
     }
-    zb_resetDevice();
+    SYSTEM_RESET();
 }
