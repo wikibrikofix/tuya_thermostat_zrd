@@ -292,6 +292,8 @@ void uart_cmd_handler() {
 //
 //    return;
 
+//    printf("in\r\n");
+
     if (first_start) {
         set_command(COMMAND01, seq_num, true);
         data_point_model_init();
@@ -1117,6 +1119,8 @@ void uart_cmd_handler() {
 #if (MODULE_WATCHDOG_ENABLE)
     drv_wd_clear();
 #endif
+
+//    printf("out\r\n");
 
 //    printf("Stop WatchDog\r\n");
 //    while(1);
