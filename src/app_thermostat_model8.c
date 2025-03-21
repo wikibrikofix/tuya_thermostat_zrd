@@ -239,7 +239,7 @@ static void set_week_day(uint8_t day) {
     data_point->data[0] = day;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -269,7 +269,7 @@ static void set_time_period(uint8_t period) {
     data_point->data[0] = period;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -302,7 +302,7 @@ static void set_hour(uint32_t hour) {
     data_point->data[3] = hour & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 }
@@ -333,7 +333,7 @@ static void set_minute(uint32_t minute) {
     data_point->data[3] = minute & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 }
@@ -364,7 +364,7 @@ static void set_temperature(uint32_t temperature) {
     data_point->data[3] = temperature & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 }
@@ -701,7 +701,7 @@ void remote_cmd_ext_temp_calibration_8(void *args) {
     data_point->data[3] = dev_temp & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 

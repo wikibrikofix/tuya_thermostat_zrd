@@ -93,7 +93,7 @@ void remote_cmd_level_4(void *args) {
     data_point->data[3] = *level & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 

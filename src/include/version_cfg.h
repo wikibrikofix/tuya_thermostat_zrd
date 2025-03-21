@@ -42,9 +42,12 @@
 #endif
 
 #define APP_RELEASE                         0x10        //app release 1.0
-#define APP_BUILD                           0x14        //app build 01, full version - v1.0.01
-#define STACK_RELEASE						0x30        //stack release 3.0
-#define STACK_BUILD							0x01        //stack build 01
+#ifndef VERSION_BUILD
+    #define APP_BUILD                       0x14        //app build 14, full version - v1.0.14
+#endif
+
+#define STACK_RELEASE                       0x30        //stack release 3.0
+#define STACK_BUILD                         0x01        //stack build 01
 #define HW_VERSION                          0x01
 
 #ifndef ZCL_BASIC_MFG_NAME

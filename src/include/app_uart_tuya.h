@@ -6,7 +6,12 @@
 #define SP_VERSION          0x02
 #define DATA_MAX_LEN        64          /* do not change!   */
 
-#define CMD_QUEUE_CELL_MAX  16
+
+#define RING_CMD_QUEUE_CELL_SIZE    16                          /* size ring buffer  */
+#define RING_CMD_QUEUE_CELL_MASK    RING_CMD_QUEUE_CELL_SIZE-1  /* mask ring buffer  */
+
+
+//#define CMD_QUEUE_CELL_MAX  32
 
 typedef enum {
     COMMAND00   =   0x00,
@@ -49,15 +54,18 @@ typedef struct __attribute__((packed)) {
 } pkt_tuya_t;
 
 typedef struct {
+    uint8_t    used;
     uint8_t    confirm_need;
     uint8_t    confirm_rec;
     pkt_tuya_t pkt;
 } cmd_queue_cell_t;
 
-typedef struct {
-    uint8_t cmd_num;
-    cmd_queue_cell_t cmd_queue[CMD_QUEUE_CELL_MAX];
-} cmd_queue_t;
+//typedef struct {
+////    uint8_t need_confirm;                           // if there is a confirmation request
+////    uint8_t not_need_confirm;                       // if there is a request without confirmation
+//    uint8_t cmd_num;
+//    cmd_queue_cell_t cmd_queue[CMD_QUEUE_CELL_MAX];
+//} cmd_queue_t;
 
 extern bool first_start;
 extern char8_t signature[9];
@@ -69,7 +77,7 @@ uint16_t get_seq_num();
 void set_seq_num(uint16_t f_seq_num);
 void set_header_pkt(uint8_t *f_pkt_buff, uint8_t len, uint16_t f_seq_num, uint8_t command);
 //uint8_t get_queue_cnt();
-void add_cmd_queue(pkt_tuya_t *pkt, uint8_t confirm_need);
+bool add_to_ring_cmd(pkt_tuya_t *pkt, uint8_t confirm_need);
 
 
 #endif /* SRC_INCLUDE_APP_UART_TUYA_H_ */

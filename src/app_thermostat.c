@@ -79,13 +79,13 @@ void remote_cmd_sys_mode(void *args) {
         data_point->data[0] = 0x00;
         out_pkt->pkt_len ++;
         data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-        add_cmd_queue(out_pkt, true);
+        add_to_ring_cmd(out_pkt, true);
         set_seq_num(seq_num);
     } else if (*mode == SYS_MODE_HEAT) {
         data_point->data[0] = 0x01;
         out_pkt->pkt_len ++;
         data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-        add_cmd_queue(out_pkt, true);
+        add_to_ring_cmd(out_pkt, true);
         set_seq_num(seq_num);
     }
 
@@ -145,7 +145,7 @@ void remote_cmd_heating_set(void *args) {
     data_point->data[3] = temp & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -195,7 +195,7 @@ void remote_cmd_temp_calibration(void *args) {
     data_point->data[3] = dev_temp & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -229,7 +229,7 @@ void remote_cmd_keylock(void *args) {
     data_point->data[0] = *keylock;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -267,7 +267,7 @@ void remote_cmd_sensor_used(void *args) {
     data_point->data[0] = *sensor_used;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -316,7 +316,7 @@ void remote_cmd_deadband(void *args) {
     data_point->data[3] = hysteresis & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -366,7 +366,7 @@ void remote_cmd_min_setpoint(void *args) {
     data_point->data[3] = min_temp & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -416,7 +416,7 @@ void remote_cmd_max_setpoint(void *args) {
     data_point->data[3] = max_temp & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 

@@ -281,7 +281,7 @@ void remote_cmd_oper_mode_2(void *args) {
     data_point->data[0] = oper_mode;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -331,7 +331,7 @@ void remote_cmd_frost_protect_2(void *args) {
     data_point->data[3] = frost_protect & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -382,7 +382,7 @@ void remote_cmd_heat_protect_2(void *args) {
     data_point->data[3] = heat_protect & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -431,7 +431,7 @@ static void remote_cmd_set_schedule_mon() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -479,7 +479,7 @@ static void remote_cmd_set_schedule_tue() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -527,7 +527,7 @@ static void remote_cmd_set_schedule_wed() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -575,7 +575,7 @@ static void remote_cmd_set_schedule_thu() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -623,7 +623,7 @@ static void remote_cmd_set_schedule_fri() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -671,7 +671,7 @@ static void remote_cmd_set_schedule_sat() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -719,7 +719,7 @@ static void remote_cmd_set_schedule_sun() {
     }
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 

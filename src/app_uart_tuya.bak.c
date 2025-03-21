@@ -7,7 +7,6 @@
 
 static uint8_t      pkt_buff[DATA_MAX_LEN*2];
 static uint8_t      answer_count = 0;
-static uint32_t     answer_period = 0;
 static uint16_t     seq_num = 0;
 static status_net_t status_net = STATUS_NET_UNKNOWN;
 static uint8_t      no_answer = false;
@@ -19,8 +18,7 @@ static ev_timer_event_t *factory_resetTimerEvt = NULL;
 static ev_timer_event_t *check_answerTimerEvt = NULL;
 static ev_timer_event_t *check_answerMcuTimerEvt = NULL;
 
-static cmd_queue_cell_t ring_cmd_buff[RING_CMD_QUEUE_CELL_SIZE];
-static uint16_t         ring_cmd_head, ring_cmd_tail;
+static cmd_queue_t      cmd_queue = {0};
 
 bool                    first_start = true;
 char8_t                 signature[9] = {0};
@@ -38,76 +36,36 @@ uint8_t checksum(uint8_t *data, uint16_t length) {
     return crc8;
 }
 
-static uint16_t get_len_ring_cmd() {
-    return (ring_cmd_head - ring_cmd_tail) & (RING_CMD_QUEUE_CELL_MASK);
-}
+void add_cmd_queue(pkt_tuya_t *pkt, uint8_t confirm_need) {
 
-static uint16_t get_freespace_ring_cmd() {
-    return (sizeof(ring_cmd_buff)/sizeof(ring_cmd_buff[0]) - get_len_ring_cmd());
-}
+//    printf("cmd_queue.cmd_num: %d\r\n", cmd_queue.cmd_num);
 
-static void flush_ring_cmd() {
-    ring_cmd_head = ring_cmd_tail = 0;
-}
+    if (cmd_queue.cmd_num < CMD_QUEUE_CELL_MAX) {
+        memset(&cmd_queue.cmd_queue[cmd_queue.cmd_num], 0, sizeof(cmd_queue_cell_t));
 
-static cmd_queue_cell_t *read_from_ring_cmd() {
-
-    if (get_len_ring_cmd()) {
-        cmd_queue_cell_t *cmd_queue = &ring_cmd_buff[ring_cmd_tail];
-        return cmd_queue;
+        cmd_queue.cmd_queue[cmd_queue.cmd_num].confirm_need = confirm_need;
+        memcpy(&(cmd_queue.cmd_queue[cmd_queue.cmd_num].pkt), pkt, sizeof(pkt_tuya_t));
+        cmd_queue.cmd_num++;
     }
-    return NULL;
 }
 
-static void move_queue_ring_cmd(cmd_queue_cell_t *current_queue) {
+static void move_cmd_queue() {
 
-    if (current_queue) {
-        if (current_queue->confirm_rec) {
-            ring_cmd_tail++;
-            ring_cmd_tail &= RING_CMD_QUEUE_CELL_MASK;
+    uint8_t i = 0;
+
+    if (cmd_queue.cmd_num) {
+        if (cmd_queue.cmd_queue[0].confirm_rec) {
+            if (cmd_queue.cmd_num == 1) {
+                cmd_queue.cmd_num = 0;
+            } else {
+                for (i = 0; i < cmd_queue.cmd_num; i++) {
+                    memcpy(&cmd_queue.cmd_queue[i], &cmd_queue.cmd_queue[i+1], sizeof(cmd_queue_cell_t));
+                }
+                cmd_queue.cmd_num--;
+            }
         }
     }
 }
-
-bool add_to_ring_cmd(pkt_tuya_t *pkt, uint8_t confirm_need) {
-
-    uint16_t free_space = get_freespace_ring_cmd();
-    bool st = false;
-
-    if (free_space) {
-        ring_cmd_buff[ring_cmd_head].confirm_need = confirm_need;
-        ring_cmd_buff[ring_cmd_head].confirm_rec = 0;
-        memcpy(&(ring_cmd_buff[ring_cmd_head].pkt), pkt, sizeof(pkt_tuya_t));
-//        printf("confirm_need:  %d\r\n", ring_cmd_buff[ring_cmd_head].confirm_need);
-//        printf("confirm_rec:   %d\r\n", ring_cmd_buff[ring_cmd_head].confirm_rec);
-//        printf("pkt:           0x");
-//        uint8_t ch;
-//
-//        uint8_t *data = (uint8_t*)&(ring_cmd_buff[ring_cmd_head].pkt);
-//
-//        for (int i = 0; i < ring_cmd_buff[ring_cmd_head].pkt.pkt_len; i++) {
-//            ch = data[i];
-//            if (ch < 0x10) {
-//                printf("0%x", ch);
-//            } else {
-//                printf("%x", ch);
-//            }
-//        }
-//
-//        printf("\r\n");
-
-        ring_cmd_head++;
-        ring_cmd_head &= RING_CMD_QUEUE_CELL_MASK;
-//        printf("free_space:    %d\r\n", free_space);
-//        printf("ring_cmd_head: %d\r\n", ring_cmd_head);
-//        printf("ring_cmd_tail: %d\r\n", ring_cmd_tail);
-        st = true;
-    }
-
-//    printf("st %s\r\n", st?"true":"false");
-    return st;
-}
-
 
 static uartTx_err send_command(pkt_tuya_t *pkt) {
 
@@ -172,7 +130,7 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             out_pkt->pkt_len++;
             out_pkt->pkt_len++;
             out_pkt->data[0] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-            add_to_ring_cmd(out_pkt, true);
+            add_cmd_queue(out_pkt, true);
             break;
         case COMMAND02:
             out_pkt->len = reverse16(1);
@@ -181,14 +139,14 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             out_pkt->data[0] = status_net;
             out_pkt->pkt_len++;
             out_pkt->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-            add_to_ring_cmd(out_pkt, true);
+            add_cmd_queue(out_pkt, true);
             break;
         case COMMAND03:
             out_pkt->len = 0;
             out_pkt->pkt_len++;
             out_pkt->pkt_len++;
             out_pkt->data[0] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-            add_to_ring_cmd(out_pkt, false);
+            add_cmd_queue(out_pkt, false);
             break;
         case COMMAND04:
         case COMMAND05:
@@ -201,7 +159,7 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             out_pkt->data[0] = status_net;
             out_pkt->pkt_len++;
             out_pkt->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-            add_to_ring_cmd(out_pkt, false);
+            add_cmd_queue(out_pkt, false);
             break;
         case COMMAND24:
             out_pkt->len = reverse16(8);
@@ -231,7 +189,7 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             out_pkt->data[7] = local_time & 0xFF;
             out_pkt->pkt_len++;
             out_pkt->data[8] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-            add_to_ring_cmd(out_pkt, false);
+            add_cmd_queue(out_pkt, false);
 
             break;
         case COMMAND28:
@@ -239,7 +197,7 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             out_pkt->pkt_len++;
             out_pkt->pkt_len++;
             out_pkt->data[0] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-            add_to_ring_cmd(out_pkt, false);
+            add_cmd_queue(out_pkt, false);
             break;
         case COMMANDXX:
 //            printf("COMMMANDXX\r\n");
@@ -258,7 +216,7 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             out_pkt->data[4] = 0x01;
             out_pkt->pkt_len++;
             out_pkt->data[5] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-            add_to_ring_cmd(out_pkt, true);
+            add_cmd_queue(out_pkt, true);
             break;
         default:
             break;
@@ -275,7 +233,7 @@ static void set_default_answer(command_t command, uint16_t f_seq_num) {
     out_pkt->data[0] = 0x01;
     out_pkt->pkt_len++;
     out_pkt->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_to_ring_cmd(out_pkt, false);
+    add_cmd_queue(out_pkt, false);
 
 }
 
@@ -324,10 +282,8 @@ void uart_cmd_handler() {
     uint8_t answer_buff[DATA_MAX_LEN+24];
     pkt_tuya_t *pkt  = (pkt_tuya_t*)answer_buff;
     data_point_t *data_point = (data_point_t*)pkt->data;
-    cmd_queue_cell_t *current_queue = NULL;
 
     if (first_start) {
-        flush_ring_cmd();
         set_command(COMMAND01, seq_num, true);
         data_point_model_init();
         check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, TIMEOUT_1MIN30SEC);
@@ -340,20 +296,10 @@ void uart_cmd_handler() {
 //        set_command(COMMANDXX, seq_num, true);
     }
 
-    current_queue = read_from_ring_cmd();
+    if (cmd_queue.cmd_num) {
 
-    if (current_queue) {
-
-        if (!clock_time_exceed(answer_period, TIMEOUT_TICK_60MS)) {
-            return;
-        }
-
-        if (send_command(&(current_queue->pkt)) == UART_TX_SUCCESS) {
-
-            answer_period = clock_time();
-
-            if (current_queue->confirm_need) {
-
+        if (send_command(&cmd_queue.cmd_queue[0].pkt) == UART_TX_SUCCESS) {
+            if (cmd_queue.cmd_queue[0].confirm_need) {
                 /* trying to read for 1 seconds */
                 for(uint8_t i = 0; i < 100; i++ ) {
                     load_size = 0;
@@ -398,7 +344,7 @@ void uart_cmd_handler() {
                     sleep_ms(10);
                 }
 
-                pkt_tuya_t *send_pkt = &current_queue->pkt;
+                pkt_tuya_t *send_pkt = &cmd_queue.cmd_queue[0].pkt;
 
                 if (complete) {
 
@@ -412,7 +358,7 @@ void uart_cmd_handler() {
                     if (crc == answer_buff[pkt->pkt_len-1]) {
 
                         if (send_pkt->command == COMMAND04 && pkt->command == COMMAND06 /*&& pkt->seq_num == send_pkt->seq_num*/) {
-                            current_queue->confirm_rec = true;
+                            cmd_queue.cmd_queue[0].confirm_rec = true;
                             if (data_point->dp_id == data_point_model[DP_IDX_SETPOINT].id ||
                                 data_point->dp_id == data_point_model[DP_IDX_ONOFF].id ||
                                 data_point->dp_id == data_point_model[DP_IDX_FAN_MODE].id ||
@@ -421,13 +367,13 @@ void uart_cmd_handler() {
                                 set_default_answer(COMMAND06, reverse16(pkt->seq_num));
                             }
                         } else if (send_pkt->command == COMMAND28) {
-                            current_queue->confirm_rec = true;
+                            cmd_queue.cmd_queue[0].confirm_rec = true;
                         } else if (pkt->command == send_pkt->command /*&& pkt->seq_num == send_pkt->seq_num*/) {
 //                            printf("command: 0%x\r\n", pkt->command);
                             switch(pkt->command) {
                                 case COMMAND01:
 
-                                    current_queue->confirm_rec = true;
+                                    cmd_queue.cmd_queue[0].confirm_rec = true;
 
                                     uint8_t *p = pkt->data;
                                     uint16_t len = pkt->len;
@@ -492,30 +438,50 @@ void uart_cmd_handler() {
                                     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId_arr[manuf_name]);
                                     data_point_model = data_point_model_arr[manuf_name];
 
-                                    if (manuf_name == MANUF_NAME_5 || manuf_name == MANUF_NAME_6) {
-                                        set_command(COMMAND28, seq_num, true);
-                                        if (manuf_name == MANUF_NAME_5) {
+                                    switch(manuf_name) {
+                                        case MANUF_NAME_5:
+                                            set_command(COMMAND28, seq_num, true);
                                             if (check_answerMcuTimerEvt) {
                                                 TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
                                             }
                                             uart_timeout = TIMEOUT_1MIN30SEC;
                                             check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
-                                        }
-                                    }
-
-                                    if (manuf_name == MANUF_NAME_8) {
-//                                            int16_t  minHeatSet = 500;
-//                                            int16_t  maxHeatSet = 9900;
+                                            break;
+                                        case MANUF_NAME_6:
+                                            set_command(COMMAND28, seq_num, true);
+                                            if (check_answerMcuTimerEvt) {
+                                                TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                            }
+                                            uart_timeout = TIMEOUT_15SEC;
+                                            check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+                                            break;
+                                            case MANUF_NAME_8:
+                                                if (check_answerMcuTimerEvt) {
+                                                    TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                                }
+                                                uart_timeout = TIMEOUT_15SEC;
+                                                check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+//                                                int16_t minHeatSet = 500;
+//                                                int16_t maxHeatSet = 9900;
 //
-//                                            zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*)&minHeatSet);
-//                                            zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)&maxHeatSet);
+//                                                zcl_setAttrVal(APP_ENDPOINT1,
+//                                                        ZCL_CLUSTER_HAVC_THERMOSTAT,
+//                                                        ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT,
+//                                                        (uint8_t*) &minHeatSet);
+//                                                zcl_setAttrVal(APP_ENDPOINT1,
+//                                                        ZCL_CLUSTER_HAVC_THERMOSTAT,
+//                                                        ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT,
+//                                                        (uint8_t*) &maxHeatSet);
 
-                                        check_schedule8TimerEvt = TL_ZB_TIMER_SCHEDULE(check_schedule8Cb, NULL, TIMEOUT_650MS);
+                                                    check_schedule8TimerEvt = TL_ZB_TIMER_SCHEDULE(check_schedule8Cb, NULL, TIMEOUT_650MS);
+                                                break;
+                                        default:
+                                            break;
                                     }
 
                                     break;
                                 case COMMAND02:
-                                    current_queue->confirm_rec = true;
+                                    cmd_queue.cmd_queue[0].confirm_rec = true;
                                     break;
                                 case COMMAND00:
                                 case COMMAND03:
@@ -524,7 +490,7 @@ void uart_cmd_handler() {
                                 case COMMAND06:
                                     break;
                                 case COMMAND28:
-                                    current_queue->confirm_rec = true;
+                                    cmd_queue.cmd_queue[0].confirm_rec = true;
                                     break;
                                 default:
                                     break;
@@ -541,10 +507,11 @@ void uart_cmd_handler() {
 #if UART_PRINTF_MODE
                     printf("no complete\r\n");
 #endif
-                    current_queue->confirm_rec = false;
+                    cmd_queue.cmd_queue[0].confirm_rec = false;
+
                     if (answer_count++ == 5) {
                         answer_count = 0;
-                        current_queue->confirm_rec = true;
+                        cmd_queue.cmd_queue[0].confirm_rec = true;
                     }
 
                     if (!no_answer) {
@@ -564,22 +531,18 @@ void uart_cmd_handler() {
                         } else {
                             set_uart_baudrate(UART_BAUDRATE_9600);
                         }
-                        app_uart_reinit();
+                        app_uart_init();
                     }
                 }
             } else {
-                current_queue->confirm_rec = true;
+                cmd_queue.cmd_queue[0].confirm_rec = true;
             }
-
+        } else {
+            return;
         }
     }
 
-    move_queue_ring_cmd(current_queue);
-
-
-#if (MODULE_WATCHDOG_ENABLE)
-    drv_wd_clear();
-#endif
+    move_cmd_queue();
 
     if (available_ring_buff() /* && get_queue_len_ring_buff() >= 8*/) {
         load_size = 0;
@@ -1141,6 +1104,13 @@ void uart_cmd_handler() {
             }
         }
     }
+
+#if (MODULE_WATCHDOG_ENABLE)
+    drv_wd_clear();
+#endif
+
+//    printf("Stop WatchDog\r\n");
+//    while(1);
 
 }
 
