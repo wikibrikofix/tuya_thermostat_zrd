@@ -46,7 +46,7 @@ Only the thermostats listed above were checked. If you have a different signatur
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/about_ieee.jpg"/>
 
-**If the IEEE start is different from the specified one, then the thermostat has a different chip in the Zigbee module, and the upgrade can be forgotten.
+**If the IEEE start is different from the specified one, then the thermostat has a different chip in the Zigbee module, and the upgrade can be forgotten.**
 
 Only tested in zigbee2mqtt.
 
