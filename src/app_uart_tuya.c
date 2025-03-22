@@ -344,6 +344,7 @@ void uart_cmd_handler() {
 
     if (current_queue) {
 
+        /* except "aoclfnxz" and "edl8pz1k" */
         if (strcmp(signature, tuya_manuf_names[1][0]) && strcmp(signature, tuya_manuf_names[0][1])) {
             if (!clock_time_exceed(answer_period, TIMEOUT_TICK_50MS)) {
                 return;
