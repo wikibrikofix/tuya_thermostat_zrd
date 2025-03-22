@@ -344,8 +344,10 @@ void uart_cmd_handler() {
 
     if (current_queue) {
 
-        if (!clock_time_exceed(answer_period, TIMEOUT_TICK_60MS)) {
-            return;
+        if (strcmp(signature, tuya_manuf_names[1][0]) && strcmp(signature, tuya_manuf_names[0][1])) {
+            if (!clock_time_exceed(answer_period, TIMEOUT_TICK_50MS)) {
+                return;
+            }
         }
 
         if (send_command(&(current_queue->pkt)) == UART_TX_SUCCESS) {
@@ -492,25 +494,50 @@ void uart_cmd_handler() {
                                     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId_arr[manuf_name]);
                                     data_point_model = data_point_model_arr[manuf_name];
 
-                                    if (manuf_name == MANUF_NAME_5 || manuf_name == MANUF_NAME_6) {
-                                        set_command(COMMAND28, seq_num, true);
-                                        if (manuf_name == MANUF_NAME_5) {
+                                    switch(manuf_name) {
+                                        case MANUF_NAME_2:
                                             if (check_answerMcuTimerEvt) {
                                                 TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
                                             }
-                                            uart_timeout = TIMEOUT_1MIN30SEC;
+                                            uart_timeout = TIMEOUT_8SEC;
                                             check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
-                                        }
-                                    }
+                                            break;
+                                        case MANUF_NAME_5:
+                                        case MANUF_NAME_6:
+                                            set_command(COMMAND28, seq_num, true);
+                                            if (manuf_name == MANUF_NAME_5) {
+                                                if (check_answerMcuTimerEvt) {
+                                                    TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                                }
+                                                uart_timeout = TIMEOUT_1MIN30SEC;
+                                                check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+                                            }
+                                            if (manuf_name == MANUF_NAME_6) {
+                                                if (check_answerMcuTimerEvt) {
+                                                    TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                                }
+                                                uart_timeout = TIMEOUT_30SEC;
+                                                check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+                                            }
+                                            break;
+                                        case MANUF_NAME_7:
+                                            if (check_answerMcuTimerEvt) {
+                                                TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                            }
+                                            uart_timeout = TIMEOUT_25SEC;
+                                            check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+                                            break;
+                                        case MANUF_NAME_8:
+                                            //int16_t  minHeatSet = 500;
+                                            //int16_t  maxHeatSet = 9900;
+                                            //
+                                            //zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*)&minHeatSet);
+                                            //zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)&maxHeatSet);
 
-                                    if (manuf_name == MANUF_NAME_8) {
-//                                            int16_t  minHeatSet = 500;
-//                                            int16_t  maxHeatSet = 9900;
-//
-//                                            zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*)&minHeatSet);
-//                                            zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)&maxHeatSet);
-
-                                        check_schedule8TimerEvt = TL_ZB_TIMER_SCHEDULE(check_schedule8Cb, NULL, TIMEOUT_650MS);
+                                            check_schedule8TimerEvt = TL_ZB_TIMER_SCHEDULE(check_schedule8Cb, NULL, TIMEOUT_650MS);
+                                            break;
+                                        default:
+                                            break;
                                     }
 
                                     break;

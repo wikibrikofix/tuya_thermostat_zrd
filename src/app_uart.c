@@ -197,9 +197,31 @@ uartTx_err app_uart_txMsg(uint8_t *data, uint8_t len) {
 
     uartTx_err st = UART_TX_FAILED;
 
-    print_pkt_out(data, len);
+    static uint8_t command = 0;
+    static uint32_t time_pkt = 0;
+    pkt_tuya_t *pkt = (pkt_tuya_t*)data;
 
-    if (drv_uart_tx_start(data, len)) st =  UART_TX_SUCCESS;
+    if (strcmp(signature, tuya_manuf_names[1][0]) == 0 || strcmp(signature, tuya_manuf_names[0][1]) == 0) {
+        if (command != pkt->command) {
+            command = pkt->command;
+            time_pkt = clock_time();
+            print_pkt_out(data, len);
+            if (drv_uart_tx_start(data, len)) st =  UART_TX_SUCCESS;
+        } else {
+            if (clock_time_exceed(time_pkt, TIMEOUT_TICK_30MS)) {
+                print_pkt_out(data, len);
+                if (drv_uart_tx_start(data, len)) st =  UART_TX_SUCCESS;
+                time_pkt = clock_time();
+            } else {
+                st =  UART_TX_SUCCESS;
+            }
+        }
+    } else {
+        print_pkt_out(data, len);
+
+        if (drv_uart_tx_start(data, len)) st =  UART_TX_SUCCESS;
+
+    }
 
     if (st == UART_TX_FAILED) app_uart_reinit();
 
