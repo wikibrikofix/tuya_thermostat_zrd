@@ -186,7 +186,7 @@ static void app_uartRecvCb() {
         app_uart_reinit();
     }
 
-    printf("st: 0x%x, rec_buff.dma_len: %d\r\n", st, rec_buff.dma_len);
+//    printf("st: 0x%x, rec_buff.dma_len: %d\r\n", st, rec_buff.dma_len);
 
 //    rec_buff.dma_len = 0;
 
