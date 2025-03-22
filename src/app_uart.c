@@ -177,11 +177,11 @@ static void app_uartRecvCb() {
         print_pkt_inp(rec_buff.data, rec_buff.dma_len);
 
         write_bytes_to_ring_buff(rec_buff.data, rec_buff.dma_len);
-        if (manuf_name == MANUF_NAME_1) {
-            if (strcmp(signature, tuya_manuf_names[0][1]) == 0) {
-                sleep_ms(10);
-            }
-        }
+//        if (manuf_name == MANUF_NAME_1) {
+//            if (strcmp(signature, tuya_manuf_names[0][1]) == 0) {
+//                sleep_ms(10);
+//            }
+//        }
     } else {
         app_uart_reinit();
     }
@@ -201,6 +201,7 @@ uartTx_err app_uart_txMsg(uint8_t *data, uint8_t len) {
     static uint32_t time_pkt = 0;
     pkt_tuya_t *pkt = (pkt_tuya_t*)data;
 
+    /* only "aoclfnxz" and "edl8pz1k" */
     if (strcmp(signature, tuya_manuf_names[1][0]) == 0 || strcmp(signature, tuya_manuf_names[0][1]) == 0) {
         if (command != pkt->command) {
             command = pkt->command;
