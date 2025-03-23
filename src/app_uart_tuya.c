@@ -503,6 +503,14 @@ void uart_cmd_handler() {
                                             uart_timeout = TIMEOUT_8SEC;
                                             check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
                                             break;
+                                        case MANUF_NAME_3:
+                                        case MANUF_NAME_4:
+                                            if (check_answerMcuTimerEvt) {
+                                                TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                            }
+                                            uart_timeout = TIMEOUT_15SEC;
+                                            check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+                                            break;
                                         case MANUF_NAME_5:
                                         case MANUF_NAME_6:
                                             set_command(COMMAND28, seq_num, true);

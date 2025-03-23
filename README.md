@@ -68,7 +68,7 @@ To keep it from spamming the network. The first instance (see above) sent 25 pac
 
 ## How to update.
 
-First, add two external [converters](https://github.com/slacky1965/tuya_thermostat_zrd/tree/main/zigbee2mqtt/convertors) `tuya_thermostat_orig.js` and `tuya_thermostat.js` to z2m. The first one activates OTA in z2m for thermostat with Tuya firmware. The second one is needed for thermostat with already updated (custom) firmware. You don't need to change anything in the converters, all available properties should be there automatically.
+First, add two external [converters](https://github.com/slacky1965/tuya_thermostat_zrd/tree/main/zigbee2mqtt/convertors) `tuya_thermostat_orig.js` and `tuya_thermostat.js` to z2m. The first one activates OTA in z2m for thermostat with Tuya firmware. The second one is needed for thermostat with already updated (custom) firmware. Put the two converters in the directory ` external_converters` , which should be created in the root of z2m. You don't need to change anything in the converters, all available properties should be there automatically.
 
 Next, you need to add a local update repository. 
 
@@ -76,24 +76,12 @@ Create a directory` images` in the z2m directory and put the file [1141-d3a3-111
 
 Copy the file [local_ota_index.json](https://github.com/slacky1965/tuya_thermostat_zrd/raw/refs/heads/main/zigbee2mqtt/local_ota_index.json) to the z2m directory.
 
-If you have a z2m version lower than 2.0, then add all this to the z2m config (configuration.yaml). You should get something like this.
-
-```
-external_converters:
-- tuya_thermostat_orig.js
-- tuya_thermostat.js
-ota:
-zigbee_ota_override_index_location: local_ota_index.json
-```
-
-If the version is 2.0 and higher, we add only local storage to the z2m config (configuration.yaml)
+And add local storage to the z2m config (configuration.yaml)
 
 ```
 ota:
 zigbee_ota_override_index_location: local_ota_index.json
 ```
-
-Put the two converters in the directory ` external_converters` , which should be created in the root of z2m.
 
 Then reboot z2m and see a new device (if the thermostat was already in the network and visible in z2m).
 
@@ -266,9 +254,11 @@ Thanks :))))
 	- The outgoing packet queue has been changed. It is now an adapted ring buffer.
 	- Enabled chip supply voltage check to eliminate errors when writing to flash memory when the voltage is less than 2.2 volts. Relevant in case of power failure.
 	- Added timeouts for outgoing packets.
-	- Reduced the number of outgoing identical responses for thermostat `_TZE204_edl8pz1k`, otherwise the program was often overloaded by watchdog.
-	- The code for checking and overwriting `bootloader'` has been removed from the main firmware - it was a potential threat of boot sector corruption under certain circumstances. This code is now only contained in the firmware that is loaded on the first update.
+	- Reduced the number of outgoing identical responses for thermostats `_TZE204_edl8pz1k` and `_TZE204_aoclfnxz`, otherwise the program was often overloaded by watchdog.
+	- The code for checking and overwriting `bootloader` has been removed from the main firmware - it was a potential threat of boot sector corruption under certain circumstances. This code is now only contained in the firmware that is loaded on the first update.
 	- At the first update, the version number will always be `1.0.00` - done specially for the fastest update to the main firmware, where there is no code to check and overwrite `bootloader`.
+	- Added a thermostat with the signature `_TZE200_7rghpoxo`. I have not checked it, added based on the words of a user who checked it.
+	- Converters have been updated.
 
 [Top](#Top)
 
