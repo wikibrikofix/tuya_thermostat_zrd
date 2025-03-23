@@ -180,6 +180,8 @@ Thanks :))))
 
 - [@terekhins](https://t.me/terekhins) for providing the `_TZE204_aoclfnxz` thermostat made by `MOES`.
 
+- [@shadow_by](https://t.me/shadow_by) for providing the `_TZE204_aoclfnxz` thermostat made by `MOES`.
+
 - [@dbunevich](https://t.me/dbunevich) for providing the thermostat `_TZE204_mpbki2zm`.
 
 - [https://github.com/doctor64](https://github.com/doctor64) [@doctor_64](https://t.me/doctor_64) - for always wanting to help and point me in the right direction.
