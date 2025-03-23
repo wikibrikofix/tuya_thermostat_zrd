@@ -1,15 +1,17 @@
 const {identify, reporting, ota} = require('zigbee-herdsman-converters/lib/modernExtend');
 
 const definition = {
-    fingerprint: [{modelID: 'TS0601', manufacturerName: '_TZE204_u9bfwha0'},
-                  {modelID: 'TS0601', manufacturerName: '_TZE204_aoclfnxz'},
-                  {modelID: 'TS0601', manufacturerName: '_TZE204_edl8pz1k'},
-                  {modelID: 'TS0601', manufacturerName: '_TZE204_tagezcph'},
-                  {modelID: 'TS0601', manufacturerName: '_TZE204_xyugziqv'},
-                  {modelID: 'TS0601', manufacturerName: '_TZE204_5toc8efa'},
-                  {modelID: 'TS0601', manufacturerName: '_TZE204_lzriup1j'},
-                  {modelID: 'TS0601', manufacturerName: '_TZE204_mpbki2zm'},
-                  {modelID: 'TS0601', manufacturerName: '_TZE204_7rghpoxo'}
+    fingerprint: [{manufacturerName: '_TZE204_u9bfwha0'},
+                  {manufacturerName: '_TZE204_aoclfnxz'},
+                  {manufacturerName: '_TZE200_edl8pz1k'},
+                  {manufacturerName: '_TZE204_edl8pz1k'},
+                  {manufacturerName: '_TZE204_tagezcph'},
+                  {manufacturerName: '_TZE204_xyugziqv'},
+                  {manufacturerName: '_TZE204_5toc8efa'},
+                  {manufacturerName: '_TZE204_lzriup1j'},
+                  {manufacturerName: '_TZE204_mpbki2zm'},
+                  {manufacturerName: '_TZE200_7rghpoxo'},
+                  {manufacturerName: '_TZE204_7rghpoxo'}
                  ],
     zigbeeModel: ['TS0601'],
     model: 'Original Tuya thermostat ready for update',

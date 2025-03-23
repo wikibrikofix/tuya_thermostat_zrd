@@ -131,7 +131,7 @@ void remote_cmd_eco_mode_3(void *args) {
     data_point->data[0] = *eco_mode;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -182,7 +182,7 @@ void remote_cmd_eco_mode_temp_3(void *args) {
     data_point->data[3] = eco_temp & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -224,7 +224,7 @@ void remote_cmd_level_day_3(void *args) {
     data_point->data[3] = *level & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -265,7 +265,7 @@ void remote_cmd_level_night_3(void *args) {
     data_point->data[3] = *level & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 

@@ -33,6 +33,7 @@ typedef enum {
 extern uint8_t uart_msg_err;
 
 void app_uart_init();
+void app_uart_reinit();
 uint32_t get_uart_baudrate();
 void set_uart_baudrate(uint32_t baudrate);
 

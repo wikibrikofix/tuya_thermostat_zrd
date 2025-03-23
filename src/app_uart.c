@@ -177,7 +177,13 @@ static void app_uartRecvCb() {
         print_pkt_inp(rec_buff.data, rec_buff.dma_len);
 
         write_bytes_to_ring_buff(rec_buff.data, rec_buff.dma_len);
-        sleep_ms(10);
+//        if (manuf_name == MANUF_NAME_1) {
+//            if (strcmp(signature, tuya_manuf_names[0][1]) == 0) {
+//                sleep_ms(10);
+//            }
+//        }
+    } else {
+        app_uart_reinit();
     }
 
 //    printf("st: 0x%x, rec_buff.dma_len: %d\r\n", st, rec_buff.dma_len);
@@ -189,11 +195,38 @@ static void app_uartRecvCb() {
 
 uartTx_err app_uart_txMsg(uint8_t *data, uint8_t len) {
 
-    print_pkt_out(data, len);
+    uartTx_err st = UART_TX_FAILED;
 
-    if (drv_uart_tx_start(data, len)) return UART_TX_SUCCESS;
+    static uint8_t command = 0;
+    static uint32_t time_pkt = 0;
+    pkt_tuya_t *pkt = (pkt_tuya_t*)data;
 
-    return UART_TX_FAILED;
+    /* only "aoclfnxz" and "edl8pz1k" */
+    if (strcmp(signature, tuya_manuf_names[1][0]) == 0 || strcmp(signature, tuya_manuf_names[0][1]) == 0) {
+        if (command != pkt->command) {
+            command = pkt->command;
+            time_pkt = clock_time();
+            print_pkt_out(data, len);
+            if (drv_uart_tx_start(data, len)) st =  UART_TX_SUCCESS;
+        } else {
+            if (clock_time_exceed(time_pkt, TIMEOUT_TICK_30MS)) {
+                print_pkt_out(data, len);
+                if (drv_uart_tx_start(data, len)) st =  UART_TX_SUCCESS;
+                time_pkt = clock_time();
+            } else {
+                st =  UART_TX_SUCCESS;
+            }
+        }
+    } else {
+        print_pkt_out(data, len);
+
+        if (drv_uart_tx_start(data, len)) st =  UART_TX_SUCCESS;
+
+    }
+
+    if (st == UART_TX_FAILED) app_uart_reinit();
+
+    return st;
 }
 
 void app_uart_init() {
@@ -204,6 +237,13 @@ void app_uart_init() {
     drv_uart_init(uart_baudrate, (uint8_t*)&rec_buff, sizeof(uart_data_t), app_uartRecvCb);
 
 //    printf("uart_baudrate: %d\r\n", uart_baudrate);
+}
+
+void app_uart_reinit() {
+
+    drv_uart_pin_set(GPIO_UART_TX, GPIO_UART_RX);
+
+    drv_uart_init(uart_baudrate, (uint8_t*)&rec_buff, sizeof(uart_data_t), app_uartRecvCb);
 }
 
 uint32_t get_uart_baudrate() {

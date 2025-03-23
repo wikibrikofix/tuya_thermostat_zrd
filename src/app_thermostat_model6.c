@@ -293,7 +293,7 @@ void remote_cmd_sensor_used_6(void *args) {
     data_point->data[0] = *sensor_used;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -343,7 +343,7 @@ void remote_cmd_temp_calibration_6(void *args) {
     data_point->data[3] = dev_temp & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -393,7 +393,7 @@ void remote_cmd_deadband_6(void *args) {
     data_point->data[3] = hysteresis & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -441,7 +441,7 @@ void remote_cmd_max_setpoint_6(void *args) {
     data_point->data[3] = max_temp & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -481,7 +481,7 @@ void remote_cmd_max_setpoint_6(void *args) {
 //    data_point->data[0] = *oper_mode;
 //    out_pkt->pkt_len ++;
 //    data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-//    add_cmd_queue(out_pkt, true);
+//    add_to_ring_cmd(out_pkt, true);
 //
 //    set_seq_num(seq_num);
 //
@@ -531,7 +531,7 @@ void remote_cmd_heat_protect_6(void *args) {
     data_point->data[3] = heat_protect & 0xFF;
     out_pkt->pkt_len += 4;
     data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -571,7 +571,7 @@ void remote_cmd_frost_protect_6(void *args) {
     data_point->data[0] = *frost;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -610,7 +610,7 @@ void remote_cmd_inversion_6(void *args) {
     data_point->data[0] = *inversion;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -649,7 +649,7 @@ void remote_cmd_level_6(void *args) {
     data_point->data[0] = *level;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -688,7 +688,7 @@ void remote_cmd_sound_6(void *args) {
     data_point->data[0] = *sound;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -727,7 +727,7 @@ void remote_cmd_setting_reset_6(void *args) {
     data_point->data[0] = *settings;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -766,7 +766,7 @@ void remote_cmd_schedule_mode_6(void *args) {
     data_point->data[0] = *mode;
     out_pkt->pkt_len ++;
     data_point->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
@@ -829,7 +829,7 @@ void remote_cmd_set_schedule_6(void *args) {
 
     *pstrd = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
 
-    add_cmd_queue(out_pkt, true);
+    add_to_ring_cmd(out_pkt, true);
 
     set_seq_num(seq_num);
 
