@@ -34,7 +34,7 @@
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model7.png"/>
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model8.png"/>
 
-**The author assumes no responsibility if you turn your smart thermostat into a half-witted thermostat by using this project.
+**The author assumes no responsibility if you turn your smart thermostat into a half-witted thermostat by using this project.**
 
 Only the thermostats listed above were checked. If you have a different signature,  it is better not to flash without checking for a datapoint match.
 
