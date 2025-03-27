@@ -547,6 +547,12 @@ void uart_cmd_handler() {
                                             //zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*)&minHeatSet);
                                             //zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)&maxHeatSet);
 
+                                            if (check_answerMcuTimerEvt) {
+                                                TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                            }
+                                            uart_timeout = TIMEOUT_15SEC;
+                                            check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+
                                             check_schedule8TimerEvt = TL_ZB_TIMER_SCHEDULE(check_schedule8Cb, NULL, TIMEOUT_650MS);
                                             break;
                                         default:

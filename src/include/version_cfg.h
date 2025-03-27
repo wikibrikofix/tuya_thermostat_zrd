@@ -90,6 +90,10 @@
  * 0x11 - Tuya Thermostat - "u9bfwha0"
  *                          "aoclfnxz"
  *                          "edl8pz1k"
+ * 0x12 - ECM_DIN1_counter
+ * 0x13 - Tuya CO2 Sensor
+ * 0x14 - Air monitor
+ *
  */
 
 #define IMAGE_TYPE_APP              (0x11 | (IMAGE_TYPE_BOOT_FLAG << 7))
