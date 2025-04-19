@@ -5,8 +5,6 @@
 static const char8_t *tuya_manuf_name1[] = {
                                            "u9bfwha0",
                                            "aoclfnxz",
-//                                           "ztvwu4nk",
-//                                           "ye5jkfsb",
                                             NULL};
 
 static const char8_t *tuya_manuf_name2[] = {

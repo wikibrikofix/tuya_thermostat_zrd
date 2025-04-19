@@ -43,7 +43,7 @@
 
 #define APP_RELEASE                         0x10        //app release 1.0
 #ifndef VERSION_BUILD
-    #define APP_BUILD                       0x15        //app build 15, full version - v1.0.15
+    #define APP_BUILD                       0x16        //app build 16, full version - v1.0.16
 #endif
 
 #define STACK_RELEASE                       0x30        //stack release 3.0
@@ -89,7 +89,7 @@
  * 0x10 - EKF_switch_2keys_battery
  * 0x11 - Tuya Thermostat - "u9bfwha0"
  *                          "aoclfnxz"
- *                          "edl8pz1k"
+ *                          "edl8pz1k" and others (see the beginning of the file app_tuya_datapoint.c)
  * 0x12 - ECM_DIN1_counter
  * 0x13 - Tuya CO2 Sensor
  * 0x14 - Air monitor
