@@ -48,7 +48,7 @@ Only the thermostats listed above were checked. If you have a different signatur
 
 **If the IEEE start is different from the specified one, then the thermostat has a different chip in the Zigbee module, you can't use this project.**
 
-Only tested in zigbee2mqtt.
+Only tested in `zigbee2mqtt`. As of April 2025 version of `zigbee2mqtt` no external converter is needed. Support is enabled globally.
 
 ## Why. 
 
