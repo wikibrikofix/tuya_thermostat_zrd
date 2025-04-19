@@ -68,7 +68,7 @@ To keep it from spamming the network. The first instance (see above) sent 25 pac
 
 ## How to update.
 
-First, add two external [converters](https://github.com/slacky1965/tuya_thermostat_zrd/tree/main/zigbee2mqtt/convertors) `tuya_thermostat_orig.js` and `tuya_thermostat.js` to z2m. The first one activates OTA in z2m for thermostat with Tuya firmware. The second one is needed for thermostat with already updated (custom) firmware. Put the two converters in the directory ` external_converters` , which should be created in the root of z2m. You don't need to change anything in the converters, all available properties should be there automatically.
+First, add external [converter](https://github.com/slacky1965/tuya_thermostat_zrd/tree/main/zigbee2mqtt/convertors) `tuya_thermostat_orig.js` to z2m. He activates OTA in z2m for thermostat with Tuya firmware. Put the converter in the directory ` external_converters` , which should be created in the root of z2m.
 
 Next, you need to add a local update repository. 
 
@@ -152,7 +152,7 @@ In Home Assistant, it looks like this
 
 ## How to write a new firmware version into an already updated thermostat.
 
-Take the last file` local_ota_index.json` , put it in z2m directory, reboot z2m. Next take the last **OTA** firmware file with the name `6565-0391-xxxxxxxxxxx-tuya_thermostat_zrd.zigbee` and copy it to the directory` images` , which you should already have in the root of `zigbee2mqtt`. Check the update on the desired thermostat and update.
+All updates will be available via z2m as new releases are released, you don't need to do anything specifically for this.
 
 That's it!
 
@@ -183,6 +183,8 @@ Thanks :))))
 - [@shadow_by](https://t.me/shadow_by) for providing the `_TZE204_aoclfnxz` thermostat made by `MOES`.
 
 - [@dbunevich](https://t.me/dbunevich) for providing the thermostat `_TZE204_mpbki2zm`.
+
+- [@liberatemei](https://t.me/liberatemei) for providing the thermostat `_TZE204_oh8y8pv8`.
 
 - [https://github.com/doctor64](https://github.com/doctor64) [@doctor_64](https://t.me/doctor_64) - for always wanting to help and point me in the right direction.
 
@@ -261,6 +263,8 @@ Thanks :))))
 	- At the first update, the version number will always be `1.0.00` - done specially for the fastest update to the main firmware, where there is no code to check and overwrite `bootloader`.
 	- Added a thermostat with the signature `_TZE200_7rghpoxo`. I have not checked it, added based on the words of a user who checked it.
 	- Converters have been updated.
+- 1.0.16
+	- Added a thermostat with the signature `_TZE204_oh8y8pv8`.
 
 [Top](#Top)
 
