@@ -19,6 +19,7 @@
 	- ["_TZE204_5toc8efa"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r05/README.md)
 6. Model r06
 	- ["_TZE204_lzriup1j"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r06/README.md)
+	- ["_TZE204_oh8y8pv8"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r06/README.md)
 7. Model r07
 	- ["_TZE204_mpbki2zm"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r07/README.md)
 8. Model r08
