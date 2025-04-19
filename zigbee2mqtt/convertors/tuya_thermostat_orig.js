@@ -11,7 +11,8 @@ const definition = {
                   {manufacturerName: '_TZE204_lzriup1j'},
                   {manufacturerName: '_TZE204_mpbki2zm'},
                   {manufacturerName: '_TZE200_7rghpoxo'},
-                  {manufacturerName: '_TZE204_7rghpoxo'}
+                  {manufacturerName: '_TZE204_7rghpoxo'},
+                  {manufacturerName: '_TZE204_oh8y8pv8'}
                  ],
     zigbeeModel: ['TS0601'],
     model: 'Original Tuya thermostat ready for update',
