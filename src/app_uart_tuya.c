@@ -414,14 +414,18 @@ void uart_cmd_handler() {
 
                     if (crc == answer_buff[pkt->pkt_len-1]) {
 
-                        if (send_pkt->command == COMMAND04 && pkt->command == COMMAND06 /*&& pkt->seq_num == send_pkt->seq_num*/) {
+                        if (send_pkt->command == COMMAND04 && (pkt->command == COMMAND06 || pkt->command == COMMAND05) /*&& pkt->seq_num == send_pkt->seq_num*/) {
                             current_queue->confirm_rec = true;
                             if (data_point->dp_id == data_point_model[DP_IDX_SETPOINT].id ||
                                 data_point->dp_id == data_point_model[DP_IDX_ONOFF].id ||
                                 data_point->dp_id == data_point_model[DP_IDX_FAN_MODE].id ||
                                 data_point->dp_id == data_point_model[DP_IDX_FAN_CONTROL].id ||
                                 data_point->dp_id == data_point_model[DP_IDX_SCHEDULE].id) {
-                                set_default_answer(COMMAND06, reverse16(pkt->seq_num));
+                                if (strcmp(tuya_manuf_names[MANUF_NAME_6][1], signature)) {
+                                    set_default_answer(COMMAND05, reverse16(pkt->seq_num));
+                                } else {
+                                    set_default_answer(COMMAND06, reverse16(pkt->seq_num));
+                                }
                             }
                         } else if (send_pkt->command == COMMAND28) {
                             current_queue->confirm_rec = true;
@@ -542,6 +546,12 @@ void uart_cmd_handler() {
                                             //
                                             //zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, (uint8_t*)&minHeatSet);
                                             //zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)&maxHeatSet);
+
+                                            if (check_answerMcuTimerEvt) {
+                                                TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                            }
+                                            uart_timeout = TIMEOUT_15SEC;
+                                            check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
 
                                             check_schedule8TimerEvt = TL_ZB_TIMER_SCHEDULE(check_schedule8Cb, NULL, TIMEOUT_650MS);
                                             break;
@@ -697,10 +707,14 @@ void uart_cmd_handler() {
                     if (get_time_sent()) {
                         set_command(pkt->command, pkt->seq_num, false);
                     } else {
-                        set_default_answer(COMMAND06, pkt->seq_num);
+                        if (strcmp(tuya_manuf_names[MANUF_NAME_6][1], signature)) {
+                            set_default_answer(COMMAND05, reverse16(pkt->seq_num));
+                        } else {
+                            set_default_answer(COMMAND06, reverse16(pkt->seq_num));
+                        }
                     }
 
-                } else if (pkt->command == COMMAND06) {
+                } else if (pkt->command == COMMAND06 || pkt->command == COMMAND05) {
 #if UART_PRINTF_MODE && DEBUG_CMD
                     printf("command 0x06. Report DP data\r\n");
 #endif
