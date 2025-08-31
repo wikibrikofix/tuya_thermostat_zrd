@@ -6,34 +6,39 @@
 ### Custom firmware for Tuya thermostat models
 
 1. Model r01
-	- "[_TZE204_u9bfwha0](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r01/README.md)"
-	- "[_TZE204_aoclfnxz](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r01/README.md)"
+	- "[_TZE204_u9bfwha0](doc/thermostats/tuya_thermostat_r01/README.md)"
+	- "[_TZE204_aoclfnxz](doc/thermostats/tuya_thermostat_r01/README.md)"
 2. Model r02
-	- ["_TZE200_edl8pz1k"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r02/README.md)
-	- ["_TZE204_edl8pz1k"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r02/README.md)
-3. Model r03 
-	- ["_TZE204_tagezcph"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r03/README.md)
-4. Model r04 
-	- ["_TZE204_xyugziqv"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r04/README.md)
+	- ["_TZE200_edl8pz1k"](doc/thermostats/tuya_thermostat_r02/README.md)
+	- ["_TZE204_edl8pz1k"](doc/thermostats/tuya_thermostat_r02/README.md)
+3. Model r03	
+	- ["_TZE204_tagezcph"](doc/thermostats/tuya_thermostat_r03/README.md)
+4. Model r04	
+	- ["_TZE204_xyugziqv"](doc/thermostats/tuya_thermostat_r04/README.md)
 5. Model r05
-	- ["_TZE204_5toc8efa"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r05/README.md)
+	- ["_TZE204_5toc8efa"](doc/thermostats/tuya_thermostat_r05/README.md)
 6. Model r06
-	- ["_TZE204_lzriup1j"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r06/README.md)
-	- ["_TZE204_oh8y8pv8"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r06/README.md)
+	- ["_TZE204_lzriup1j"](doc/thermostats/tuya_thermostat_r06/README.md)
+	- ["_TZE204_oh8y8pv8"](doc/thermostats/tuya_thermostat_r06/README.md)
+	- ["_TZE204_gops3slb"](doc/thermostats/tuya_thermostat_r06/README.md)
 7. Model r07
-	- ["_TZE204_mpbki2zm"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r07/README.md)
+	- ["_TZE204_mpbki2zm"](doc/thermostats/tuya_thermostat_r07/README.md)
 8. Model r08
-	- ["_TZE204_7rghpoxo"](https://github.com/slacky1965/tuya_thermostat_zrd/blob/main/doc/thermostats/tuya_thermostat_r08/README.md)
+	- ["_TZE204_7rghpoxo"](doc/thermostats/tuya_thermostat_r08/README.md)
+	- ["_TZE200_7rghpoxo"](doc/thermostats/tuya_thermostat_r08/README.md)
+9. Model r09
+	- ["_TZE204_6a4vxfnv"](doc/thermostats/tuya_thermostat_r09/README.md)
 
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model1.png"/>
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model1_2.png"/>
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model3_1.png"/>
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model3_2.png"/>
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model4.png"/>
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model5.png"/>
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model6.png"/>
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model7.png"/>
-<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model8.png"/>
+<img src="doc/images/model1.png"/>
+<img src="doc/images/model1_2.png"/>
+<img src="doc/images/model3_1.png"/>
+<img src="doc/images/model3_2.png"/>
+<img src="doc/images/model4.png"/>
+<img src="doc/images/model5.png"/>
+<img src="doc/images/model6.png"/>
+<img src="doc/images/model7.png"/>
+<img src="doc/images/model8.png"/>
+<img src="doc/images/model9.png"/>
 
 **The author assumes no responsibility if you turn your smart thermostat into a half-witted thermostat by using this project.**
 
@@ -266,7 +271,11 @@ Thanks :))))
 	- Converters have been updated.
 - 1.0.16
 	- Added a thermostat with the signature `_TZE204_oh8y8pv8`.
-
+- 1.0.17
+	- Added thermostat with signature `_TZE204_gops3slb` (not tested, see [issue](https://github.com/slacky1965/tuya_thermostat_zrd/issues/124)).
+	- Added thermostat with signature `_TZE204_6a4vxfnv`.
+	- Fixed SDK bug with reporting.
+	
 [Top](#Top)
 
 
