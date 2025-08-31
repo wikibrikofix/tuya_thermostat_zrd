@@ -2,6 +2,7 @@
 
 	"_TZE204_lzriup1j"
 	"_TZE204_oh8y8pv8"
+	"_TZE204_gops3slb"
 	
 ### Производитель Avatto (ZWT10016A)
 	
