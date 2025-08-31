@@ -16,7 +16,7 @@
 #define R               ACCESS_CONTROL_READ
 #define RW              ACCESS_CONTROL_READ | ACCESS_CONTROL_WRITE
 #define RR              ACCESS_CONTROL_READ | ACCESS_CONTROL_REPORTABLE
-#define RRW             ACCESS_CONTROL_READ | ACCESS_CONTROL_WRITE | ACCESS_CONTROL_REPORTABLE
+#define RWR             ACCESS_CONTROL_READ | ACCESS_CONTROL_WRITE | ACCESS_CONTROL_REPORTABLE
 
 #define ZCL_UINT8       ZCL_DATA_TYPE_UINT8
 #define ZCL_INT8        ZCL_DATA_TYPE_INT8
@@ -285,6 +285,7 @@ zcl_thermostatAttr_t g_zcl_thermostatAttrs = {
     .dead_band = HYSTERESIS_MIN,            // 1 ... 5 °C
     .temperatureDisplayMode = 0x00,         // 0x00 - °C, 0x01 - °F (Not support)
     .keypadLockout = 0x00,                  // on off
+    .modeKeyLock = 0x01,
     .startOfWeek = DAY_MON,                 // 1 - Monday
     .weeklyTransNum = 3,                    // 1 - Mon-Fri, 2 - Sat, 3 - Sun
     .dailyTransNum = 4,
@@ -305,31 +306,32 @@ const zclAttrInfo_t thermostat_attrTbl[] = {
         { ZCL_ATTRID_HVAC_THERMOSTAT_OUTDOOR_TEMPERATURE,           ZCL_INT16,      RR,     (uint8_t*)&g_zcl_thermostatAttrs.outDoorTemperature         },
         { ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT,   ZCL_INT16,      R,      (uint8_t*)&g_zcl_thermostatAttrs.absMinHeatSetpointLimit    },
         { ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MAX_HEAT_SETPOINT_LIMIT,   ZCL_INT16,      R,      (uint8_t*)&g_zcl_thermostatAttrs.absMaxHeatSetpointLimit    },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT,       ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.minHeatSetpointLimit       },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT,       ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.maxHeatSetpointLimit       },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION,        ZCL_INT8,       RRW,    (uint8_t*)&g_zcl_thermostatAttrs.localTemperatureCalibration},
-        { ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT,     ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.occupiedHeatingSetpoint    },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT,       ZCL_INT16,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.minHeatSetpointLimit       },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT,       ZCL_INT16,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.maxHeatSetpointLimit       },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION,        ZCL_INT8,       RWR,    (uint8_t*)&g_zcl_thermostatAttrs.localTemperatureCalibration},
+        { ZCL_ATTRID_HVAC_THERMOSTAT_OCCUPIED_HEATING_SETPOINT,     ZCL_INT16,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.occupiedHeatingSetpoint    },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CTRL_SEQUENCE_OF_OPERATION,    ZCL_ENUM8,      R,      (uint8_t*)&g_zcl_thermostatAttrs.controlSequenceOfOperation },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE,                      ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.systemMode                 },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE,    ZCL_BITMAP8,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.manual_progMode            },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_SYS_MODE,                      ZCL_ENUM8,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.systemMode                 },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_PROGRAMMING_OPERATION_MODE,    ZCL_BITMAP8,    RWR,    (uint8_t*)&g_zcl_thermostatAttrs.manual_progMode            },
         { ZCL_ATTRID_HVAC_THERMOSTAT_RUNNING_STATE,                 ZCL_BITMAP16,   RR,     (uint8_t*)&g_zcl_thermostatAttrs.runningState               },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND,        ZCL_INT8,       RRW,    (uint8_t*)&g_zcl_thermostatAttrs.dead_band                  },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_MIN_SETPOINT_DEAD_BAND,        ZCL_INT8,       RWR,    (uint8_t*)&g_zcl_thermostatAttrs.dead_band                  },
         { ZCL_ATTRID_HVAC_THERMOSTAT_START_OF_WEEK,                 ZCL_ENUM8,      R,      (uint8_t*)&g_zcl_thermostatAttrs.startOfWeek                },
         { ZCL_ATTRID_HVAC_THERMOSTAT_NUM_OF_WEEKLY_TRANSITIONS,     ZCL_INT8,       R,      (uint8_t*)&g_zcl_thermostatAttrs.weeklyTransNum             },
         { ZCL_ATTRID_HVAC_THERMOSTAT_NUM_OF_DAILY_TRANSITIONS,      ZCL_INT8,       R,      (uint8_t*)&g_zcl_thermostatAttrs.dailyTransNum              },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED,            ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.sensor_used                },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT,          ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.frostProtect               },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT,           ZCL_INT16,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.heatProtect                },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE,               ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.ecoMode                    },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_HEAT_TEMPERATURE,  ZCL_INT16,  RRW,    (uint8_t*)&g_zcl_thermostatAttrs.ecoModeHeatTemperature     },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_COOL_TEMPERATURE,  ZCL_INT16,  RRW,    (uint8_t*)&g_zcl_thermostatAttrs.ecoModeCoolTemperature     },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT_ONOFF,    ZCL_BOOLEAN,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.frost_protect_onoff        },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SETTINGS_RESET,         ZCL_BOOLEAN,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.settings_reset             },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SOUND,                  ZCL_BOOLEAN,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.sound                      },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_INVERSION,              ZCL_BOOLEAN,    RRW,    (uint8_t*)&g_zcl_thermostatAttrs.inversion                  },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SCHEDULE_MODE,          ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.schedule_mode              },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_LEVEL,                  ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_thermostatAttrs.level                      },
-        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_EXT_TEMP_CALIBRATION,   ZCL_INT8,       RRW,    (uint8_t*)&g_zcl_thermostatAttrs.extTemperatureCalibration  },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SENSOR_USED,            ZCL_ENUM8,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.sensor_used                },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT,          ZCL_INT16,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.frostProtect               },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_HEAT_PROTECT,           ZCL_INT16,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.heatProtect                },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE,               ZCL_ENUM8,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.ecoMode                    },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_HEAT_TEMPERATURE,  ZCL_INT16,  RWR,    (uint8_t*)&g_zcl_thermostatAttrs.ecoModeHeatTemperature     },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_ECO_MODE_COOL_TEMPERATURE,  ZCL_INT16,  RWR,    (uint8_t*)&g_zcl_thermostatAttrs.ecoModeCoolTemperature     },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_FROST_PROTECT_ONOFF,    ZCL_BOOLEAN,    RWR,    (uint8_t*)&g_zcl_thermostatAttrs.frost_protect_onoff        },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SETTINGS_RESET,         ZCL_BOOLEAN,    RWR,    (uint8_t*)&g_zcl_thermostatAttrs.settings_reset             },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SOUND,                  ZCL_BOOLEAN,    RWR,    (uint8_t*)&g_zcl_thermostatAttrs.sound                      },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_INVERSION,              ZCL_BOOLEAN,    RWR,    (uint8_t*)&g_zcl_thermostatAttrs.inversion                  },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_SCHEDULE_MODE,          ZCL_ENUM8,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.schedule_mode              },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_LEVEL,                  ZCL_ENUM8,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.level                      },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_EXT_TEMP_CALIBRATION,   ZCL_INT8,       RWR,    (uint8_t*)&g_zcl_thermostatAttrs.extTemperatureCalibration  },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_MODE_KEYLOCK,           ZCL_BOOLEAN,    RWR,    (uint8_t*)&g_zcl_thermostatAttrs.modeKeyLock                },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,                       ZCL_UINT16,     R,      (uint8_t*)&zcl_attr_global_clusterRevision                  },
 };
@@ -337,8 +339,8 @@ const zclAttrInfo_t thermostat_attrTbl[] = {
 #define ZCL_THERMOSTAT_ATTR_NUM   sizeof(thermostat_attrTbl) / sizeof(zclAttrInfo_t)
 
 const zclAttrInfo_t thermostat_ui_cfg_attrTbl[] = {
-        { ZCL_ATTRID_HVAC_TEMPERATURE_DISPLAY_MODE, ZCL_ENUM8,  RRW,    (uint8_t*)&g_zcl_thermostatAttrs.temperatureDisplayMode },
-        { ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT,           ZCL_ENUM8,  RRW,    (uint8_t*)&g_zcl_thermostatAttrs.keypadLockout          },
+        { ZCL_ATTRID_HVAC_TEMPERATURE_DISPLAY_MODE, ZCL_ENUM8,  RWR,    (uint8_t*)&g_zcl_thermostatAttrs.temperatureDisplayMode },
+        { ZCL_ATTRID_HVAC_KEYPAD_LOCKOUT,           ZCL_ENUM8,  RWR,    (uint8_t*)&g_zcl_thermostatAttrs.keypadLockout          },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,       ZCL_UINT16, R,      (uint8_t*)&zcl_attr_global_clusterRevision              },
 };
@@ -355,9 +357,9 @@ zcl_fancontrolAttr_t g_zcl_fancontrolAttrs = {
 };
 
 const zclAttrInfo_t fancontrol_attrTbl[] = {
-        { ZCL_ATTRID_HVAC_FANCONTROL_FANMODE,           ZCL_ENUM8,      RRW,    (uint8_t*)&g_zcl_fancontrolAttrs.fanMode         },
+        { ZCL_ATTRID_HVAC_FANCONTROL_FANMODE,           ZCL_ENUM8,      RWR,    (uint8_t*)&g_zcl_fancontrolAttrs.fanMode         },
         { ZCL_ATTRID_HVAC_FANCONTROL_FANMODESEQ,        ZCL_ENUM8,      RW,     (uint8_t*)&g_zcl_fancontrolAttrs.fanModeSequence },
-        { ZCL_ATTRID_HVAC_FANCONTROL_CUSTOM_CONTROL,    ZCL_BOOLEAN,    RRW,    (uint8_t*)&g_zcl_fancontrolAttrs.fanControl      },
+        { ZCL_ATTRID_HVAC_FANCONTROL_CUSTOM_CONTROL,    ZCL_BOOLEAN,    RWR,    (uint8_t*)&g_zcl_fancontrolAttrs.fanControl      },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,       ZCL_UINT16, R,      (uint8_t*)&zcl_attr_global_clusterRevision       },
 };
@@ -644,6 +646,12 @@ nv_sts_t thermostat_settings_save() {
 //            printf("keypadLockout changed\r\n");
         }
 
+        if (thermostat_settings.modeKeyLock != g_zcl_thermostatAttrs.modeKeyLock) {
+            thermostat_settings.modeKeyLock = g_zcl_thermostatAttrs.modeKeyLock;
+            save = true;
+//            printf("modeKeyLock changed\r\n");
+        }
+
         if (thermostat_settings.ecoMode != g_zcl_thermostatAttrs.ecoMode) {
             thermostat_settings.ecoMode = g_zcl_thermostatAttrs.ecoMode;
             save = true;
@@ -758,6 +766,7 @@ nv_sts_t thermostat_settings_save() {
         thermostat_settings.frostProtect = g_zcl_thermostatAttrs.frostProtect;
         thermostat_settings.heatProtect = g_zcl_thermostatAttrs.heatProtect;
         thermostat_settings.keypadLockout = g_zcl_thermostatAttrs.keypadLockout;
+        thermostat_settings.modeKeyLock = g_zcl_thermostatAttrs.modeKeyLock;
         thermostat_settings.ecoMode = g_zcl_thermostatAttrs.ecoMode;
         thermostat_settings.ecoModeHeatTemperature = g_zcl_thermostatAttrs.ecoModeHeatTemperature;
         thermostat_settings.ecoModeCoolTemperature = g_zcl_thermostatAttrs.ecoModeCoolTemperature;
@@ -820,6 +829,7 @@ nv_sts_t thermostat_settings_restore() {
         g_zcl_thermostatAttrs.ecoModeHeatTemperature = thermostat_settings.ecoModeHeatTemperature;
         g_zcl_thermostatAttrs.ecoModeCoolTemperature = thermostat_settings.ecoModeCoolTemperature;
         g_zcl_thermostatAttrs.keypadLockout = thermostat_settings.keypadLockout;
+        g_zcl_thermostatAttrs.modeKeyLock = thermostat_settings.modeKeyLock;
         g_zcl_thermostatAttrs.frost_protect_onoff = thermostat_settings.frostProtect;
         g_zcl_thermostatAttrs.inversion = thermostat_settings.inversion;
         g_zcl_thermostatAttrs.level = thermostat_settings.level;

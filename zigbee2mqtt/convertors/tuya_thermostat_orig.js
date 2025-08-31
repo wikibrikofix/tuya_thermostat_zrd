@@ -9,10 +9,12 @@ const definition = {
                   {manufacturerName: '_TZE204_xyugziqv'},
                   {manufacturerName: '_TZE204_5toc8efa'},
                   {manufacturerName: '_TZE204_lzriup1j'},
+                  {manufacturerName: '_TZE204_oh8y8pv8'},
+                  {manufacturerName: '_TZE204_gops3slb'},
                   {manufacturerName: '_TZE204_mpbki2zm'},
                   {manufacturerName: '_TZE200_7rghpoxo'},
                   {manufacturerName: '_TZE204_7rghpoxo'},
-                  {manufacturerName: '_TZE204_oh8y8pv8'}
+                  {manufacturerName: '_TZE204_6a4vxfnv'}
                  ],
     zigbeeModel: ['TS0601'],
     model: 'Original Tuya thermostat ready for update',

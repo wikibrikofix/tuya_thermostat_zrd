@@ -555,6 +555,13 @@ void uart_cmd_handler() {
 
                                             check_schedule8TimerEvt = TL_ZB_TIMER_SCHEDULE(check_schedule8Cb, NULL, TIMEOUT_650MS);
                                             break;
+                                        case MANUF_NAME_9:
+                                            if (check_answerMcuTimerEvt) {
+                                                TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
+                                            }
+                                            uart_timeout = TIMEOUT_2MIN30SEC;
+                                            check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+                                            break;
                                         default:
                                             break;
                                     }
@@ -911,6 +918,16 @@ void uart_cmd_handler() {
 
                             if (data_point_model[DP_IDX_LOCKUNLOCK].local_cmd)
                                 data_point_model[DP_IDX_LOCKUNLOCK].local_cmd(&lock);
+
+                        } else if (data_point->dp_id == data_point_model[DP_IDX_MODE_LOCK].id &&
+                                   data_point->dp_type == data_point_model[DP_IDX_MODE_LOCK].type) {
+
+#if UART_PRINTF_MODE && DEBUG_DP
+                            printf("DP KeyLockMode\r\n");
+#endif
+                            uint8_t mode = data_point->data[0];
+                            if (data_point_model[DP_IDX_MODE_LOCK].local_cmd)
+                                data_point_model[DP_IDX_MODE_LOCK].local_cmd(&mode);
 
                         } else if (data_point->dp_id == data_point_model[DP_IDX_SENSOR].id &&
                                    data_point->dp_type == data_point_model[DP_IDX_SENSOR].type) {

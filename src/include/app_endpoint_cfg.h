@@ -100,6 +100,7 @@ typedef struct {
     int16_t     ecoModeCoolTemperature;         // 20°C * 100
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off
+    uint8_t     modeKeyLock;
     uint8_t     sound;                          // 0 - off, 1 - on
     uint8_t     schedule_mode;                  // enum off, 5+2, 6+1, 7
     uint8_t     settings_reset;                 // 1 - reset
