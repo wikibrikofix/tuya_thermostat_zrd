@@ -289,6 +289,10 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 int8_t temp = (int8_t)attr[i].attrData[0];
                 if (data_point_model[DP_IDX_EXT_CALIBRATION].remote_cmd)
                     data_point_model[DP_IDX_EXT_CALIBRATION].remote_cmd(&temp);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_MODE_KEYLOCK) {
+                uint8_t mode = attr[i].attrData[0];
+                if (data_point_model[DP_IDX_MODE_LOCK].remote_cmd)
+                    data_point_model[DP_IDX_MODE_LOCK].remote_cmd(&mode);
             }
         }
     }
@@ -1195,6 +1199,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                     case MANUF_NAME_4:
                     case MANUF_NAME_5:
                     case MANUF_NAME_7:
+                    case MANUF_NAME_9:
                         for (uint8_t i = 0; i < cmd->numOfTransForSequence; i++) {
                             if (i == 4) {
                                 break;

@@ -212,7 +212,7 @@ typedef enum {
 } data_point_id_type7_t;
 
 /* data point for manufacturer id -
- * "_TZE204_7rghpoxo"
+ * "7rghpoxo"
  *
  * type8 (model8)
 */
@@ -237,6 +237,44 @@ typedef enum {
     DP_TYPE8_ID_6D    = 0x6D,     // time period of schedule (in quantity 6)
 } data_point_id_type8_t;
 
+/* data point for manufacturer id -
+ * "6a4vxfnv"
+ *
+ * type9 (model9)
+ */
+typedef enum {
+    DP_TYPE9_ID_00    = 0x00,     // 0 - not support
+    DP_TYPE9_ID_01    = 0x01,     // on off
+    DP_TYPE9_ID_02    = 0x02,     // manual - 0x00 / programming - 0x01 / temporary - 0x02
+    DP_TYPE9_ID_10    = 0x10,     // heat setpoint (step 0.5 *10)
+    DP_TYPE9_ID_13    = 0x13,     // max heat (+30°C ... +90°C, step 1°C *10)
+    DP_TYPE9_ID_18    = 0x18,     // local temperature
+    DP_TYPE9_ID_1A    = 0x1A,     // min heat (+5°C ... +15°C, step 1°C *10)
+    DP_TYPE9_ID_1B    = 0x1B,     // calibration
+    DP_TYPE9_ID_1C    = 0x1C,     // default setting
+    DP_TYPE9_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE9_ID_27    = 0x27,     // lock / unlock keys
+    DP_TYPE9_ID_28    = 0x28,     // eco mode
+    DP_TYPE9_ID_2B    = 0x2B,     // Sensor IN - 0x00 / AL - 0x01 / OUT - 0x02
+    DP_TYPE9_ID_67    = 0x67,     // hysteresis
+    DP_TYPE9_ID_68    = 0x68,     // protection max temperature (+25°C ... +90°C step 1°C *10)
+    DP_TYPE9_ID_6F    = 0x6F,     // protection min temperature (0°C ... +10°C step 1°C *10)
+    DP_TYPE9_ID_65    = 0x65,     // schedule sun
+    DP_TYPE9_ID_66    = 0x66,     // temperature of outer sensor (if AL or OU)
+    DP_TYPE9_ID_69    = 0x69,     // schedule sat
+    DP_TYPE9_ID_6A    = 0x6A,     // schedule fri
+    DP_TYPE9_ID_6B    = 0x6B,     // schedule thu
+    DP_TYPE9_ID_6C    = 0x6C,     // schedule wed
+    DP_TYPE9_ID_6D    = 0x6D,     // schedule tue
+    DP_TYPE9_ID_6E    = 0x6E,     // schedule mon
+    DP_TYPE9_ID_70    = 0x70,     // eco mode's temperature (0°C ... +30°C step 1°C *10)
+    DP_TYPE9_ID_71    = 0x71,     // level brightness 06:00-22:00 (0 ... 8 step 1)
+    DP_TYPE9_ID_72    = 0x72,     // level brightness 22:00-06:00
+    DP_TYPE9_ID_73    = 0x73,     // external sensor calibration (-9°C ... +9°C step 1°C)
+    DP_TYPE9_ID_74    = 0x74,     // type relay NC - 0x00, NO - 0x01 (inversion)
+    DP_TYPE9_ID_75    = 0x75,     // mode lock / unlock keys (all - 0x01, partial - 0x00)
+} data_point_id_type9_t;
+
 typedef enum {
     SCHEDULE8_MON = 0,
     SCHEDULE8_SAT,
@@ -252,46 +290,48 @@ typedef enum {
     MANUF_NAME_6,
     MANUF_NAME_7,
     MANUF_NAME_8,
+    MANUF_NAME_9,
     MANUF_NAME_MAX
 } manuf_name_t;
 
 typedef enum {
-    DP_IDX_ONOFF    = 0,
-    DP_IDX_TEMP,
-    DP_IDX_SETPOINT,
-    DP_IDX_MIN,
-    DP_IDX_MAX,
-    DP_IDX_DEADZONE,
-    DP_IDX_CALIBRATION,
-    DP_IDX_RUNSTATE,
-    DP_IDX_SENSOR,
-    DP_IDX_PROG,
-    DP_IDX_LOCKUNLOCK,
-    DP_IDX_SCHEDULE,
-    DP_IDX_UNKNOWN,
-    DP_IDX_TEMP_OUT,
-    DP_IDX_FROST_PROTECT,
-    DP_IDX_HEAT_PROTECT,
-    DP_IDX_SCHEDULE_MON,
-    DP_IDX_SCHEDULE_TUE,
-    DP_IDX_SCHEDULE_WED,
-    DP_IDX_SCHEDULE_THU,
-    DP_IDX_SCHEDULE_FRI,
-    DP_IDX_SCHEDULE_SAT,
-    DP_IDX_SCHEDULE_SUN,
-    DP_IDX_LEVEL_A,
-    DP_IDX_LEVEL_B,
-    DP_IDX_ECO_MODE,
-    DP_IDX_ECO_HEAT_TEMP,
-    DP_IDX_ECO_COOL_TEMP,
-    DP_IDX_SOUND,
-    DP_IDX_SETTINGS_RESET,
-    DP_IDX_INVERSION,
-    DP_IDX_THERM_MODE,
-    DP_IDX_FAN_MODE,
-    DP_IDX_FAN_CONTROL,
-    DP_IDX_EXT_CALIBRATION,
-    DP_IDX_MAXNUM
+    DP_IDX_ONOFF    = 0,        // 00
+    DP_IDX_TEMP,                // 01
+    DP_IDX_SETPOINT,            // 02
+    DP_IDX_MIN,                 // 03
+    DP_IDX_MAX,                 // 04
+    DP_IDX_DEADZONE,            // 05
+    DP_IDX_CALIBRATION,         // 06
+    DP_IDX_RUNSTATE,            // 07
+    DP_IDX_SENSOR,              // 08
+    DP_IDX_PROG,                // 09
+    DP_IDX_LOCKUNLOCK,          // 10
+    DP_IDX_SCHEDULE,            // 11
+    DP_IDX_UNKNOWN,             // 12
+    DP_IDX_TEMP_OUT,            // 13
+    DP_IDX_FROST_PROTECT,       // 14
+    DP_IDX_HEAT_PROTECT,        // 15
+    DP_IDX_SCHEDULE_MON,        // 16
+    DP_IDX_SCHEDULE_TUE,        // 17
+    DP_IDX_SCHEDULE_WED,        // 18
+    DP_IDX_SCHEDULE_THU,        // 19
+    DP_IDX_SCHEDULE_FRI,        // 20
+    DP_IDX_SCHEDULE_SAT,        // 21
+    DP_IDX_SCHEDULE_SUN,        // 22
+    DP_IDX_LEVEL_A,             // 23
+    DP_IDX_LEVEL_B,             // 24
+    DP_IDX_ECO_MODE,            // 25
+    DP_IDX_ECO_HEAT_TEMP,       // 26
+    DP_IDX_ECO_COOL_TEMP,       // 27
+    DP_IDX_SOUND,               // 28
+    DP_IDX_SETTINGS_RESET,      // 29
+    DP_IDX_INVERSION,           // 30
+    DP_IDX_THERM_MODE,          // 31
+    DP_IDX_FAN_MODE,            // 32
+    DP_IDX_FAN_CONTROL,         // 33
+    DP_IDX_EXT_CALIBRATION,     // 34
+    DP_IDX_MODE_LOCK,           // 35
+    DP_IDX_MAXNUM               // 36
 } data_point_idx_t;
 
 /* Data Point

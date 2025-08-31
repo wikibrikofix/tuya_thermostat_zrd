@@ -63,6 +63,7 @@ typedef struct __attribute__((packed)) {
     uint8_t     dead_band;                      // 1 ... 5 °C
     uint8_t     temperatureDisplayMode;         // 0x00 - °C, 0x01 - °F. Always °C (Not support)
     uint8_t     keypadLockout;                  // on off
+    uint8_t     modeKeyLock;
     uint8_t     currentLevelA;
     uint8_t     currentLevelB;
     uint8_t     ecoMode;                        // 1 - ecoMode on, 0 - ecoMode off
@@ -109,6 +110,7 @@ extern data_point_st_t data_point_model5[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model6[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model7[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model8[DP_IDX_MAXNUM];
+extern data_point_st_t data_point_model9[DP_IDX_MAXNUM];
 extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
@@ -306,6 +308,36 @@ void remote_cmd_fan_control_7(void *args);
 void remote_cmd_ext_temp_calibration_8(void *args);
 void remote_cmd_get_schedule_8();
 void remote_cmd_set_schedule_8(void *args);
+
+/*
+ *  remote_cmd for signarure
+ *  "6a4vxfnv"
+ *
+ *  model9 - name_9
+ */
+#define remote_cmd_sys_mode_9               remote_cmd_sys_mode
+#define remote_cmd_heating_set_9            remote_cmd_heating_set
+#define remote_cmd_temp_calibration_9       remote_cmd_temp_calibration
+#define remote_cmd_sensor_used_9            remote_cmd_sensor_used
+#define remote_cmd_min_setpoint_9           remote_cmd_min_setpoint
+#define remote_cmd_max_setpoint_9           remote_cmd_max_setpoint
+#define remote_cmd_eco_mode_9               remote_cmd_eco_mode_3
+#define remote_cmd_eco_mode_temp_9          remote_cmd_eco_mode_temp_3
+#define remote_cmd_level_day_9              remote_cmd_level_day_3
+#define remote_cmd_level_night_9            remote_cmd_level_night_3
+#define remote_cmd_ext_temp_calibration_9   remote_cmd_ext_temp_calibration_8
+#define remote_cmd_inversion_9              remote_cmd_inversion_6
+#define remote_cmd_frost_protect_9          remote_cmd_frost_protect_2
+#define remote_cmd_heat_protect_9           remote_cmd_heat_protect_2
+#define remote_cmd_oper_mode_9              remote_cmd_oper_mode_2
+#define remote_cmd_set_schedule_9           remote_cmd_set_schedule_2
+#define remote_cmd_get_schedule_9           remote_cmd_get_schedule_2
+#define remote_cmd_setting_reset_9          remote_cmd_setting_reset_6
+#define remote_cmd_keylock_9                remote_cmd_keylock
+
+void remote_cmd_mode_keylock_9(void *args);
+void remote_cmd_deadband_9(void *args);
+
 /*
  * common functions local_cmd
  */
@@ -516,5 +548,37 @@ void local_cmd_set_period_8(void *args);
 
 extern ev_timer_event_t *check_schedule8TimerEvt;
 int32_t check_schedule8Cb(void *arg);
+
+/*
+ *  local_cmd for signarure
+ *  "6a4vxfnv"
+ *
+ *  model9 - name_9
+ */
+#define local_cmd_inner_sensor_9            local_cmd_inner_sensor
+#define local_cmd_heating_set_9             local_cmd_heating_set
+#define local_cmd_temp_calibration_9        local_cmd_temp_calibration
+#define local_cmd_min_setpoint_9            local_cmd_min_setpoint
+#define local_cmd_max_setpoint_9            local_cmd_max_setpoint
+#define local_cmd_deadband_9                local_cmd_deadband
+#define local_cmd_sensor_used_9             local_cmd_sensor_used
+#define local_cmd_set_run_state_9           local_cmd_set_run_state
+#define local_cmd_onoff_state_9             local_cmd_onoff_state
+#define local_cmd_eco_mode_9                local_cmd_eco_mode_3
+#define local_cmd_eco_mode_heat_temp_9      local_cmd_eco_mode_temp_3
+#define local_cmd_ext_temp_calibration_9    local_cmd_ext_temp_calibration_8
+#define local_cmd_oper_mode_9               local_cmd_oper_mode_2
+#define local_cmd_frost_protect_9           local_cmd_frost_protect_2
+#define local_cmd_heat_protect_9            local_cmd_heat_protect_2
+#define local_cmd_outdoor_sensor_9          local_cmd_outdoor_sensor_2
+#define local_cmd_set_schedule_9            local_cmd_set_schedule_2
+#define local_cmd_inversion_9               local_cmd_inversion_6
+#define local_cmd_setting_reset_9           local_cmd_setting_reset_6
+#define local_cmd_level_day_9               local_cmd_level_day_3
+#define local_cmd_level_night_9             local_cmd_level_night_3
+#define local_cmd_eco_mode_temp_9           local_cmd_eco_mode_temp_3
+#define local_cmd_keylock_9                 local_cmd_keylock
+
+void local_cmd_mode_keylock_9(void *args);
 
 #endif /* SRC_INCLUDE_APP_THERMOSTAT_H_ */
