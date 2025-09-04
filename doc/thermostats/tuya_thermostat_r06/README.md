@@ -3,12 +3,17 @@
 	"_TZE204_lzriup1j"
 	"_TZE204_oh8y8pv8"
 	"_TZE204_gops3slb"
+	"_TZE284_cvub6xbb"
 	
 ### Производитель Avatto (ZWT10016A)
 	
 ### Внешний вид.
 
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model6.png"/>
+
+`_TZE284_cvub6xbb` выглядит так.
+
+<img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/model6-1.png"/>
 
 ### Настройки, доступные удаленно.
 
