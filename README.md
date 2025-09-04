@@ -280,6 +280,7 @@ Thanks :))))
 	- Added thermostat with signature `_TZE204_gops3slb` (not tested, see [issue](https://github.com/slacky1965/tuya_thermostat_zrd/issues/124)).
 	- Added thermostat with signature `_TZE204_6a4vxfnv`.
 	- Fixed SDK bug with reporting.
+- 1.0.18
 	- Added thermostat with signature `_TZE284_cvub6xbb`.
 	
 [Top](#Top)
