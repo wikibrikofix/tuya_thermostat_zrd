@@ -21,6 +21,7 @@
 	- ["_TZE204_lzriup1j"](doc/thermostats/tuya_thermostat_r06/README.md)
 	- ["_TZE204_oh8y8pv8"](doc/thermostats/tuya_thermostat_r06/README.md)
 	- ["_TZE204_gops3slb"](doc/thermostats/tuya_thermostat_r06/README.md)
+	- ["_TZE284_cvub6xbb"](doc/thermostats/tuya_thermostat_r06/README.md)
 7. Model r07
 	- ["_TZE204_mpbki2zm"](doc/thermostats/tuya_thermostat_r07/README.md)
 8. Model r08
@@ -192,6 +193,10 @@ Thanks :))))
 
 - [@liberatemei](https://t.me/liberatemei) for providing the thermostat `_TZE204_oh8y8pv8`.
 
+- [@rheinx](https://t.me/rheinx) for providing the thermostat `_TZE204_6a4vxfnv`
+
+- [@Nobodevi4](https://t.me/Nobodevi4) for providing the thermostat `_TZE284_cvub6xbb`
+
 - [https://github.com/doctor64](https://github.com/doctor64) [@doctor_64](https://t.me/doctor_64) - for always wanting to help and point me in the right direction.
 
 - [https://github.com/devbis](https://github.com/devbis) [@Belokobylskiy](https://t.me/Belokobylskiy) - for ideas and writing scripts in Python and for the z2m converter.
@@ -275,6 +280,7 @@ Thanks :))))
 	- Added thermostat with signature `_TZE204_gops3slb` (not tested, see [issue](https://github.com/slacky1965/tuya_thermostat_zrd/issues/124)).
 	- Added thermostat with signature `_TZE204_6a4vxfnv`.
 	- Fixed SDK bug with reporting.
+	- Added thermostat with signature `_TZE284_cvub6xbb`.
 	
 [Top](#Top)
 

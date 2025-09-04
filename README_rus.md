@@ -18,6 +18,7 @@
 	- ["_TZE204_lzriup1j"](doc/thermostats/tuya_thermostat_r06/README.md)
 	- ["_TZE204_oh8y8pv8"](doc/thermostats/tuya_thermostat_r06/README.md)
 	- ["_TZE204_gops3slb"](doc/thermostats/tuya_thermostat_r06/README.md)
+	- ["_TZE284_cvub6xbb"](doc/thermostats/tuya_thermostat_r06/README.md)
 7. Model r07
 	- ["_TZE204_mpbki2zm"](doc/thermostats/tuya_thermostat_r07/README.md)
 8. Model r08
@@ -190,6 +191,9 @@ P.S. В реальной работе не проверялось, требуе�
 
 - [@liberatemei](https://t.me/liberatemei) за предоставленный термостат `_TZE204_oh8y8pv8`.
 
+- [@rheinx](https://t.me/rheinx) за предоставленный термостат `_TZE204_6a4vxfnv`
+
+- [@Nobodevi4](https://t.me/Nobodevi4) за предоставленный термостат `_TZE284_cvub6xbb`
 
 - [https://github.com/doctor64](https://github.com/doctor64) [@doctor_64](https://t.me/doctor_64) - за желание всегда помочь и направить в правильное русло.
 
@@ -275,6 +279,7 @@ P.S. В реальной работе не проверялось, требуе�
 	- Добавлен термостат с сигнатурой `_TZE204_gops3slb` (не проверялось, смотрите [issue](https://github.com/slacky1965/tuya_thermostat_zrd/issues/124)).
 	- Добавлен термостат с сигнатурой `_TZE204_6a4vxfnv`.
 	- Устранена ошибка в SDK с репортингом.
+	- Добавлен термостат с сигнатурой `_TZE284_cvub6xbb`
 
 [Наверх](#Top)
 
