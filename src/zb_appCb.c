@@ -384,13 +384,19 @@ void app_otaProcessMsgHandler(uint8_t evt, uint8_t status) {
  * @return  None
  */
 void app_leaveCnfHandler(nlme_leave_cnf_t *pLeaveCnf) {
-    if (pLeaveCnf->status == SUCCESS) {
-        //SYSTEM_RESET();
+    //    printf("app_leaveCnfHandler() status: %d\r\n", pLeaveCnf->status);
+        if (pLeaveCnf->status == SUCCESS) {
+            //SYSTEM_RESET();
 
-        if (switchRejoinBackoffTimerEvt) {
-            TL_ZB_TIMER_CANCEL(&switchRejoinBackoffTimerEvt);
+            if (switchRejoinBackoffTimerEvt) {
+                TL_ZB_TIMER_CANCEL(&switchRejoinBackoffTimerEvt);
+            }
+
+            zb_deviceFactoryNewSet(true);
+
+            bdb_networkSteerStart();
+
         }
-    }
 }
 
 /*********************************************************************
