@@ -395,7 +395,6 @@ void app_leaveCnfHandler(nlme_leave_cnf_t *pLeaveCnf) {
         zb_deviceFactoryNewSet(true);
 
         bdb_networkSteerStart();
-
     }
 }
 
