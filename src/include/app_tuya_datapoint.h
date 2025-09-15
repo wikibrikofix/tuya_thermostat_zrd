@@ -275,6 +275,30 @@ typedef enum {
     DP_TYPE9_ID_75    = 0x75,     // mode lock / unlock keys (all - 0x01, partial - 0x00)
 } data_point_id_type9_t;
 
+/* data point for manufacturer id -
+ * "_TZE284_xalsoe3m"
+ *
+ * typeA (modelA)
+*/
+typedef enum {
+    DP_TYPE0A_ID_00     = 0x00,     // not support
+    DP_TYPE0A_ID_01     = 0x01,     // on off
+    DP_TYPE0A_ID_02     = 0x02,     // manual - 1 / programming - 0
+    DP_TYPE0A_ID_10     = 0x10,     // local temperature
+    DP_TYPE0A_ID_12     = 0x12,     // min heat (0°C ... +20°C, step 1°C)
+    DP_TYPE0A_ID_13     = 0x13,     // calibration (-9°C ... +9°C step 1°C)
+    DP_TYPE0A_ID_17     = 0x17,     // ???? not used. temperature of outer sensor (if AL or OU)
+    DP_TYPE0A_ID_20     = 0x20,     // Sensor IN - 0/OUT - 1/ALL - 2
+    DP_TYPE0A_ID_22     = 0x22,     // max heat (+20°C ... 50°C, step 1°С)
+    DP_TYPE0A_ID_27     = 0x27,     // lock - 1 / unlock keys - 0
+    DP_TYPE0A_ID_28     = 0x28,     // eco mode
+    DP_TYPE0A_ID_2F     = 0x2F,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE0A_ID_32     = 0x32,     // heat setpoint
+    DP_TYPE0A_ID_44     = 0x44,     // schedule
+    DP_TYPE0A_ID_65     = 0x65,     // protection max temperature (+25°C ... +70°C step 1°C)
+    DP_TYPE0A_ID_66     = 0x66,     // hysteresis (1°C ... 5°C step 1°C)
+} data_point_id_type0A_t;
+
 typedef enum {
     SCHEDULE8_MON = 0,
     SCHEDULE8_SAT,
@@ -291,6 +315,7 @@ typedef enum {
     MANUF_NAME_7,
     MANUF_NAME_8,
     MANUF_NAME_9,
+    MANUF_NAME_0A,
     MANUF_NAME_MAX
 } manuf_name_t;
 

@@ -111,6 +111,7 @@ extern data_point_st_t data_point_model6[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model7[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model8[DP_IDX_MAXNUM];
 extern data_point_st_t data_point_model9[DP_IDX_MAXNUM];
+extern data_point_st_t data_point_model0A[DP_IDX_MAXNUM];
 extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
@@ -337,6 +338,28 @@ void remote_cmd_set_schedule_8(void *args);
 
 void remote_cmd_mode_keylock_9(void *args);
 void remote_cmd_deadband_9(void *args);
+
+/*
+ *  remote_cmd for signarure
+ *  "xalsoe3m"
+ *
+ *  model0A - name_0A
+ */
+
+#define remote_cmd_sys_mode_0A          remote_cmd_sys_mode_1
+#define remote_cmd_heating_set_0A       remote_cmd_heating_set_1
+#define remote_cmd_temp_calibration_0A  remote_cmd_temp_calibration_1
+#define remote_cmd_sensor_used_0A       remote_cmd_sensor_used_1
+#define remote_cmd_keylock_0A           remote_cmd_keylock_1
+#define remote_cmd_deadband_0A          remote_cmd_deadband_1
+#define remote_cmd_min_setpoint_0A      remote_cmd_min_setpoint
+#define remote_cmd_max_setpoint_0A      remote_cmd_max_setpoint_1
+#define remote_cmd_heat_protect_0A      remote_cmd_heat_protect_2
+#define remote_cmd_oper_mode_0A         remote_cmd_oper_mode_1
+#define remote_cmd_set_schedule_0A      remote_cmd_set_schedule_1
+#define remote_cmd_get_schedule_0A      remote_cmd_get_schedule_1
+#define remote_cmd_eco_mode_0A          remote_cmd_eco_mode_3
+
 
 /*
  * common functions local_cmd
