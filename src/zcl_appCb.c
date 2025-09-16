@@ -1158,7 +1158,8 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                 bool save = false;
 
                 switch(manuf_name) {
-                    case MANUF_NAME_1:
+                case MANUF_NAME_1:
+                case MANUF_NAME_0A:
 #if UART_PRINTF_MODE
                         printf("Days other than Monday, Saturday and Sunday are not supported\r\n");
 #endif

@@ -195,6 +195,7 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
         case COMMAND06:
             break;
         case COMMAND20:
+            printf("f_seq_num: %d\r\n", f_seq_num);
             out_pkt->len = reverse16(1);
             out_pkt->pkt_len++;
             out_pkt->pkt_len++;
@@ -242,22 +243,22 @@ static void set_command(command_t command, uint16_t f_seq_num, bool inc_seq_num)
             add_to_ring_cmd(out_pkt, false);
             break;
         case COMMANDXX:
-//            printf("COMMMANDXX\r\n");
-            out_pkt->command = 0x04;
-            out_pkt->len = reverse16(5);
+            printf("COMMMANDXX\r\n");
+            out_pkt->command = 0x28;
+            out_pkt->len = reverse16(1);
             out_pkt->pkt_len++;
             out_pkt->pkt_len++;
-            out_pkt->data[0] = 0x03;
+            out_pkt->data[0] = 0x17;
             out_pkt->pkt_len++;
-            out_pkt->data[1] = 0x04;
-            out_pkt->pkt_len++;
-            out_pkt->data[2] = 0x00;
-            out_pkt->pkt_len++;
-            out_pkt->data[3] = 0x01;
-            out_pkt->pkt_len++;
-            out_pkt->data[4] = 0x01;
-            out_pkt->pkt_len++;
-            out_pkt->data[5] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+//            out_pkt->data[1] = 0x04;
+//            out_pkt->pkt_len++;
+//            out_pkt->data[2] = 0x00;
+//            out_pkt->pkt_len++;
+//            out_pkt->data[3] = 0x01;
+//            out_pkt->pkt_len++;
+//            out_pkt->data[4] = 0x01;
+//            out_pkt->pkt_len++;
+            out_pkt->data[1] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
             add_to_ring_cmd(out_pkt, true);
             break;
         default:
@@ -518,8 +519,9 @@ void uart_cmd_handler() {
                                             break;
                                         case MANUF_NAME_5:
                                         case MANUF_NAME_6:
+                                        case MANUF_NAME_0A:
                                             set_command(COMMAND28, seq_num, true);
-                                            if (manuf_name == MANUF_NAME_5) {
+                                            if (manuf_name == MANUF_NAME_5 || manuf_name == MANUF_NAME_0A) {
                                                 if (check_answerMcuTimerEvt) {
                                                     TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
                                                 }
@@ -707,6 +709,7 @@ void uart_cmd_handler() {
 //                } else if (pkt->command == COMMAND02) {
 //                    printf("input COMMAND02\r\n");
                 } else if (pkt->command == COMMAND20) {
+                    printf("pkt->seq_num: %d\r\n", pkt->seq_num);
                     set_command(pkt->command, pkt->seq_num, false);
                 } else if (pkt->command == COMMAND24) {
 #if UART_PRINTF_MODE
@@ -893,13 +896,13 @@ void uart_cmd_handler() {
                             run_state_bit_t run_state_bit;
                             run_state_bit.bit_num = RUN_STATE_HEAT_BIT;
                             if (data_point->data[0]) {
-                                if (manuf_name == MANUF_NAME_6) {
+                                if (manuf_name == MANUF_NAME_6 || MANUF_NAME_0A) {
                                     run_state_bit.set = ON;
                                 } else {
                                     run_state_bit.set = OFF;
                                 }
                             } else {
-                                if (manuf_name == MANUF_NAME_6) {
+                                if (manuf_name == MANUF_NAME_6 || MANUF_NAME_0A) {
                                     run_state_bit.set = OFF;
                                 } else {
                                     run_state_bit.set = ON;

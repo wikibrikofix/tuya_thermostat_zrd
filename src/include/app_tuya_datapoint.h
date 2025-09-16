@@ -154,6 +154,9 @@ typedef data_point_id_type2_t data_point_id_type5_t;
 
 /* data point for manufacturer id -
  * "lzriup1j"
+ * "oh8y8pv8",
+ * "gops3slb",
+ * "cvub6xbb",
  *
  * type6 (model6)
 */

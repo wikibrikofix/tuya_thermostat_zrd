@@ -244,6 +244,9 @@ void remote_cmd_level_4(void *args);
 /*
  *  remote_cmd for signarure
  *  "lzriup1j"
+ *  "oh8y8pv8",
+ *  "gops3slb",
+ *  "cvub6xbb",
  *
  *  model6 - name_6
  */
@@ -349,17 +352,17 @@ void remote_cmd_deadband_9(void *args);
 #define remote_cmd_sys_mode_0A          remote_cmd_sys_mode_1
 #define remote_cmd_heating_set_0A       remote_cmd_heating_set_1
 #define remote_cmd_temp_calibration_0A  remote_cmd_temp_calibration_1
-#define remote_cmd_sensor_used_0A       remote_cmd_sensor_used_1
+#define remote_cmd_sensor_used_0A       remote_cmd_sensor_used_6
 #define remote_cmd_keylock_0A           remote_cmd_keylock_1
 #define remote_cmd_deadband_0A          remote_cmd_deadband_1
 #define remote_cmd_min_setpoint_0A      remote_cmd_min_setpoint
 #define remote_cmd_max_setpoint_0A      remote_cmd_max_setpoint_1
 #define remote_cmd_heat_protect_0A      remote_cmd_heat_protect_2
-#define remote_cmd_oper_mode_0A         remote_cmd_oper_mode_1
-#define remote_cmd_set_schedule_0A      remote_cmd_set_schedule_1
+#define remote_cmd_oper_mode_0A         remote_cmd_oper_mode_2
 #define remote_cmd_get_schedule_0A      remote_cmd_get_schedule_1
 #define remote_cmd_eco_mode_0A          remote_cmd_eco_mode_3
 
+void remote_cmd_set_schedule_0A(void *args);
 
 /*
  * common functions local_cmd
@@ -603,5 +606,28 @@ int32_t check_schedule8Cb(void *arg);
 #define local_cmd_keylock_9                 local_cmd_keylock
 
 void local_cmd_mode_keylock_9(void *args);
+
+/*
+ *  remote_cmd for signarure
+ *  "xalsoe3m"
+ *
+ *  model0A - name_0A
+ */
+#define local_cmd_inner_sensor_0A       local_cmd_inner_sensor
+#define local_cmd_heating_set_0A        local_cmd_heating_set
+#define local_cmd_temp_calibration_0A   local_cmd_temp_calibration
+#define local_cmd_min_setpoint_0A       local_cmd_min_setpoint
+#define local_cmd_max_setpoint_0A       local_cmd_max_setpoint
+#define local_cmd_heat_protect_0A       local_cmd_heat_protect_2
+#define local_cmd_deadband_0A           local_cmd_deadband
+#define local_cmd_keylock_0A            local_cmd_keylock
+#define local_cmd_sensor_used_0A        local_cmd_sensor_used_6
+#define local_cmd_set_run_state_0A      local_cmd_set_run_state
+#define local_cmd_onoff_state_0A        local_cmd_onoff_state
+#define local_cmd_eco_mode_0A           local_cmd_eco_mode_3
+#define local_cmd_oper_mode_0A          local_cmd_oper_mode_2
+
+void local_cmd_set_schedule_0A(void *args);
+
 
 #endif /* SRC_INCLUDE_APP_THERMOSTAT_H_ */
