@@ -4,8 +4,7 @@
 
 app_ctx_t g_appCtx = {
         .bdbFBTimerEvt = NULL,
-        .short_poll = POLL_RATE * 3,
-        .long_poll = POLL_RATE * LONG_POLL,
+        .factory_resetTimerEvt = NULL,
 };
 
 //uint32_t count_restart = 0;

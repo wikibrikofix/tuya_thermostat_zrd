@@ -11,11 +11,8 @@ static uint32_t     answer_period = 0;
 static uint16_t     seq_num = 0;
 static status_net_t status_net = STATUS_NET_UNKNOWN;
 static uint8_t      no_answer = false;
-static uint8_t      factory_reset_cnt = 0;
-static uint8_t      factory_reset_status = 0;
 static uint32_t     uart_timeout = TIMEOUT_10SEC;
 
-static ev_timer_event_t *factory_resetTimerEvt = NULL;
 static ev_timer_event_t *check_answerTimerEvt = NULL;
 static ev_timer_event_t *check_answerMcuTimerEvt = NULL;
 
@@ -306,15 +303,10 @@ static int32_t check_answerMcuCb(void *arg) {
     return 0;
 }
 
+static int32_t net_steer_start_offCb(void *args) {
 
+    g_appCtx.net_steer_start = false;
 
-static int32_t factory_resetCb(void *arg) {
-
-    zb_resetDevice2FN();
-
-    factory_reset_status = 2;
-
-    factory_resetTimerEvt = NULL;
     return -1;
 }
 
@@ -686,26 +678,25 @@ void uart_cmd_handler() {
                 if (pkt->command == COMMAND03) {
                     /* Reset Factory */
 #if UART_PRINTF_MODE // && DEBUG_CMD
-                    printf("command 0x03. Factory Reset\r\n");
+                    printf("command 0x03. Factory Reset. net_steer_start: %d\r\n", g_appCtx.net_steer_start);
 #endif
-                    if (factory_reset_cnt == 0 && factory_reset_status != 2) {
-                        printf("FN1\r\n");
-                        zb_resetDevice2FN();
-                        factory_reset_cnt++;
-                        factory_reset_status = 1;
-                        factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(factory_resetCb, NULL, TIMEOUT_3SEC);
-                        set_command(pkt->command, pkt->seq_num, false);
+                    if (!g_appCtx.net_steer_start) {
+
                         set_status_net(STATUS_NET_FREE);
-                    } else {
-                        printf("FN2\r\n");
-                        if (factory_resetTimerEvt && factory_reset_status == 1) {
-                            TL_ZB_TIMER_CANCEL(&factory_resetTimerEvt);
+
+                        zb_factoryReset();
+
+                        g_appCtx.net_steer_start = true;
+
+                        if (g_appCtx.factory_resetTimerEvt) {
+                            TL_ZB_TIMER_CANCEL(&g_appCtx.factory_resetTimerEvt);
                         }
-                        if (factory_reset_status == 1) {
-                            factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(factory_resetCb, NULL, TIMEOUT_3SEC);
-                        }
-                        set_command(pkt->command, pkt->seq_num, false);
+                        g_appCtx.factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(net_steer_start_offCb, NULL, TIMEOUT_1MIN30SEC);
+
                     }
+
+                    set_command(pkt->command, pkt->seq_num, false);
+
 //                } else if (pkt->command == COMMAND02) {
 //                    printf("input COMMAND02\r\n");
                 } else if (pkt->command == COMMAND20) {
@@ -1223,8 +1214,13 @@ void set_status_net(status_net_t new_status) {
     }
 
     if (status_net == STATUS_NET_CONNECTED) {
-        factory_reset_cnt = 0;
-        factory_reset_status = 0;
+        g_appCtx.net_steer_start = false;
+        if (g_appCtx.factory_resetTimerEvt) {
+            TL_ZB_TIMER_CANCEL(&g_appCtx.factory_resetTimerEvt);
+        }
+
+//        factory_reset_cnt = 0;
+//        factory_reset_status = 0;
     }
 
 }
