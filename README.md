@@ -282,6 +282,9 @@ Thanks :))))
 	- Fixed SDK bug with reporting.
 - 1.0.18
 	- Added thermostat with signature `_TZE284_cvub6xbb`.
+- 1.0.19
+	- Added thermostat with signature `_TZE284_xalsoe3m`.
+	- Modified `Factory Reset` procedure.
 	
 [Top](#Top)
 
