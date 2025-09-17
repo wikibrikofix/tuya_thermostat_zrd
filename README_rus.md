@@ -26,6 +26,8 @@
 	- ["_TZE200_7rghpoxo"](doc/thermostats/tuya_thermostat_r08/README.md)
 9. Model r09
 	- ["_TZE204_6a4vxfnv"](doc/thermostats/tuya_thermostat_r09/README.md)
+9. Model r0A
+	- ["_TZE284_xalsoe3m"](doc/thermostats/tuya_thermostat_r0a/README.md)
 
 <img src="doc/images/model1.png"/>
 <img src="doc/images/model1_2.png"/>
