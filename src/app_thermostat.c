@@ -19,19 +19,29 @@ uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE] = {
         {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','1','0',0},  // etc
 };
 
+//data_point_st_t data_point_model;
 uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 uint8_t dev_therm_mode = DEV_THERM_MODE_COLD;
 
-uint8_t w_mon = DAY_MON;
-uint8_t w_tue = DAY_TUE;
-uint8_t w_wed = DAY_WED;
-uint8_t w_thu = DAY_THU;
-uint8_t w_fri = DAY_FRI;
-uint8_t w_sat = DAY_SAT;
-uint8_t w_sun = DAY_SUN;
-uint8_t w_day;
+//uint8_t w_mon = DAY_MON;
+//uint8_t w_tue = DAY_TUE;
+//uint8_t w_wed = DAY_WED;
+//uint8_t w_thu = DAY_THU;
+//uint8_t w_fri = DAY_FRI;
+//uint8_t w_sat = DAY_SAT;
+//uint8_t w_sun = DAY_SUN;
+//uint8_t w_day;
 
-void (*answer_weekly_schedule[MANUF_NAME_MAX])(void) = {
+args_get_schedule_t args_get_schedule_mon;
+args_get_schedule_t args_get_schedule_tue;
+args_get_schedule_t args_get_schedule_wed;
+args_get_schedule_t args_get_schedule_thu;
+args_get_schedule_t args_get_schedule_fri;
+args_get_schedule_t args_get_schedule_sat;
+args_get_schedule_t args_get_schedule_sun;
+args_get_schedule_t args_get_schedule_any;
+
+void (*answer_weekly_schedule[MANUF_NAME_MAX])(void *args) = {
    remote_cmd_get_schedule_1,
    remote_cmd_get_schedule_2,
    remote_cmd_get_schedule_3,
@@ -42,6 +52,7 @@ void (*answer_weekly_schedule[MANUF_NAME_MAX])(void) = {
    remote_cmd_get_schedule_8,
    remote_cmd_get_schedule_9,
    remote_cmd_get_schedule_0A,
+   remote_cmd_get_schedule_0B,
 };
 
 /*
@@ -49,6 +60,41 @@ void (*answer_weekly_schedule[MANUF_NAME_MAX])(void) = {
  *  common remote_cmd functions
  *
  */
+
+data_point_st_t* init_datapoint_model(manuf_name_t manuf_name) {
+
+    data_point_st_t *dp_model = NULL;
+
+    switch(manuf_name) {
+        case MANUF_NAME_1:
+            break;
+        case MANUF_NAME_2:
+            break;
+        case MANUF_NAME_3:
+            break;
+        case MANUF_NAME_4:
+            break;
+        case MANUF_NAME_5:
+            break;
+        case MANUF_NAME_6:
+            break;
+        case MANUF_NAME_7:
+            break;
+        case MANUF_NAME_8:
+            break;
+        case MANUF_NAME_9:
+            break;
+        case MANUF_NAME_0A:
+            break;
+        case MANUF_NAME_0B:
+            dp_model = init_datapoint_model0B();
+            break;
+        default:
+            break;
+    }
+
+    return dp_model;
+}
 
 void remote_cmd_sys_mode(void *args) {
 
@@ -286,6 +332,8 @@ void remote_cmd_deadband(void *args) {
     if (hysteresis < HYSTERESIS_MIN || hysteresis > HYSTERESIS_MAX) {
         return;
     }
+
+//    printf("hysteresis: %d\r\n", hysteresis);
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();

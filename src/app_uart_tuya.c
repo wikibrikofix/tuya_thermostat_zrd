@@ -491,6 +491,7 @@ void uart_cmd_handler() {
 #endif
 
                                     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId_arr[manuf_name]);
+                                    init_datapoint_model(manuf_name);
                                     data_point_model = data_point_model_arr[manuf_name];
 
                                     switch(manuf_name) {
@@ -503,11 +504,15 @@ void uart_cmd_handler() {
                                             break;
                                         case MANUF_NAME_3:
                                         case MANUF_NAME_4:
+                                        case MANUF_NAME_0B:
                                             if (check_answerMcuTimerEvt) {
                                                 TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
                                             }
                                             uart_timeout = TIMEOUT_15SEC;
                                             check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+                                            if (manuf_name == MANUF_NAME_0B) {
+                                                set_command(COMMAND28, seq_num, true);
+                                            }
                                             break;
                                         case MANUF_NAME_5:
                                         case MANUF_NAME_6:
@@ -882,24 +887,25 @@ void uart_cmd_handler() {
                                    data_point->dp_type == data_point_model[DP_IDX_RUNSTATE].type) {
 
 #if UART_PRINTF_MODE && DEBUG_DP
-                            printf("DP RunState\r\n");
+                            printf("DP RunState: %d\r\n", data_point->data[0]);
 #endif
                             run_state_bit_t run_state_bit;
                             run_state_bit.bit_num = RUN_STATE_HEAT_BIT;
                             if (data_point->data[0]) {
-                                if (manuf_name == MANUF_NAME_6 || MANUF_NAME_0A) {
+                                if (manuf_name == MANUF_NAME_6 || manuf_name == MANUF_NAME_0A) {
                                     run_state_bit.set = ON;
                                 } else {
                                     run_state_bit.set = OFF;
                                 }
                             } else {
-                                if (manuf_name == MANUF_NAME_6 || MANUF_NAME_0A) {
+                                if (manuf_name == MANUF_NAME_6 || manuf_name == MANUF_NAME_0A) {
                                     run_state_bit.set = OFF;
                                 } else {
                                     run_state_bit.set = ON;
                                 }
                             }
 
+                            printf("DP RunState: %d\r\n",  run_state_bit.set);
                             if (data_point_model[DP_IDX_RUNSTATE].local_cmd)
                                 data_point_model[DP_IDX_RUNSTATE].local_cmd(&run_state_bit);
 

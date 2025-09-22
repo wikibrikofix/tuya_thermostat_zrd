@@ -302,6 +302,28 @@ typedef enum {
     DP_TYPE0A_ID_66     = 0x66,     // hysteresis (1°C ... 5°C step 1°C)
 } data_point_id_type0A_t;
 
+/* data point for manufacturer id -
+ * "_TZE204_8byfmxdv"
+ *
+ * type6 (model0B)
+*/
+typedef enum {
+    DP_TYPE0B_ID_00    = 0x00,     // 0 - not support
+    DP_TYPE0B_ID_01    = 0x01,     // on off
+    DP_TYPE0B_ID_02    = 0x04,     // programming - 0 / manual - 1
+    DP_TYPE0B_ID_10    = 0x10,     // heat setpoint *10
+    DP_TYPE0B_ID_13    = 0x13,     // max heat +35°C ... +50°C step 0.5, *10
+    DP_TYPE0B_ID_18    = 0x18,     // local temperature (0x011D - 285 / 10 = 28.5°C)
+    DP_TYPE0B_ID_1A    = 0x1A,     // min heat 1°C ... +5°C, step 0.5 * 10
+    DP_TYPE0B_ID_1B    = 0x1B,     // calibration -9°C ... +9°C step 1
+    DP_TYPE0B_ID_2B    = 0x2B,     // Sensor IN - 0 / OUT - 1
+    DP_TYPE0B_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE0B_ID_28    = 0x28,     // keys lock - 1 / unlock  - 0
+    DP_TYPE0A_ID_30    = 0x30,     // schedule len 48
+    DP_TYPE0B_ID_34    = 0x34,     // level brightness of screen (off, 50%, 100%)
+    DP_TYPE0B_ID_65    = 0x65,     // hysteresis 0.5° ... 5°C step 0.5 *10
+} data_point_id_type0B_t;
+
 typedef enum {
     SCHEDULE8_MON = 0,
     SCHEDULE8_SAT,
@@ -319,6 +341,7 @@ typedef enum {
     MANUF_NAME_8,
     MANUF_NAME_9,
     MANUF_NAME_0A,
+    MANUF_NAME_0B,
     MANUF_NAME_MAX
 } manuf_name_t;
 
@@ -392,12 +415,14 @@ typedef void (*remote_cmd_t)(void *args);
 typedef void (*local_cmd_t)(void *args);
 
 typedef struct {
-    uint8_t         id;
-    uint8_t         type;
-    uint16_t        len;
-    uint16_t        divisor;
-    remote_cmd_t    remote_cmd;
-    local_cmd_t     local_cmd;
+    uint8_t         id;             // datapoint id
+    uint8_t         type;           // dp_type_t
+    uint16_t        len;            // length of datapoint
+    uint16_t        divisor;        // divisor
+    remote_cmd_t    remote_cmd;     // remote function of command
+    local_cmd_t     local_cmd;      // local function of command
+    int32_t         arg1;           // argument1, e.g. - MIN setpoint. If not used must be -1
+    int32_t         arg2;           // argument2, e.g. - MAX setpoint. If not used must be -1
 } data_point_st_t;
 
 typedef struct {
