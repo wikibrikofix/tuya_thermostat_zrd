@@ -1160,6 +1160,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
                 switch(manuf_name) {
                 case MANUF_NAME_1:
                 case MANUF_NAME_0A:
+                case MANUF_NAME_0B:
 #if UART_PRINTF_MODE
                         printf("Days other than Monday, Saturday and Sunday are not supported\r\n");
 #endif
@@ -1327,7 +1328,7 @@ status_t app_thermostatCb(zclIncomingAddrInfo_t *pAddrInfo, uint8_t cmdId, void 
 #if UART_PRINTF_MODE
                 printf("CMD Get Weekly Schedule\r\n");
 #endif
-                answer_weekly_schedule[manuf_name]();
+                answer_weekly_schedule[manuf_name](&pAddrInfo->seqNum);
 
                 break;
             case ZCL_CMD_THERMOSTAT_CLEAR_WEEKLY_SCHEDULE:

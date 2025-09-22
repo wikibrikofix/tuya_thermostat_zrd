@@ -52,7 +52,7 @@ static void get_schedule(void *args) {
 
     if(!zb_isDeviceJoinedNwk()) return;
 
-    uint8_t *day = (uint8_t*)args;
+    args_get_schedule_t *args_get_schedule = (args_get_schedule_t*)args;
 
     epInfo_t dstEpInfo;
     TL_SETSTRUCTCONTENT(dstEpInfo, 0);
@@ -71,31 +71,31 @@ static void get_schedule(void *args) {
 
     cmd.dayOfWeekForSequence = 0;
 
-        if (*day & DAY_MON) {
+        if (args_get_schedule->day & DAY_MON) {
             //mon
             heat_mode =  g_zcl_scheduleData.schedule_mon;
             cmd.dayOfWeekForSequence = DAY_MON;
-        } else if (*day & DAY_TUE) {
+        } else if (args_get_schedule->day & DAY_TUE) {
             //tue
             heat_mode =  g_zcl_scheduleData.schedule_tue;
             cmd.dayOfWeekForSequence = DAY_TUE;
-        } else if (*day & DAY_WED) {
+        } else if (args_get_schedule->day & DAY_WED) {
             //wed
             heat_mode =  g_zcl_scheduleData.schedule_wed;
             cmd.dayOfWeekForSequence = DAY_WED;
-        } else if (*day & DAY_THU) {
+        } else if (args_get_schedule->day & DAY_THU) {
             //thu
             heat_mode =  g_zcl_scheduleData.schedule_thu;
             cmd.dayOfWeekForSequence = DAY_THU;
-        } else if (*day & DAY_FRI) {
+        } else if (args_get_schedule->day & DAY_FRI) {
             //fri
             heat_mode =  g_zcl_scheduleData.schedule_fri;
             cmd.dayOfWeekForSequence = DAY_FRI;
-        } else if (*day & DAY_SAT) {
+        } else if (args_get_schedule->day & DAY_SAT) {
             //sat
             heat_mode =  g_zcl_scheduleData.schedule_sat;
             cmd.dayOfWeekForSequence = DAY_SAT;
-        } else if (*day & DAY_SUN) {
+        } else if (args_get_schedule->day & DAY_SUN) {
             //sun
             heat_mode =  g_zcl_scheduleData.schedule_sun;
             cmd.dayOfWeekForSequence = DAY_SUN;
@@ -111,7 +111,11 @@ static void get_schedule(void *args) {
 //            printf("i: %d, time: %d, temp: %d\r\n", i, cmd.sequenceMode.pHeatMode[i].transTime, cmd.sequenceMode.pHeatMode[i].heatSetpoint);
 //        }
 
-    zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
+        if (args_get_schedule->rsp) {
+            zcl_thermostat_getWeeklyScheduleRspCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, args_get_schedule->seqNum, &cmd);
+        } else {
+            zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
+        }
 }
 
 
@@ -236,9 +240,9 @@ void local_cmd_set_schedule_2(void *args) {
 
     thermostat_settings_save();
 
-    w_day = schedule_args->w_day;
-
-    TL_SCHEDULE_TASK(get_schedule, &w_day);
+    args_get_schedule_any.day = schedule_args->w_day;
+    args_get_schedule_any.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_any);
 }
 
 /*
@@ -435,7 +439,9 @@ static void remote_cmd_set_schedule_mon() {
 
     set_seq_num(seq_num);
 
-    TL_SCHEDULE_TASK(get_schedule, &w_mon);
+    args_get_schedule_mon.day = DAY_MON;
+    args_get_schedule_mon.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_mon);
 }
 
 static void remote_cmd_set_schedule_tue() {
@@ -483,7 +489,9 @@ static void remote_cmd_set_schedule_tue() {
 
     set_seq_num(seq_num);
 
-    TL_SCHEDULE_TASK(get_schedule, &w_tue);
+    args_get_schedule_tue.day = DAY_TUE;
+    args_get_schedule_tue.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_tue);
 }
 
 static void remote_cmd_set_schedule_wed() {
@@ -531,7 +539,9 @@ static void remote_cmd_set_schedule_wed() {
 
     set_seq_num(seq_num);
 
-    TL_SCHEDULE_TASK(get_schedule, &w_wed);
+    args_get_schedule_wed.day = DAY_WED;
+    args_get_schedule_wed.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_wed);
 }
 
 static void remote_cmd_set_schedule_thu() {
@@ -579,7 +589,9 @@ static void remote_cmd_set_schedule_thu() {
 
     set_seq_num(seq_num);
 
-    TL_SCHEDULE_TASK(get_schedule, &w_thu);
+    args_get_schedule_thu.day = DAY_THU;
+    args_get_schedule_thu.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_thu);
 }
 
 static void remote_cmd_set_schedule_fri() {
@@ -627,7 +639,9 @@ static void remote_cmd_set_schedule_fri() {
 
     set_seq_num(seq_num);
 
-    TL_SCHEDULE_TASK(get_schedule, &w_fri);
+    args_get_schedule_fri.day = DAY_FRI;
+    args_get_schedule_fri.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_fri);
 }
 
 static void remote_cmd_set_schedule_sat() {
@@ -675,7 +689,9 @@ static void remote_cmd_set_schedule_sat() {
 
     set_seq_num(seq_num);
 
-    TL_SCHEDULE_TASK(get_schedule, &w_sat);
+    args_get_schedule_sat.day = DAY_SAT;
+    args_get_schedule_sat.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sat);
 }
 
 static void remote_cmd_set_schedule_sun() {
@@ -723,7 +739,9 @@ static void remote_cmd_set_schedule_sun() {
 
     set_seq_num(seq_num);
 
-    TL_SCHEDULE_TASK(get_schedule, &w_sun);
+    args_get_schedule_sun.day = DAY_SUN;
+    args_get_schedule_sun.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sun);
 }
 
 void remote_cmd_set_schedule_2(void *args) {
@@ -763,14 +781,37 @@ void remote_cmd_set_schedule_2(void *args) {
     thermostat_settings_save();
 }
 
-void remote_cmd_get_schedule_2() {
+void remote_cmd_get_schedule_2(void *args) {
 
-    TL_SCHEDULE_TASK(get_schedule, &w_mon);
-    TL_SCHEDULE_TASK(get_schedule, &w_tue);
-    TL_SCHEDULE_TASK(get_schedule, &w_wed);
-    TL_SCHEDULE_TASK(get_schedule, &w_thu);
-    TL_SCHEDULE_TASK(get_schedule, &w_fri);
-    TL_SCHEDULE_TASK(get_schedule, &w_sat);
-    TL_SCHEDULE_TASK(get_schedule, &w_sun);
+    uint8_t *seqNum = (uint8_t*)args;
+
+    args_get_schedule_mon.day = DAY_MON;
+    args_get_schedule_mon.seqNum = *seqNum;
+    args_get_schedule_mon.rsp = true;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_mon);
+
+    args_get_schedule_tue.day = DAY_TUE;
+    args_get_schedule_tue.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_tue);
+
+    args_get_schedule_wed.day = DAY_WED;
+    args_get_schedule_wed.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_wed);
+
+    args_get_schedule_thu.day = DAY_THU;
+    args_get_schedule_thu.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_thu);
+
+    args_get_schedule_fri.day = DAY_FRI;
+    args_get_schedule_fri.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_fri);
+
+    args_get_schedule_sat.day = DAY_SAT;
+    args_get_schedule_sat.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sat);
+
+    args_get_schedule_sun.day = DAY_SUN;
+    args_get_schedule_sun.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sun);
 }
 

@@ -52,7 +52,7 @@ static void get_schedule(void *args) {
 
     if(!zb_isDeviceJoinedNwk()) return;
 
-    uint8_t *day = (uint8_t*)args;
+    args_get_schedule_t *args_get_schedule = (args_get_schedule_t*)args;
 
     epInfo_t dstEpInfo;
     TL_SETSTRUCTCONTENT(dstEpInfo, 0);
@@ -71,15 +71,15 @@ static void get_schedule(void *args) {
 
     cmd.dayOfWeekForSequence = 0;
 
-    if (*day & DAY_MON) {
+    if (args_get_schedule->day & DAY_MON) {
         //mon
         heat_mode =  g_zcl_scheduleData.schedule_mon;
         cmd.dayOfWeekForSequence = DAY_MON;
-    } else if (*day & DAY_SAT) {
+    } else if (args_get_schedule->day & DAY_SAT) {
         //sat
         heat_mode =  g_zcl_scheduleData.schedule_sat;
         cmd.dayOfWeekForSequence = DAY_SAT;
-    } else  if (*day & DAY_SUN){
+    } else  if (args_get_schedule->day & DAY_SUN){
         //sun
         heat_mode =  g_zcl_scheduleData.schedule_sun;
         cmd.dayOfWeekForSequence = DAY_SUN;
@@ -95,9 +95,11 @@ static void get_schedule(void *args) {
 //            printf("i: %d, time: %d, temp: %d\r\n", i, cmd.sequenceMode.pHeatMode[i].transTime, cmd.sequenceMode.pHeatMode[i].heatSetpoint);
 //        }
 
-
-    zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
-
+    if (args_get_schedule->rsp) {
+        zcl_thermostat_getWeeklyScheduleRspCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, args_get_schedule->seqNum, &cmd);
+    } else {
+        zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
+    }
 }
 
 
@@ -159,9 +161,17 @@ void local_cmd_set_schedule_1(void *args) {
 
     thermostat_settings_save();
 
-    TL_SCHEDULE_TASK(get_schedule, &w_mon);
-    TL_SCHEDULE_TASK(get_schedule, &w_sat);
-    TL_SCHEDULE_TASK(get_schedule, &w_sun);
+    args_get_schedule_mon.day = DAY_MON;
+    args_get_schedule_mon.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_mon);
+
+    args_get_schedule_sat.day = DAY_SAT;
+    args_get_schedule_sat.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sat);
+
+    args_get_schedule_sun.day = DAY_SUN;
+    args_get_schedule_sun.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sun);
 }
 
 /*
@@ -209,9 +219,10 @@ void remote_cmd_oper_mode_1(void *args) {
 
 void remote_cmd_set_schedule_1(void *args) {
 
-    uint8_t *arg = (uint8_t*)args;
+    args_get_schedule_any.day = *(uint8_t*)args;
+    args_get_schedule_any.rsp = false;
 
-    w_day = *arg;
+    printf("day: %d\r\n", args_get_schedule_any.day);
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
@@ -261,12 +272,23 @@ void remote_cmd_set_schedule_1(void *args) {
 
     thermostat_settings_save();
 
-    TL_SCHEDULE_TASK(get_schedule, &w_day);
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_any);
 }
 
-void remote_cmd_get_schedule_1() {
+void remote_cmd_get_schedule_1(void *args) {
 
-    TL_SCHEDULE_TASK(get_schedule, &w_mon);
-    TL_SCHEDULE_TASK(get_schedule, &w_sat);
-    TL_SCHEDULE_TASK(get_schedule, &w_sun);
+    uint8_t *seqNum = (uint8_t*)args;
+
+    args_get_schedule_mon.day = DAY_MON;
+    args_get_schedule_mon.seqNum = *seqNum;
+    args_get_schedule_mon.rsp = true;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_mon);
+
+    args_get_schedule_sat.day = DAY_SAT;
+    args_get_schedule_sat.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sat);
+
+    args_get_schedule_sun.day = DAY_SUN;
+    args_get_schedule_sun.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sun);
 }
