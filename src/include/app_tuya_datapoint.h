@@ -310,7 +310,7 @@ typedef enum {
 typedef enum {
     DP_TYPE0B_ID_00    = 0x00,     // 0 - not support
     DP_TYPE0B_ID_01    = 0x01,     // on off
-    DP_TYPE0B_ID_02    = 0x04,     // programming - 0 / manual - 1
+    DP_TYPE0B_ID_02    = 0x02,     // programming - 0 / manual - 1
     DP_TYPE0B_ID_10    = 0x10,     // heat setpoint *10
     DP_TYPE0B_ID_13    = 0x13,     // max heat +35°C ... +50°C step 0.5, *10
     DP_TYPE0B_ID_18    = 0x18,     // local temperature (0x011D - 285 / 10 = 28.5°C)
