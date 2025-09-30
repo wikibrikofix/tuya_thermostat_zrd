@@ -196,6 +196,7 @@ void zb_bdbCommissioningCb(uint8_t status, void *arg)
 #endif
         break;
     case BDB_COMMISSION_STA_IN_PROGRESS:
+        set_status_net(STATUS_NET_IN_PROGRESS);
         break;
     case BDB_COMMISSION_STA_NOT_AA_CAPABLE:
         break;
