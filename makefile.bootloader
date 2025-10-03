@@ -41,7 +41,7 @@ INCLUDE_PATHS := \
 -I$(SDK_PATH)/proj/common \
 -I$(SDK_PATH)/proj \
 -I$(SRC_PATH)/common \
--I$(SRC_PATH)/bootloader \
+-I$(SRC_PATH)/bootLoader \
 -I$(SRC_PATH)/include/boards
 
 
@@ -153,6 +153,7 @@ bootloader-clean:
 	
 pre-build:
 	mkdir -p $(foreach s,$(OUT_DIR),$(OUT_PATH)$(s))
+	mkdir -p $(OUT_PATH)/$(SRC_PATH)/bootLoader
 	-@echo ' '
 
 post-build:
