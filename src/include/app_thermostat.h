@@ -139,6 +139,7 @@ extern void (*answer_weekly_schedule[MANUF_NAME_MAX])(void *args);
  */
 
 data_point_st_t* init_datapoint_model(manuf_name_t manuf_name);
+data_point_st_t *init_datapoint_model1();
 data_point_st_t *init_datapoint_model0B();
 
 void remote_cmd_sys_mode(void *args);
@@ -394,7 +395,7 @@ void remote_cmd_set_schedule_0A(void *args);
 #define remote_cmd_sys_mode_0B          remote_cmd_sys_mode_1
 #define remote_cmd_heating_set_0B       remote_cmd_heating_set_1
 #define remote_cmd_temp_calibration_0B  remote_cmd_temp_calibration_1
-#define remote_cmd_sensor_used_0B       remote_cmd_sensor_used_6
+#define remote_cmd_sensor_used_0B       remote_cmd_sensor_used
 #define remote_cmd_keylock_0B           remote_cmd_keylock_1
 #define remote_cmd_deadband_0B          remote_cmd_deadband_6
 #define remote_cmd_min_setpoint_0B      remote_cmd_min_setpoint
@@ -683,7 +684,7 @@ void local_cmd_set_schedule_0A(void *args);
 #define local_cmd_max_setpoint_0B       local_cmd_max_setpoint
 #define local_cmd_deadband_0B           local_cmd_deadband
 #define local_cmd_keylock_0B            local_cmd_keylock
-#define local_cmd_sensor_used_0B        local_cmd_sensor_used_6
+#define local_cmd_sensor_used_0B        local_cmd_sensor_used
 #define local_cmd_set_run_state_0B      local_cmd_set_run_state
 #define local_cmd_onoff_state_0B        local_cmd_onoff_state
 #define local_cmd_oper_mode_0B          local_cmd_oper_mode_2

@@ -8,18 +8,18 @@
  * type1 (model1)
 */
 typedef enum {
-    DP_TYPE1_ID_00    = 0x00,     // heat min  - if 0 - not support
+    DP_TYPE1_ID_00    = 0x00,     // 0 - not support
     DP_TYPE1_ID_01    = 0x01,     // on off
     DP_TYPE1_ID_02    = 0x02,     // manual / programming
     DP_TYPE1_ID_03    = 0x03,     // unknown
     DP_TYPE1_ID_10    = 0x10,     // heat setpoint
-    DP_TYPE1_ID_13    = 0x13,     // max heat
+    DP_TYPE1_ID_13    = 0x13,     // max (protection max temperature (+45°C ... +70°C))
     DP_TYPE1_ID_18    = 0x18,     // local temperature
-    DP_TYPE1_ID_1A    = 0x1A,     // hysteresis
+    DP_TYPE1_ID_1A    = 0x1A,     // hysteresis (1°C ... 5°C)
     DP_TYPE1_ID_1B    = 0x1B,     // calibration
     DP_TYPE1_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
     DP_TYPE1_ID_28    = 0x28,     // lock / unlock keys
-    DP_TYPE1_ID_2B    = 0x2B,     // Sensor IN/AL/OU
+    DP_TYPE1_ID_2B    = 0x2B,     // Sensor IN - 0 / AL - 1 / OU - 2
     DP_TYPE1_ID_65    = 0x65,     // schedule
 } data_point_id_type1_t;
 
