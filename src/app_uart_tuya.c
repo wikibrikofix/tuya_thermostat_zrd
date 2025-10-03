@@ -905,7 +905,7 @@ void uart_cmd_handler() {
                                 }
                             }
 
-                            printf("DP RunState: %d\r\n",  run_state_bit.set);
+//                            printf("DP RunState: %d\r\n",  run_state_bit.set);
                             if (data_point_model[DP_IDX_RUNSTATE].local_cmd)
                                 data_point_model[DP_IDX_RUNSTATE].local_cmd(&run_state_bit);
 
