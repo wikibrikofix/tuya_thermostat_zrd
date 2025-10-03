@@ -5,6 +5,16 @@
  *
  * id, type, len, divisor, remote_commands_functionCb, local_commands_functionCb, arg1, arg2
 */
+#define R0B_ABS_HEAT_MIN            100
+#define R0B_ABS_HEAT_MAX            5000
+#define R0B_HEAT_MIN_MIN            100         // * 100
+#define R0B_HEAT_MIN_MAX            500         // * 100
+#define R0B_HEAT_MAX_MIN            3500        // * 100
+#define R0B_HEAT_MAX_MAX            5000        // * 100
+#define R0B_DEADZONE_MIN            5           // * 10
+#define R0B_DEADZONE_MAX            50          // * 10
+#define R0B_CALIBRATION_MIN        -90          // * 10
+#define R0B_CALIBRATION_MAX         90          // * 10
 
 data_point_st_t data_point_model0B[DP_IDX_MAXNUM];
 
@@ -12,8 +22,8 @@ data_point_st_t *init_datapoint_model0B() {
 
     memset(data_point_model0B, 0, sizeof(data_point_model0B));
 
-    g_zcl_thermostatAttrs.absMinHeatSetpointLimit = 100;            // min +1°C
-    g_zcl_thermostatAttrs.absMaxHeatSetpointLimit = 5000;           // max +50°C
+    g_zcl_thermostatAttrs.absMinHeatSetpointLimit = R0B_ABS_HEAT_MIN;           // min +1°C
+    g_zcl_thermostatAttrs.absMaxHeatSetpointLimit = R0B_ABS_HEAT_MIN;           // max +50°C
 
     data_point_model0B[DP_IDX_ONOFF].id = DP_TYPE0B_ID_01;
     data_point_model0B[DP_IDX_ONOFF].type = DP_BOOL;
@@ -44,8 +54,8 @@ data_point_st_t *init_datapoint_model0B() {
     data_point_model0B[DP_IDX_MIN].divisor = 10;
     data_point_model0B[DP_IDX_MIN].remote_cmd = remote_cmd_min_setpoint_0B;
     data_point_model0B[DP_IDX_MIN].local_cmd = local_cmd_min_setpoint_0B;
-    data_point_model0B[DP_IDX_MIN].arg1 = 10;                                   // 1°C
-    data_point_model0B[DP_IDX_MIN].arg2 = 50;                                   // 5°C
+    data_point_model0B[DP_IDX_MIN].arg1 = R0B_HEAT_MIN_MIN;                     // 1°C
+    data_point_model0B[DP_IDX_MIN].arg2 = R0B_HEAT_MIN_MAX;                     // 5°C
 
     data_point_model0B[DP_IDX_MAX].id = DP_TYPE0B_ID_13;
     data_point_model0B[DP_IDX_MAX].type = DP_VAL;
@@ -53,8 +63,8 @@ data_point_st_t *init_datapoint_model0B() {
     data_point_model0B[DP_IDX_MAX].divisor = 10;
     data_point_model0B[DP_IDX_MAX].remote_cmd = remote_cmd_max_setpoint_0B;
     data_point_model0B[DP_IDX_MAX].local_cmd = local_cmd_max_setpoint_0B;
-    data_point_model0B[DP_IDX_MAX].arg1 = 350;                                  // 35°C
-    data_point_model0B[DP_IDX_MAX].arg2 = 500;                                  // 50°C
+    data_point_model0B[DP_IDX_MAX].arg1 = R0B_HEAT_MAX_MIN;                     // 35°C
+    data_point_model0B[DP_IDX_MAX].arg2 = R0B_HEAT_MAX_MAX;                     // 50°C
 
     data_point_model0B[DP_IDX_DEADZONE].id = DP_TYPE0B_ID_65;
     data_point_model0B[DP_IDX_DEADZONE].type = DP_VAL;
@@ -62,8 +72,8 @@ data_point_st_t *init_datapoint_model0B() {
     data_point_model0B[DP_IDX_DEADZONE].divisor = 1;
     data_point_model0B[DP_IDX_DEADZONE].remote_cmd = remote_cmd_deadband_0B;
     data_point_model0B[DP_IDX_DEADZONE].local_cmd = local_cmd_deadband_0B;
-    data_point_model0B[DP_IDX_DEADZONE].arg1 = 5;                               // 0.5°C
-    data_point_model0B[DP_IDX_DEADZONE].arg2 = 50;                              // 5°C
+    data_point_model0B[DP_IDX_DEADZONE].arg1 = R0B_DEADZONE_MIN;                // 0.5°C
+    data_point_model0B[DP_IDX_DEADZONE].arg2 = R0B_DEADZONE_MAX;                // 5°C
 
     data_point_model0B[DP_IDX_CALIBRATION].id = DP_TYPE0B_ID_1B;
     data_point_model0B[DP_IDX_CALIBRATION].type = DP_VAL;
@@ -71,8 +81,8 @@ data_point_st_t *init_datapoint_model0B() {
     data_point_model0B[DP_IDX_CALIBRATION].divisor = 1;
     data_point_model0B[DP_IDX_CALIBRATION].remote_cmd = remote_cmd_temp_calibration_0B;
     data_point_model0B[DP_IDX_CALIBRATION].local_cmd = local_cmd_temp_calibration_0B;
-    data_point_model0B[DP_IDX_CALIBRATION].arg1 = -9;
-    data_point_model0B[DP_IDX_CALIBRATION].arg2 = 9;
+    data_point_model0B[DP_IDX_CALIBRATION].arg1 = R0B_CALIBRATION_MIN;
+    data_point_model0B[DP_IDX_CALIBRATION].arg2 = R0B_CALIBRATION_MAX;
 
     data_point_model0B[DP_IDX_RUNSTATE].id = DP_TYPE0B_ID_24;
     data_point_model0B[DP_IDX_RUNSTATE].type = DP_ENUM;
