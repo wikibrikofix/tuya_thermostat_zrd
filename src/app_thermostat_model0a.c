@@ -6,44 +6,111 @@
  * id, type, len, divisor, remote_commands_functionCb, local_commands_functionCb
 */
 
-data_point_st_t data_point_model0A[DP_IDX_MAXNUM] = {
-/*00*/  {DP_TYPE0A_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_0A, local_cmd_onoff_state_0A},             // onoff
-/*01*/  {DP_TYPE0A_ID_10, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_0A},                              // local temperature
-/*02*/  {DP_TYPE0A_ID_32, DP_VAL,  4,    1,  remote_cmd_heating_set_0A, local_cmd_heating_set_0A},          // heat setpoint
-/*03*/  {DP_TYPE0A_ID_12, DP_VAL,  4,    1,  remote_cmd_min_setpoint_0A, local_cmd_min_setpoint_0A},        // min heat setpoint
-/*04*/  {DP_TYPE0A_ID_22, DP_VAL,  4,    1,  remote_cmd_max_setpoint_0A, local_cmd_max_setpoint_0A},        // max heat setpoint
-/*05*/  {DP_TYPE0A_ID_66, DP_VAL,  4,    1,  remote_cmd_deadband_0A, local_cmd_deadband_0A},                // hysteresis
-/*06*/  {DP_TYPE0A_ID_13, DP_VAL,  4,    1,  remote_cmd_temp_calibration_0A, local_cmd_temp_calibration_0A},// local temperature calibration
-/*07*/  {DP_TYPE0A_ID_2F, DP_ENUM, 1,    1,  NULL, local_cmd_set_run_state_0A},                     // 0x00 - heat, 0x01 - idle
-/*08*/  {DP_TYPE0A_ID_20, DP_ENUM, 1,    1,  remote_cmd_sensor_used_0A, local_cmd_sensor_used_0A},  // sensor IN/OU/AL
-/*09*/  {DP_TYPE0A_ID_02, DP_ENUM, 1,    1,  remote_cmd_oper_mode_0A, local_cmd_oper_mode_0A},      // manual (setpoint) / programming (schedule)
-/*10*/  {DP_TYPE0A_ID_27, DP_BOOL, 1,    1,  remote_cmd_keylock_0A, local_cmd_keylock_0A},          // lock / unlock keys (child lock)
-/*11*/  {DP_TYPE0A_ID_44, DP_RAW,  0x30, 1,  remote_cmd_set_schedule_0A, local_cmd_set_schedule_0A},// schedule
-/*12*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // unknown
-/*13*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // temperature of outer sensor
-/*14*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // frost protected
-/*15*/  {DP_TYPE0A_ID_65, DP_VAL,  4,    1,  remote_cmd_heat_protect_0A, local_cmd_heat_protect_0A},// heat protected
-/*16*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule mon
-/*17*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule tue
-/*18*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule wed
-/*19*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule thu
-/*20*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule fri
-/*21*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule sat
-/*22*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule sun
-/*23*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    1,  NULL, NULL},                                           // level brightness 06:00-22:00
-/*24*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    1,  NULL, NULL},                                           // level brightness 22:00-06:00
-/*25*/  {DP_TYPE0A_ID_28, DP_BOOL, 1,    1,  remote_cmd_eco_mode_0A, local_cmd_eco_mode_0A},        // eco mode
-/*26*/  {DP_TYPE0A_ID_00, DP_VAL,  0,    0,  NULL, NULL},                                           // eco mode's heat temperature
-/*27*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // eco mode's cool temperature
-/*28*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // sound
-/*29*/  {DP_TYPE0A_ID_00, DP_BOOL, 0,    0,  NULL, NULL},                                           // default setting
-/*30*/  {DP_TYPE0A_ID_00, DP_ENUM, 0,    0,  NULL, NULL},                                           // type relay NC or NO (inversion)
-/*31*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // thermostat mode ext.
-/*32*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // fan mode
-/*33*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // fan control
-/*34*/  {DP_TYPE0A_ID_00, DP_VAL,  0,    0,  NULL, NULL},                                           // external sensor calibration
-/*35*/  {DP_TYPE0A_ID_00, DP_ENUM, 0,    0,  NULL, NULL},                                           // mode key lock
-};
+data_point_st_t data_point_model0A[DP_IDX_MAXNUM];
+
+data_point_st_t *init_datapoint_model0A() {
+
+    memset(data_point_model0A, 0, sizeof(data_point_model0A));
+
+    g_zcl_thermostatAttrs.absMinHeatSetpointLimit = 100;            // min +1°C
+    g_zcl_thermostatAttrs.absMaxHeatSetpointLimit = 5000;           // max +50°C
+
+    data_point_model0A[DP_IDX_ONOFF].id = DP_TYPE0A_ID_01;
+    data_point_model0A[DP_IDX_ONOFF].type = DP_BOOL;
+    data_point_model0A[DP_IDX_ONOFF].len = 1;
+    data_point_model0A[DP_IDX_ONOFF].remote_cmd = remote_cmd_sys_mode_0A;
+    data_point_model0A[DP_IDX_ONOFF].local_cmd = local_cmd_onoff_state_0A;
+
+    data_point_model0A[DP_IDX_TEMP].id = DP_TYPE0A_ID_10;
+    data_point_model0A[DP_IDX_TEMP].type = DP_VAL;
+    data_point_model0A[DP_IDX_TEMP].len = 4;
+    data_point_model0A[DP_IDX_TEMP].divisor = 10;
+    data_point_model0A[DP_IDX_TEMP].local_cmd = local_cmd_inner_sensor_0A;
+
+    return data_point_model0A;
+}
+
+///*02*/  {DP_TYPE0A_ID_32, DP_VAL,  4,    1,  remote_cmd_heating_set_0A, local_cmd_heating_set_0A},          // heat setpoint
+///*03*/  {DP_TYPE0A_ID_12, DP_VAL,  4,    1,  remote_cmd_min_setpoint_0A, local_cmd_min_setpoint_0A},        // min heat setpoint
+///*04*/  {DP_TYPE0A_ID_22, DP_VAL,  4,    1,  remote_cmd_max_setpoint_0A, local_cmd_max_setpoint_0A},        // max heat setpoint
+///*05*/  {DP_TYPE0A_ID_66, DP_VAL,  4,    1,  remote_cmd_deadband_0A, local_cmd_deadband_0A},                // hysteresis
+///*06*/  {DP_TYPE0A_ID_13, DP_VAL,  4,    1,  remote_cmd_temp_calibration_0A, local_cmd_temp_calibration_0A},// local temperature calibration
+///*07*/  {DP_TYPE0A_ID_2F, DP_ENUM, 1,    1,  NULL, local_cmd_set_run_state_0A},                     // 0x00 - heat, 0x01 - idle
+///*08*/  {DP_TYPE0A_ID_20, DP_ENUM, 1,    1,  remote_cmd_sensor_used_0A, local_cmd_sensor_used_0A},  // sensor IN/OU/AL
+///*09*/  {DP_TYPE0A_ID_02, DP_ENUM, 1,    1,  remote_cmd_oper_mode_0A, local_cmd_oper_mode_0A},      // manual (setpoint) / programming (schedule)
+///*10*/  {DP_TYPE0A_ID_27, DP_BOOL, 1,    1,  remote_cmd_keylock_0A, local_cmd_keylock_0A},          // lock / unlock keys (child lock)
+///*11*/  {DP_TYPE0A_ID_44, DP_RAW,  0x30, 1,  remote_cmd_set_schedule_0A, local_cmd_set_schedule_0A},// schedule
+///*12*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // unknown
+///*13*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // temperature of outer sensor
+///*14*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // frost protected
+///*15*/  {DP_TYPE0A_ID_65, DP_VAL,  4,    1,  remote_cmd_heat_protect_0A, local_cmd_heat_protect_0A},// heat protected
+///*16*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule mon
+///*17*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule tue
+///*18*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule wed
+///*19*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule thu
+///*20*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule fri
+///*21*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule sat
+///*22*/  {DP_TYPE0A_ID_00, DP_RAW,  0x0,  10, NULL, NULL},                      // schedule sun
+///*23*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    1,  NULL, NULL},                                           // level brightness 06:00-22:00
+///*24*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    1,  NULL, NULL},                                           // level brightness 22:00-06:00
+///*25*/  {DP_TYPE0A_ID_28, DP_BOOL, 1,    1,  remote_cmd_eco_mode_0A, local_cmd_eco_mode_0A},        // eco mode
+///*26*/  {DP_TYPE0A_ID_00, DP_VAL,  0,    0,  NULL, NULL},                                           // eco mode's heat temperature
+///*27*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // eco mode's cool temperature
+///*28*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // sound
+///*29*/  {DP_TYPE0A_ID_00, DP_BOOL, 0,    0,  NULL, NULL},                                           // default setting
+///*30*/  {DP_TYPE0A_ID_00, DP_ENUM, 0,    0,  NULL, NULL},                                           // type relay NC or NO (inversion)
+///*31*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // thermostat mode ext.
+///*32*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // fan mode
+///*33*/  {DP_TYPE0A_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                           // fan control
+///*34*/  {DP_TYPE0A_ID_00, DP_VAL,  0,    0,  NULL, NULL},                                           // external sensor calibration
+///*35*/  {DP_TYPE0A_ID_00, DP_ENUM, 0,    0,  NULL, NULL},                                           // mode key lock
+//};
+
+data_point_model0A[DP_IDX_TEMP];
+
+typedef enum {
+    DP_IDX_TEMP,                // 01
+    DP_IDX_SETPOINT,            // 02
+    DP_IDX_MIN,                 // 03
+    DP_IDX_MAX,                 // 04
+    DP_IDX_DEADZONE,            // 05
+    DP_IDX_CALIBRATION,         // 06
+    DP_IDX_RUNSTATE,            // 07
+    DP_IDX_SENSOR,              // 08
+    DP_IDX_PROG,                // 09
+    DP_IDX_LOCKUNLOCK,          // 10
+    DP_IDX_SCHEDULE,            // 11
+    DP_IDX_UNKNOWN,             // 12
+    DP_IDX_TEMP_OUT,            // 13
+    DP_IDX_FROST_PROTECT,       // 14
+    DP_IDX_HEAT_PROTECT,        // 15
+    DP_IDX_SCHEDULE_MON,        // 16
+    DP_IDX_SCHEDULE_TUE,        // 17
+    DP_IDX_SCHEDULE_WED,        // 18
+    DP_IDX_SCHEDULE_THU,        // 19
+    DP_IDX_SCHEDULE_FRI,        // 20
+    DP_IDX_SCHEDULE_SAT,        // 21
+    DP_IDX_SCHEDULE_SUN,        // 22
+    DP_IDX_LEVEL_A,             // 23
+    DP_IDX_LEVEL_B,             // 24
+    DP_IDX_ECO_MODE,            // 25
+    DP_IDX_ECO_HEAT_TEMP,       // 26
+    DP_IDX_ECO_COOL_TEMP,       // 27
+    DP_IDX_SOUND,               // 28
+    DP_IDX_SETTINGS_RESET,      // 29
+    DP_IDX_INVERSION,           // 30
+    DP_IDX_THERM_MODE,          // 31
+    DP_IDX_FAN_MODE,            // 32
+    DP_IDX_FAN_CONTROL,         // 33
+    DP_IDX_EXT_CALIBRATION,     // 34
+    DP_IDX_MODE_LOCK,           // 35
+    DP_IDX_MAXNUM               // 36
+} data_point_idx_t;
+
+//data_point_st_t data_point_model0A[DP_IDX_MAXNUM] = {
+///*00*/  {DP_TYPE0A_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_0A, local_cmd_onoff_state_0A},             // onoff
+///*01*/  {DP_TYPE0A_ID_10, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_0A},                              // local temperature
+
 
 /*
  *
