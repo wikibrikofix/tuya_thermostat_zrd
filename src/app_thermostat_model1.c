@@ -7,10 +7,10 @@
  * id, type, len, divisor, remote_commands_functionCb, local_commands_functionCb
 */
 
-#define R01_ABS_HEAT_MIN            100
+#define R01_ABS_HEAT_MIN            500
 #define R01_ABS_HEAT_MAX            4500
-#define R0B_HEAT_MAX_MIN            1500        // * 100
-#define R0B_HEAT_MAX_MAX            4500        // * 100
+#define R01_HEAT_MIN_MIN            500         // * 100
+#define R01_HEAT_MAX_MAX            4500        // * 100
 #define R01_HEAT_PROTECT_MIN        4500        // * 100
 #define R01_HEAT_PROTECT_MAX        7000        // * 100
 #define R01_DEADZONE_MIN            1
@@ -24,9 +24,8 @@ data_point_st_t *init_datapoint_model1() {
 
     memset(data_point_model1, 0, sizeof(data_point_model1));
 
-    g_zcl_thermostatAttrs.absMinHeatSetpointLimit = R01_ABS_HEAT_MIN;       // min +1°C
-    g_zcl_thermostatAttrs.absMaxHeatSetpointLimit = R01_ABS_HEAT_MIN;       // max +70°C
-
+    g_zcl_thermostatAttrs.absMinHeatSetpointLimit = R01_ABS_HEAT_MIN;       // min +5°C
+    g_zcl_thermostatAttrs.absMaxHeatSetpointLimit = R01_ABS_HEAT_MIN;       // max +45°C
 
     data_point_model1[DP_IDX_ONOFF].id = DP_TYPE1_ID_01;
     data_point_model1[DP_IDX_ONOFF].type = DP_BOOL;
@@ -54,8 +53,8 @@ data_point_st_t *init_datapoint_model1() {
     data_point_model1[DP_IDX_MAX].divisor = 1;
     data_point_model1[DP_IDX_MAX].remote_cmd = remote_cmd_max_setpoint_1;
     data_point_model1[DP_IDX_MAX].local_cmd = local_cmd_max_setpoint_1;
-    data_point_model1[DP_IDX_MAX].arg1 = R0B_HEAT_MAX_MIN;
-    data_point_model1[DP_IDX_MAX].arg2 = R0B_HEAT_MAX_MAX;
+    data_point_model1[DP_IDX_MAX].arg1 = R01_HEAT_MIN_MIN;
+    data_point_model1[DP_IDX_MAX].arg2 = R01_HEAT_MAX_MAX;
 
     data_point_model1[DP_IDX_DEADZONE].id = DP_TYPE1_ID_1A;
     data_point_model1[DP_IDX_DEADZONE].type = DP_VAL;
