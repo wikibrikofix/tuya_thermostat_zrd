@@ -286,7 +286,9 @@ Thanks :))))
 	- Added thermostat with signature `_TZE284_cvub6xbb`.
 - 1.0.19
 	- Added thermostat with signature `_TZE284_xalsoe3m`.
+	- Added thermostat with signature `_TZE204_8byfmxdv`.
 	- Modified `Factory Reset` procedure.
+	- Added the ability to change the thermostat's `ZigBee model` via the `mqtt` topic.
 	
 [Top](#Top)
 
