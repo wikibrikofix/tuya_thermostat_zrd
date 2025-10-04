@@ -293,6 +293,11 @@ static void app_zclWriteReqCmd(uint8_t endPoint, uint16_t clusterId, zclWriteCmd
                 uint8_t mode = attr[i].attrData[0];
                 if (data_point_model[DP_IDX_MODE_LOCK].remote_cmd)
                     data_point_model[DP_IDX_MODE_LOCK].remote_cmd(&mode);
+            } else if(attr[i].attrID == ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_MANUF_NAME) {
+                uint8_t m_name = attr[i].attrData[0];
+                printf("Manual set namufacturer name: %d\r\n", m_name);
+                thermostat_settings_save();
+                TL_ZB_TIMER_SCHEDULE(delayedMcuResetCb, NULL, TIMEOUT_2SEC);
             }
         }
     }

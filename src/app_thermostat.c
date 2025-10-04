@@ -86,6 +86,7 @@ data_point_st_t* init_datapoint_model(manuf_name_t manuf_name) {
         case MANUF_NAME_9:
             break;
         case MANUF_NAME_0A:
+            dp_model = init_datapoint_model0A();
             break;
         case MANUF_NAME_0B:
             dp_model = init_datapoint_model0B();

@@ -78,6 +78,7 @@ typedef struct __attribute__((packed)) {
     uint8_t     fanMode;
     uint8_t     fanControl;
     uint8_t     extTemperatureCalibration;
+    uint8_t     manuf_name;
     uint8_t     crc;
 } thermostat_settings_t;
 
@@ -140,6 +141,7 @@ extern void (*answer_weekly_schedule[MANUF_NAME_MAX])(void *args);
 
 data_point_st_t* init_datapoint_model(manuf_name_t manuf_name);
 data_point_st_t *init_datapoint_model1();
+data_point_st_t *init_datapoint_model0A();
 data_point_st_t *init_datapoint_model0B();
 
 void remote_cmd_sys_mode(void *args);
