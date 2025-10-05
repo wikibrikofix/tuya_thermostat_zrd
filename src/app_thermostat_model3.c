@@ -199,6 +199,8 @@ data_point_st_t *init_datapoint_model3() {
     data_point_model_common[DP_IDX_ECO_HEAT_TEMP].divisor = 10;
     data_point_model_common[DP_IDX_ECO_HEAT_TEMP].remote_cmd = remote_cmd_eco_mode_temp_3;
     data_point_model_common[DP_IDX_ECO_HEAT_TEMP].local_cmd = local_cmd_eco_mode_temp_3;
+    data_point_model_common[DP_IDX_ECO_HEAT_TEMP].arg1 = R03_ABS_HEAT_MIN;
+    data_point_model_common[DP_IDX_ECO_HEAT_TEMP].arg2 = R03_ABS_HEAT_MAX;
 
     return data_point_model_common;
 }

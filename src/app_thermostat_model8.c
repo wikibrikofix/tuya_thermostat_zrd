@@ -807,9 +807,12 @@ void remote_cmd_ext_temp_calibration_8(void *args) {
 
     if(data_point_model[DP_IDX_EXT_CALIBRATION].id == 0) return;
 
-    if (temp < data_point_model[DP_IDX_EXT_CALIBRATION].arg1 || temp > data_point_model[DP_IDX_EXT_CALIBRATION].arg2) {
-        return;
-    }
+    if (temp < data_point_model[DP_IDX_EXT_CALIBRATION].arg1) temp = data_point_model[DP_IDX_EXT_CALIBRATION].arg1;
+    if (temp > data_point_model[DP_IDX_EXT_CALIBRATION].arg2) temp = data_point_model[DP_IDX_EXT_CALIBRATION].arg2;
+
+//    if (temp < data_point_model[DP_IDX_EXT_CALIBRATION].arg1 || temp > data_point_model[DP_IDX_EXT_CALIBRATION].arg2) {
+//        return;
+//    }
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();

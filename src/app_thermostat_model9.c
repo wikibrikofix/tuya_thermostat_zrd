@@ -330,9 +330,12 @@ void remote_cmd_deadband_9(void *args) {
     if (data_point_model[DP_IDX_DEADZONE].id == 0) return;
 
     /* 5 -> 0.5°C ... 50 -> 5°C */
-    if (hysteresis < data_point_model[DP_IDX_DEADZONE].arg1 || hysteresis > data_point_model[DP_IDX_DEADZONE].arg2) {
-        return;
-    }
+    if (hysteresis > data_point_model[DP_IDX_EXT_CALIBRATION].arg2) hysteresis = data_point_model[DP_IDX_EXT_CALIBRATION].arg2;
+    if (hysteresis > data_point_model[DP_IDX_DEADZONE].arg2) hysteresis = data_point_model[DP_IDX_DEADZONE].arg2;
+
+//    if (hysteresis > data_point_model[DP_IDX_EXT_CALIBRATION].arg2 || hysteresis > data_point_model[DP_IDX_DEADZONE].arg2) {
+//        return;
+//    }
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();

@@ -475,9 +475,12 @@ void remote_cmd_frost_protect_2(void *args) {
 
     if (data_point_model[DP_IDX_FROST_PROTECT].id == 0) return;
 
-    if (frost_protect < data_point_model[DP_IDX_FROST_PROTECT].arg1 || frost_protect > data_point_model[DP_IDX_FROST_PROTECT].arg2) {
-        return;
-    }
+    if (frost_protect < data_point_model[DP_IDX_FROST_PROTECT].arg1) frost_protect = data_point_model[DP_IDX_FROST_PROTECT].arg1;
+    if (frost_protect > data_point_model[DP_IDX_FROST_PROTECT].arg2) frost_protect = data_point_model[DP_IDX_FROST_PROTECT].arg2;
+
+//    if (frost_protect < data_point_model[DP_IDX_FROST_PROTECT].arg1 || frost_protect > data_point_model[DP_IDX_FROST_PROTECT].arg2) {
+//        return;
+//    }
 
 //    if (frost_protect < FROST_PROTECT_MIN * 100 || frost_protect > FROST_PROTECT_MAX * 100) {
 //        return;
@@ -530,9 +533,12 @@ void remote_cmd_heat_protect_2(void *args) {
 
     if (data_point_model[DP_IDX_HEAT_PROTECT].id == 0) return;
 
-    if (heat_protect < data_point_model[DP_IDX_HEAT_PROTECT].arg1 || heat_protect > data_point_model[DP_IDX_HEAT_PROTECT].arg2) {
-        return;
-    }
+    if (heat_protect < data_point_model[DP_IDX_HEAT_PROTECT].arg1) heat_protect = data_point_model[DP_IDX_HEAT_PROTECT].arg1;
+    if (heat_protect > data_point_model[DP_IDX_HEAT_PROTECT].arg2) heat_protect = data_point_model[DP_IDX_HEAT_PROTECT].arg2;
+
+//    if (heat_protect < data_point_model[DP_IDX_HEAT_PROTECT].arg1 || heat_protect > data_point_model[DP_IDX_HEAT_PROTECT].arg2) {
+//        return;
+//    }
 
 //    if (heat_protect < HEAT_PROTECT_MIN * 100 || heat_protect > HEAT_PROTECT_MAX * 100) {
 //        return;

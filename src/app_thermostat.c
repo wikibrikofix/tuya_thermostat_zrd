@@ -162,9 +162,12 @@ void remote_cmd_heating_set(void *args) {
 
 //    printf("1.temp: %d, minHeatSet: %d, maxHeatSet: %d\r\n", temp, minHeatSet, maxHeatSet);
 
-    if (temp < minHeatSet || temp > maxHeatSet) {
-        return;
-    }
+    if (temp < minHeatSet) temp = minHeatSet;
+    if (temp > maxHeatSet) temp = maxHeatSet;
+
+//    if (temp < minHeatSet || temp > maxHeatSet) {
+//        return;
+//    }
 
 //    printf("2. temp: %d, minHeatSet: %d, maxHeatSet: %d\r\n", temp, minHeatSet, maxHeatSet);
 
@@ -213,9 +216,12 @@ void remote_cmd_temp_calibration(void *args) {
 
     if(data_point_model[DP_IDX_CALIBRATION].id == 0) return;
 
-    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1 || temp > data_point_model[DP_IDX_CALIBRATION].arg2) {
-        return;
-    }
+    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1) temp = data_point_model[DP_IDX_CALIBRATION].arg1;
+    if (temp > data_point_model[DP_IDX_CALIBRATION].arg2) temp = data_point_model[DP_IDX_CALIBRATION].arg2;
+
+//    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1 || temp > data_point_model[DP_IDX_CALIBRATION].arg2) {
+//        return;
+//    }
 
 //    if (temp < CLIENT_TEMP_CALIBRATION_MIN || temp > CLIENT_TEMP_CALIBRATION_MAX) {
 //        return;
@@ -339,9 +345,12 @@ void remote_cmd_deadband(void *args) {
 
     if (data_point_model[DP_IDX_DEADZONE].id == 0) return;
 
-    if (hysteresis < data_point_model[DP_IDX_DEADZONE].arg1 || hysteresis > data_point_model[DP_IDX_DEADZONE].arg2) {
-        return;
-    }
+    if (hysteresis < data_point_model[DP_IDX_DEADZONE].arg1) hysteresis = data_point_model[DP_IDX_DEADZONE].arg1;
+    if (hysteresis > data_point_model[DP_IDX_DEADZONE].arg2) hysteresis = data_point_model[DP_IDX_DEADZONE].arg2;
+
+//    if (hysteresis < data_point_model[DP_IDX_DEADZONE].arg1 || hysteresis > data_point_model[DP_IDX_DEADZONE].arg2) {
+//        return;
+//    }
 
 //    if (hysteresis < HYSTERESIS_MIN || hysteresis > HYSTERESIS_MAX) {
 //        return;
@@ -396,9 +405,12 @@ void remote_cmd_min_setpoint(void *args) {
 
     if (data_point_model[DP_IDX_MIN].id == 0) return;
 
-    if (min_temp < data_point_model[DP_IDX_MIN].arg1 || min_temp > data_point_model[DP_IDX_MIN].arg2) {
-        return;
-    }
+    if (min_temp < data_point_model[DP_IDX_MIN].arg1) min_temp = data_point_model[DP_IDX_MIN].arg1;
+    if (min_temp > data_point_model[DP_IDX_MIN].arg2) min_temp = data_point_model[DP_IDX_MIN].arg2;
+
+//    if (min_temp < data_point_model[DP_IDX_MIN].arg1 || min_temp > data_point_model[DP_IDX_MIN].arg2) {
+//        return;
+//    }
 
 //    if (min_temp < SET_POINT_MIN_MIN * 100 || min_temp > SET_POINT_MIN_MAX * 100) {
 //        return;
@@ -452,9 +464,12 @@ void remote_cmd_max_setpoint(void *args) {
 
     if (data_point_model[DP_IDX_MAX].id == 0) return;
 
-    if (max_temp < data_point_model[DP_IDX_MAX].arg1 || max_temp > data_point_model[DP_IDX_MAX].arg2) {
-        return;
-    }
+    if (max_temp < data_point_model[DP_IDX_MAX].arg1) max_temp = data_point_model[DP_IDX_MAX].arg1;
+    if (max_temp > data_point_model[DP_IDX_MAX].arg2) max_temp = data_point_model[DP_IDX_MAX].arg2;
+
+//    if (max_temp < data_point_model[DP_IDX_MAX].arg1 || max_temp > data_point_model[DP_IDX_MAX].arg2) {
+//        return;
+//    }
 
 //    if (max_temp < SET_POINT_MAX_MIN * 100 || max_temp > SET_POINT_MAX_MAX * 100) {
 //        return;

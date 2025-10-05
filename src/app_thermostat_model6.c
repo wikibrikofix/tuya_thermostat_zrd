@@ -464,9 +464,12 @@ void remote_cmd_temp_calibration_6(void *args) {
 
     if(data_point_model[DP_IDX_CALIBRATION].id == 0) return;
 
-    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1 || temp > data_point_model[DP_IDX_CALIBRATION].arg2) {
-        return;
-    }
+    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1) temp = data_point_model[DP_IDX_CALIBRATION].arg1;
+    if (temp > data_point_model[DP_IDX_CALIBRATION].arg2) temp = data_point_model[DP_IDX_CALIBRATION].arg2;
+
+//    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1 || temp > data_point_model[DP_IDX_CALIBRATION].arg2) {
+//        return;
+//    }
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
@@ -514,9 +517,12 @@ void remote_cmd_deadband_6(void *args) {
     if (data_point_model[DP_IDX_DEADZONE].id == 0) return;
 
     /* 5 -> 0.5°C ... 100 -> 10°C */
-    if (hysteresis < data_point_model[DP_IDX_DEADZONE].arg1 || hysteresis > data_point_model[DP_IDX_DEADZONE].arg2) {
-        return;
-    }
+    if (hysteresis < data_point_model[DP_IDX_DEADZONE].arg1) hysteresis = data_point_model[DP_IDX_DEADZONE].arg1;
+    if (hysteresis > data_point_model[DP_IDX_DEADZONE].arg2) hysteresis = data_point_model[DP_IDX_DEADZONE].arg2;
+
+//    if (hysteresis < data_point_model[DP_IDX_DEADZONE].arg1 || hysteresis > data_point_model[DP_IDX_DEADZONE].arg2) {
+//        return;
+//    }
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
@@ -565,9 +571,12 @@ void remote_cmd_max_setpoint_6(void *args) {
 
     if (data_point_model[DP_IDX_MAX].id == 0) return;
 
-    if (max_temp < data_point_model[DP_IDX_MAX].arg1 || max_temp > data_point_model[DP_IDX_MAX].arg2) {
-        return;
-    }
+    if (max_temp < data_point_model[DP_IDX_MAX].arg1) max_temp = data_point_model[DP_IDX_MAX].arg1;
+    if (max_temp > data_point_model[DP_IDX_MAX].arg2) max_temp = data_point_model[DP_IDX_MAX].arg2;
+
+//    if (max_temp < data_point_model[DP_IDX_MAX].arg1 || max_temp > data_point_model[DP_IDX_MAX].arg2) {
+//        return;
+//    }
 
 //    if (max_temp < 1500 || max_temp > 9500) {
 //        return;
@@ -657,9 +666,12 @@ void remote_cmd_heat_protect_6(void *args) {
 
     if (data_point_model[DP_IDX_HEAT_PROTECT].id == 0) return;
 
-    if (heat_protect < data_point_model[DP_IDX_HEAT_PROTECT].arg1 || heat_protect > data_point_model[DP_IDX_HEAT_PROTECT].arg2) {
-        return;
-    }
+    if (heat_protect < data_point_model[DP_IDX_HEAT_PROTECT].arg1) heat_protect = data_point_model[DP_IDX_HEAT_PROTECT].arg1;
+    if (heat_protect > data_point_model[DP_IDX_HEAT_PROTECT].arg2) heat_protect = data_point_model[DP_IDX_HEAT_PROTECT].arg2;
+
+//    if (heat_protect < data_point_model[DP_IDX_HEAT_PROTECT].arg1 || heat_protect > data_point_model[DP_IDX_HEAT_PROTECT].arg2) {
+//        return;
+//    }
 
     heat_protect /= 100; // 3500 -> 35°C
 
