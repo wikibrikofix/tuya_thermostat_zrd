@@ -128,6 +128,15 @@ data_point_st_t *init_datapoint_model0A() {
     data_point_model_common[DP_IDX_ECO_MODE].remote_cmd = remote_cmd_eco_mode_0A;
     data_point_model_common[DP_IDX_ECO_MODE].local_cmd = local_cmd_eco_mode_0A;
 
+//    data_point_model_common[DP_IDX_ECO_HEAT_TEMP].id = 0x69; // 0x1b; // 0x70;
+//    data_point_model_common[DP_IDX_ECO_HEAT_TEMP].type = DP_VAL;
+//    data_point_model_common[DP_IDX_ECO_HEAT_TEMP].len = 4;
+//    data_point_model_common[DP_IDX_ECO_HEAT_TEMP].divisor = 10;
+//    data_point_model_common[DP_IDX_ECO_HEAT_TEMP].remote_cmd = remote_cmd_eco_mode_temp_3;
+//    data_point_model_common[DP_IDX_ECO_HEAT_TEMP].local_cmd = local_cmd_eco_mode_temp_3;
+//    data_point_model_common[DP_IDX_ECO_HEAT_TEMP].arg1 = 0;
+//    data_point_model_common[DP_IDX_ECO_HEAT_TEMP].arg2 = 3000;
+
     return data_point_model_common;
 }
 
