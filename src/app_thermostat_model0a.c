@@ -19,116 +19,116 @@
 #define R0A_HEAT_PROTECT_MIN        2500        // * 100
 #define R0A_HEAT_PROTECT_MAX        7000        // * 100
 
-data_point_st_t data_point_model0A[DP_IDX_MAXNUM];
+//data_point_st_t data_point_model0A[DP_IDX_MAXNUM];
 
 data_point_st_t *init_datapoint_model0A() {
 
-    memset(data_point_model0A, 0, sizeof(data_point_model0A));
+    memset(data_point_model_common, 0, sizeof(data_point_model_common));
 
     g_zcl_thermostatAttrs.absMinHeatSetpointLimit = R0A_ABS_HEAT_MIN;       // min +1°C
     g_zcl_thermostatAttrs.absMaxHeatSetpointLimit = R0A_ABS_HEAT_MAX;       // max +50°C
 
-    data_point_model0A[DP_IDX_ONOFF].id = DP_TYPE0A_ID_01;
-    data_point_model0A[DP_IDX_ONOFF].type = DP_BOOL;
-    data_point_model0A[DP_IDX_ONOFF].len = 1;
-    data_point_model0A[DP_IDX_ONOFF].remote_cmd = remote_cmd_sys_mode_0A;
-    data_point_model0A[DP_IDX_ONOFF].local_cmd = local_cmd_onoff_state_0A;
+    data_point_model_common[DP_IDX_ONOFF].id = DP_TYPE0A_ID_01;
+    data_point_model_common[DP_IDX_ONOFF].type = DP_BOOL;
+    data_point_model_common[DP_IDX_ONOFF].len = 1;
+    data_point_model_common[DP_IDX_ONOFF].remote_cmd = remote_cmd_sys_mode_0A;
+    data_point_model_common[DP_IDX_ONOFF].local_cmd = local_cmd_onoff_state_0A;
 
-    data_point_model0A[DP_IDX_TEMP].id = DP_TYPE0A_ID_10;
-    data_point_model0A[DP_IDX_TEMP].type = DP_VAL;
-    data_point_model0A[DP_IDX_TEMP].len = 4;
-    data_point_model0A[DP_IDX_TEMP].divisor = 10;
-    data_point_model0A[DP_IDX_TEMP].local_cmd = local_cmd_inner_sensor_0A;
+    data_point_model_common[DP_IDX_TEMP].id = DP_TYPE0A_ID_10;
+    data_point_model_common[DP_IDX_TEMP].type = DP_VAL;
+    data_point_model_common[DP_IDX_TEMP].len = 4;
+    data_point_model_common[DP_IDX_TEMP].divisor = 10;
+    data_point_model_common[DP_IDX_TEMP].local_cmd = local_cmd_inner_sensor_0A;
 
-    data_point_model0A[DP_IDX_SETPOINT].id = DP_TYPE0A_ID_32;
-    data_point_model0A[DP_IDX_SETPOINT].type = DP_VAL;
-    data_point_model0A[DP_IDX_SETPOINT].len = 4;
-    data_point_model0A[DP_IDX_SETPOINT].divisor = 1;
-    data_point_model0A[DP_IDX_SETPOINT].remote_cmd = remote_cmd_heating_set_0A;
-    data_point_model0A[DP_IDX_SETPOINT].local_cmd = local_cmd_heating_set_0A;
+    data_point_model_common[DP_IDX_SETPOINT].id = DP_TYPE0A_ID_32;
+    data_point_model_common[DP_IDX_SETPOINT].type = DP_VAL;
+    data_point_model_common[DP_IDX_SETPOINT].len = 4;
+    data_point_model_common[DP_IDX_SETPOINT].divisor = 1;
+    data_point_model_common[DP_IDX_SETPOINT].remote_cmd = remote_cmd_heating_set_0A;
+    data_point_model_common[DP_IDX_SETPOINT].local_cmd = local_cmd_heating_set_0A;
 
-    data_point_model0A[DP_IDX_MIN].id = DP_TYPE0A_ID_12;
-    data_point_model0A[DP_IDX_MIN].type = DP_VAL;
-    data_point_model0A[DP_IDX_MIN].len = 4;
-    data_point_model0A[DP_IDX_MIN].divisor = 1;
-    data_point_model0A[DP_IDX_MIN].remote_cmd = remote_cmd_min_setpoint_0A;
-    data_point_model0A[DP_IDX_MIN].local_cmd = local_cmd_min_setpoint_0A;
-    data_point_model0A[DP_IDX_MIN].arg1 = R0A_HEAT_MIN_MIN;
-    data_point_model0A[DP_IDX_MIN].arg2 = R0A_HEAT_MIN_MAX;
+    data_point_model_common[DP_IDX_MIN].id = DP_TYPE0A_ID_12;
+    data_point_model_common[DP_IDX_MIN].type = DP_VAL;
+    data_point_model_common[DP_IDX_MIN].len = 4;
+    data_point_model_common[DP_IDX_MIN].divisor = 1;
+    data_point_model_common[DP_IDX_MIN].remote_cmd = remote_cmd_min_setpoint_0A;
+    data_point_model_common[DP_IDX_MIN].local_cmd = local_cmd_min_setpoint_0A;
+    data_point_model_common[DP_IDX_MIN].arg1 = R0A_HEAT_MIN_MIN;
+    data_point_model_common[DP_IDX_MIN].arg2 = R0A_HEAT_MIN_MAX;
 
-    data_point_model0A[DP_IDX_MAX].id = DP_TYPE0A_ID_22;
-    data_point_model0A[DP_IDX_MAX].type = DP_VAL;
-    data_point_model0A[DP_IDX_MAX].len = 4;
-    data_point_model0A[DP_IDX_MAX].divisor = 1;
-    data_point_model0A[DP_IDX_MAX].remote_cmd = remote_cmd_max_setpoint_0A;
-    data_point_model0A[DP_IDX_MAX].local_cmd = local_cmd_max_setpoint_0A;
-    data_point_model0A[DP_IDX_MAX].arg1 = R0A_HEAT_MAX_MIN;
-    data_point_model0A[DP_IDX_MAX].arg2 = R0A_HEAT_MAX_MAX;
+    data_point_model_common[DP_IDX_MAX].id = DP_TYPE0A_ID_22;
+    data_point_model_common[DP_IDX_MAX].type = DP_VAL;
+    data_point_model_common[DP_IDX_MAX].len = 4;
+    data_point_model_common[DP_IDX_MAX].divisor = 1;
+    data_point_model_common[DP_IDX_MAX].remote_cmd = remote_cmd_max_setpoint_0A;
+    data_point_model_common[DP_IDX_MAX].local_cmd = local_cmd_max_setpoint_0A;
+    data_point_model_common[DP_IDX_MAX].arg1 = R0A_HEAT_MAX_MIN;
+    data_point_model_common[DP_IDX_MAX].arg2 = R0A_HEAT_MAX_MAX;
 
-    data_point_model0A[DP_IDX_DEADZONE].id = DP_TYPE0A_ID_66;
-    data_point_model0A[DP_IDX_DEADZONE].type = DP_VAL;
-    data_point_model0A[DP_IDX_DEADZONE].len = 4;
-    data_point_model0A[DP_IDX_DEADZONE].divisor = 1;
-    data_point_model0A[DP_IDX_DEADZONE].remote_cmd = remote_cmd_deadband_0A;
-    data_point_model0A[DP_IDX_DEADZONE].local_cmd = local_cmd_deadband_0A;
-    data_point_model0A[DP_IDX_DEADZONE].arg1 = R0A_DEADZONE_MIN;
-    data_point_model0A[DP_IDX_DEADZONE].arg2 = R0A_DEADZONE_MAX;
+    data_point_model_common[DP_IDX_DEADZONE].id = DP_TYPE0A_ID_66;
+    data_point_model_common[DP_IDX_DEADZONE].type = DP_VAL;
+    data_point_model_common[DP_IDX_DEADZONE].len = 4;
+    data_point_model_common[DP_IDX_DEADZONE].divisor = 1;
+    data_point_model_common[DP_IDX_DEADZONE].remote_cmd = remote_cmd_deadband_0A;
+    data_point_model_common[DP_IDX_DEADZONE].local_cmd = local_cmd_deadband_0A;
+    data_point_model_common[DP_IDX_DEADZONE].arg1 = R0A_DEADZONE_MIN;
+    data_point_model_common[DP_IDX_DEADZONE].arg2 = R0A_DEADZONE_MAX;
 
-    data_point_model0A[DP_IDX_CALIBRATION].id = DP_TYPE0A_ID_13;
-    data_point_model0A[DP_IDX_CALIBRATION].type = DP_VAL;
-    data_point_model0A[DP_IDX_CALIBRATION].len = 4;
-    data_point_model0A[DP_IDX_CALIBRATION].divisor = 1;
-    data_point_model0A[DP_IDX_CALIBRATION].remote_cmd = remote_cmd_temp_calibration_0A;
-    data_point_model0A[DP_IDX_CALIBRATION].local_cmd = local_cmd_temp_calibration_0A;
-    data_point_model0A[DP_IDX_CALIBRATION].arg1 = R0A_CALIBRATION_MIN;
-    data_point_model0A[DP_IDX_CALIBRATION].arg2 = R0A_CALIBRATION_MAX;
+    data_point_model_common[DP_IDX_CALIBRATION].id = DP_TYPE0A_ID_13;
+    data_point_model_common[DP_IDX_CALIBRATION].type = DP_VAL;
+    data_point_model_common[DP_IDX_CALIBRATION].len = 4;
+    data_point_model_common[DP_IDX_CALIBRATION].divisor = 1;
+    data_point_model_common[DP_IDX_CALIBRATION].remote_cmd = remote_cmd_temp_calibration_0A;
+    data_point_model_common[DP_IDX_CALIBRATION].local_cmd = local_cmd_temp_calibration_0A;
+    data_point_model_common[DP_IDX_CALIBRATION].arg1 = R0A_CALIBRATION_MIN;
+    data_point_model_common[DP_IDX_CALIBRATION].arg2 = R0A_CALIBRATION_MAX;
 
-    data_point_model0A[DP_IDX_RUNSTATE].id = DP_TYPE0A_ID_2F;
-    data_point_model0A[DP_IDX_RUNSTATE].type = DP_ENUM;
-    data_point_model0A[DP_IDX_RUNSTATE].len = 1;
-    data_point_model0A[DP_IDX_RUNSTATE].local_cmd = local_cmd_set_run_state_0A;
+    data_point_model_common[DP_IDX_RUNSTATE].id = DP_TYPE0A_ID_2F;
+    data_point_model_common[DP_IDX_RUNSTATE].type = DP_ENUM;
+    data_point_model_common[DP_IDX_RUNSTATE].len = 1;
+    data_point_model_common[DP_IDX_RUNSTATE].local_cmd = local_cmd_set_run_state_0A;
 
-    data_point_model0A[DP_IDX_SENSOR].id = DP_TYPE0A_ID_20;
-    data_point_model0A[DP_IDX_SENSOR].type = DP_ENUM;
-    data_point_model0A[DP_IDX_SENSOR].len = 1;
-    data_point_model0A[DP_IDX_SENSOR].remote_cmd = remote_cmd_sensor_used_0A;
-    data_point_model0A[DP_IDX_SENSOR].local_cmd = local_cmd_sensor_used_0A;
+    data_point_model_common[DP_IDX_SENSOR].id = DP_TYPE0A_ID_20;
+    data_point_model_common[DP_IDX_SENSOR].type = DP_ENUM;
+    data_point_model_common[DP_IDX_SENSOR].len = 1;
+    data_point_model_common[DP_IDX_SENSOR].remote_cmd = remote_cmd_sensor_used_0A;
+    data_point_model_common[DP_IDX_SENSOR].local_cmd = local_cmd_sensor_used_0A;
 
-    data_point_model0A[DP_IDX_PROG].id = DP_TYPE0A_ID_02;
-    data_point_model0A[DP_IDX_PROG].type = DP_ENUM;
-    data_point_model0A[DP_IDX_PROG].len = 1;
-    data_point_model0A[DP_IDX_PROG].remote_cmd = remote_cmd_oper_mode_0A;
-    data_point_model0A[DP_IDX_PROG].local_cmd = local_cmd_oper_mode_0A;
+    data_point_model_common[DP_IDX_PROG].id = DP_TYPE0A_ID_02;
+    data_point_model_common[DP_IDX_PROG].type = DP_ENUM;
+    data_point_model_common[DP_IDX_PROG].len = 1;
+    data_point_model_common[DP_IDX_PROG].remote_cmd = remote_cmd_oper_mode_0A;
+    data_point_model_common[DP_IDX_PROG].local_cmd = local_cmd_oper_mode_0A;
 
-    data_point_model0A[DP_IDX_LOCKUNLOCK].id = DP_TYPE0A_ID_27;
-    data_point_model0A[DP_IDX_LOCKUNLOCK].type = DP_BOOL;
-    data_point_model0A[DP_IDX_LOCKUNLOCK].len = 1;
-    data_point_model0A[DP_IDX_LOCKUNLOCK].remote_cmd = remote_cmd_keylock_0A;
-    data_point_model0A[DP_IDX_LOCKUNLOCK].local_cmd = local_cmd_keylock_0A;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].id = DP_TYPE0A_ID_27;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].type = DP_BOOL;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].len = 1;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].remote_cmd = remote_cmd_keylock_0A;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].local_cmd = local_cmd_keylock_0A;
 
-    data_point_model0A[DP_IDX_SCHEDULE].id = DP_TYPE0A_ID_44;
-    data_point_model0A[DP_IDX_SCHEDULE].type = DP_RAW;
-    data_point_model0A[DP_IDX_SCHEDULE].len = 0x30;
-    data_point_model0A[DP_IDX_SCHEDULE].divisor = 1;
-    data_point_model0A[DP_IDX_SCHEDULE].remote_cmd = remote_cmd_set_schedule_0A;
-    data_point_model0A[DP_IDX_SCHEDULE].local_cmd = local_cmd_set_schedule_0A;
+    data_point_model_common[DP_IDX_SCHEDULE].id = DP_TYPE0A_ID_44;
+    data_point_model_common[DP_IDX_SCHEDULE].type = DP_RAW;
+    data_point_model_common[DP_IDX_SCHEDULE].len = 0x30;
+    data_point_model_common[DP_IDX_SCHEDULE].divisor = 1;
+    data_point_model_common[DP_IDX_SCHEDULE].remote_cmd = remote_cmd_set_schedule_0A;
+    data_point_model_common[DP_IDX_SCHEDULE].local_cmd = local_cmd_set_schedule_0A;
 
-    data_point_model0A[DP_IDX_HEAT_PROTECT].id = DP_TYPE0A_ID_65;
-    data_point_model0A[DP_IDX_HEAT_PROTECT].type = DP_VAL;
-    data_point_model0A[DP_IDX_HEAT_PROTECT].len = 4;
-    data_point_model0A[DP_IDX_HEAT_PROTECT].divisor = 1;
-    data_point_model0A[DP_IDX_HEAT_PROTECT].remote_cmd = remote_cmd_heat_protect_0A;
-    data_point_model0A[DP_IDX_HEAT_PROTECT].local_cmd = local_cmd_heat_protect_0A;
-    data_point_model0A[DP_IDX_HEAT_PROTECT].arg1 = R0A_HEAT_PROTECT_MIN;
-    data_point_model0A[DP_IDX_HEAT_PROTECT].arg2 = R0A_HEAT_PROTECT_MAX;
+    data_point_model_common[DP_IDX_HEAT_PROTECT].id = DP_TYPE0A_ID_65;
+    data_point_model_common[DP_IDX_HEAT_PROTECT].type = DP_VAL;
+    data_point_model_common[DP_IDX_HEAT_PROTECT].len = 4;
+    data_point_model_common[DP_IDX_HEAT_PROTECT].divisor = 1;
+    data_point_model_common[DP_IDX_HEAT_PROTECT].remote_cmd = remote_cmd_heat_protect_0A;
+    data_point_model_common[DP_IDX_HEAT_PROTECT].local_cmd = local_cmd_heat_protect_0A;
+    data_point_model_common[DP_IDX_HEAT_PROTECT].arg1 = R0A_HEAT_PROTECT_MIN;
+    data_point_model_common[DP_IDX_HEAT_PROTECT].arg2 = R0A_HEAT_PROTECT_MAX;
 
-    data_point_model0A[DP_IDX_ECO_MODE].id = DP_TYPE0A_ID_28;
-    data_point_model0A[DP_IDX_ECO_MODE].type = DP_BOOL;
-    data_point_model0A[DP_IDX_ECO_MODE].len = 1;
-    data_point_model0A[DP_IDX_ECO_MODE].remote_cmd = remote_cmd_eco_mode_0A;
-    data_point_model0A[DP_IDX_ECO_MODE].local_cmd = local_cmd_eco_mode_0A;
+    data_point_model_common[DP_IDX_ECO_MODE].id = DP_TYPE0A_ID_28;
+    data_point_model_common[DP_IDX_ECO_MODE].type = DP_BOOL;
+    data_point_model_common[DP_IDX_ECO_MODE].len = 1;
+    data_point_model_common[DP_IDX_ECO_MODE].remote_cmd = remote_cmd_eco_mode_0A;
+    data_point_model_common[DP_IDX_ECO_MODE].local_cmd = local_cmd_eco_mode_0A;
 
-    return data_point_model0A;
+    return data_point_model_common;
 }
 
 //data_point_st_t data_point_model0A[DP_IDX_MAXNUM] = {

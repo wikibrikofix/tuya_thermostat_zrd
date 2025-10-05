@@ -473,7 +473,7 @@ extern uint8_t manuf_name;
 extern data_point_st_t *data_point_model;
 extern const char8_t **tuya_manuf_names[];
 
-void data_point_model_init();
-data_point_st_t *data_point_model_arr[DP_IDX_MAXNUM];
+//void data_point_model_init();
+//data_point_st_t *data_point_model_arr[DP_IDX_MAXNUM];
 
 #endif /* SRC_INCLUDE_APP_TUYA_DATAPOINT_H_ */

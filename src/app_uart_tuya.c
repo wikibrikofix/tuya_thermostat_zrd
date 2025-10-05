@@ -322,7 +322,7 @@ void uart_cmd_handler() {
     if (first_start) {
         flush_ring_cmd();
         set_command(COMMAND01, seq_num, true);
-        data_point_model_init();
+//        data_point_model_init();
         check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, TIMEOUT_1MIN30SEC);
 
         first_start = false;
@@ -494,13 +494,8 @@ void uart_cmd_handler() {
 
 #endif
 
-#if UART_PRINTF_MODE
-                                    printf("Use modelId: %s\r\n", zb_modelId_arr[manuf_name]+1);
-#endif
-
-                                    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId_arr[manuf_name]);
 //                                    init_datapoint_model(manuf_name);
-                                    data_point_model = data_point_model_arr[manuf_name];
+//                                    data_point_model = data_point_model_arr[manuf_name];
 
                                     if (check_answerMcuTimerEvt) {
                                         TL_ZB_TIMER_CANCEL(&check_answerMcuTimerEvt);
@@ -508,57 +503,90 @@ void uart_cmd_handler() {
 
                                     switch(manuf_name) {
                                         case MANUF_NAME_1:
-                                            init_datapoint_model1();
+                                            data_point_model = init_datapoint_model1();
                                             uart_timeout = TIMEOUT_1MIN30SEC;
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = '1';
                                             break;
                                         case MANUF_NAME_2:
                                             uart_timeout = TIMEOUT_8SEC;
-                                            init_datapoint_model2();
+                                            data_point_model = init_datapoint_model2();
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = '2';
                                             break;
                                         case MANUF_NAME_3:
-                                            init_datapoint_model3();
+                                            data_point_model = init_datapoint_model3();
                                             uart_timeout = TIMEOUT_15SEC;
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = '3';
                                             break;
                                         case MANUF_NAME_4:
-                                            init_datapoint_model4();
+                                            data_point_model = init_datapoint_model4();
                                             uart_timeout = TIMEOUT_15SEC;
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = '4';
                                             break;
                                         case MANUF_NAME_5:
-                                            init_datapoint_model5();
+                                            data_point_model = init_datapoint_model5();
                                             uart_timeout = TIMEOUT_1MIN30SEC;
                                             set_command(COMMAND28, seq_num, true);
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = '5';
                                             break;
                                         case MANUF_NAME_6:
-                                            init_datapoint_model6();
+                                            data_point_model = init_datapoint_model6();
                                             uart_timeout = TIMEOUT_30SEC;
                                             set_command(COMMAND28, seq_num, true);
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = '6';
                                             break;
                                         case MANUF_NAME_7:
-                                            init_datapoint_model7();
+                                            data_point_model = init_datapoint_model7();
                                             uart_timeout = TIMEOUT_25SEC;
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = '7';
                                             break;
                                         case MANUF_NAME_8:
+                                            data_point_model = init_datapoint_model8();
                                             uart_timeout = TIMEOUT_15SEC;
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = '8';
                                             break;
                                         case MANUF_NAME_9:
+                                            data_point_model = init_datapoint_model9();
                                             uart_timeout = TIMEOUT_2MIN30SEC;
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = '9';
                                             break;
                                         case MANUF_NAME_0A:
-                                            init_datapoint_model0A();
+                                            data_point_model = init_datapoint_model0A();
                                             uart_timeout = TIMEOUT_1MIN30SEC;
                                             set_command(COMMAND28, seq_num, true);
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = 'A';
                                             break;
                                         case MANUF_NAME_0B:
-                                            init_datapoint_model0B();
+                                            data_point_model = init_datapoint_model0B();
                                             uart_timeout = TIMEOUT_15SEC;
                                             set_command(COMMAND28, seq_num, true);
+                                            zb_modelId[18] = '0';
+                                            zb_modelId[19] = 'B';
                                             break;
                                         default:
+                                            manuf_name = MANUF_NAME_1;
+                                            strcpy(signature, tuya_manuf_names[0][0]);
+                                            data_point_model = init_datapoint_model1();
                                             uart_timeout = TIMEOUT_1MIN30SEC;
                                             break;
                                     }
 
                                     check_answerMcuTimerEvt = TL_ZB_TIMER_SCHEDULE(check_answerMcuCb, NULL, uart_timeout);
+
+#if UART_PRINTF_MODE
+                                    printf("Use modelId: %s\r\n", zb_modelId+1);
+#endif
+
+                                    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_GEN_BASIC, ZCL_ATTRID_BASIC_MODEL_ID, zb_modelId);
 
 
 //                                    switch(manuf_name) {

@@ -1,25 +1,29 @@
 #include "app_main.h"
 
-uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE] = {
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','1',0},   // model1
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','2',0},   // model2
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','3',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','4',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','5',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','6',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','7',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','8',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','9',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','A',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','B',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','C',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','D',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','E',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','F',0},
-        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','1','0',0},  // etc
-};
+uint8_t zb_modelId[ZB_MODELID_FULL_SIZE] =
+        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','x','x',0};
+//                                                                                             18, 19
+//uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE] = {
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','1',0},   // model1
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','2',0},   // model2
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','3',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','4',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','5',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','6',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','7',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','8',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','9',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','A',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','B',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','C',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','D',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','E',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','0','F',0},
+//        {ZB_MODELID_SIZE, 'T','u','y','a','_','T','h','e','r','m','o','s','t','a','t','_','r','1','0',0},  // etc
+//};
 
-//data_point_st_t data_point_model;
+data_point_st_t data_point_model_common[DP_IDX_MAXNUM];
+
 uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
 uint8_t dev_therm_mode = DEV_THERM_MODE_COLD;
 
@@ -209,9 +213,13 @@ void remote_cmd_temp_calibration(void *args) {
 
     if(data_point_model[DP_IDX_CALIBRATION].id == 0) return;
 
-    if (temp < CLIENT_TEMP_CALIBRATION_MIN || temp > CLIENT_TEMP_CALIBRATION_MAX) {
+    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1 || temp > data_point_model[DP_IDX_CALIBRATION].arg2) {
         return;
     }
+
+//    if (temp < CLIENT_TEMP_CALIBRATION_MIN || temp > CLIENT_TEMP_CALIBRATION_MAX) {
+//        return;
+//    }
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
@@ -331,9 +339,13 @@ void remote_cmd_deadband(void *args) {
 
     if (data_point_model[DP_IDX_DEADZONE].id == 0) return;
 
-    if (hysteresis < HYSTERESIS_MIN || hysteresis > HYSTERESIS_MAX) {
+    if (hysteresis < data_point_model[DP_IDX_DEADZONE].arg1 || hysteresis > data_point_model[DP_IDX_DEADZONE].arg2) {
         return;
     }
+
+//    if (hysteresis < HYSTERESIS_MIN || hysteresis > HYSTERESIS_MAX) {
+//        return;
+//    }
 
 //    printf("hysteresis: %d\r\n", hysteresis);
 
@@ -384,9 +396,13 @@ void remote_cmd_min_setpoint(void *args) {
 
     if (data_point_model[DP_IDX_MIN].id == 0) return;
 
-    if (min_temp < SET_POINT_MIN_MIN * 100 || min_temp > SET_POINT_MIN_MAX * 100) {
+    if (min_temp < data_point_model[DP_IDX_MIN].arg1 || min_temp > data_point_model[DP_IDX_MIN].arg2) {
         return;
     }
+
+//    if (min_temp < SET_POINT_MIN_MIN * 100 || min_temp > SET_POINT_MIN_MAX * 100) {
+//        return;
+//    }
 
     min_temp /= 100; // 1500 -> 15°C
 
@@ -436,9 +452,13 @@ void remote_cmd_max_setpoint(void *args) {
 
     if (data_point_model[DP_IDX_MAX].id == 0) return;
 
-    if (max_temp < SET_POINT_MAX_MIN * 100 || max_temp > SET_POINT_MAX_MAX * 100) {
+    if (max_temp < data_point_model[DP_IDX_MAX].arg1 || max_temp > data_point_model[DP_IDX_MAX].arg2) {
         return;
     }
+
+//    if (max_temp < SET_POINT_MAX_MIN * 100 || max_temp > SET_POINT_MAX_MAX * 100) {
+//        return;
+//    }
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();

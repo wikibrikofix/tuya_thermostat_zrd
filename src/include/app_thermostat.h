@@ -118,19 +118,21 @@ extern args_get_schedule_t args_get_schedule_any;
 //extern uint8_t w_sun;
 //extern uint8_t w_day;
 
-extern data_point_st_t data_point_model1[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model2[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model3[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model4[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model5[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model6[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model7[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model8[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model9[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model0A[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model0B[DP_IDX_MAXNUM];
+extern data_point_st_t data_point_model_common[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model1[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model2[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model3[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model4[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model5[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model6[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model7[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model8[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model9[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model0A[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model0B[DP_IDX_MAXNUM];
 extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
-extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
+extern uint8_t zb_modelId[ZB_MODELID_FULL_SIZE];
+//extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
 extern uint8_t dev_therm_mode;
 
@@ -148,6 +150,7 @@ data_point_st_t *init_datapoint_model5();
 data_point_st_t *init_datapoint_model6();
 data_point_st_t *init_datapoint_model7();
 data_point_st_t *init_datapoint_model8();
+data_point_st_t *init_datapoint_model9();
 data_point_st_t *init_datapoint_model0A();
 data_point_st_t *init_datapoint_model0B();
 
