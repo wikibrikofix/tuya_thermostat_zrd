@@ -169,7 +169,7 @@ void remote_cmd_heating_set(void *args) {
 //        return;
 //    }
 
-//    printf("2. temp: %d, minHeatSet: %d, maxHeatSet: %d\r\n", temp, minHeatSet, maxHeatSet);
+    printf("2. temp: %d, minHeatSet: %d, maxHeatSet: %d\r\n", temp, minHeatSet, maxHeatSet);
 
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
@@ -598,7 +598,6 @@ void local_cmd_max_setpoint(void *args) {
     uint16_t len;
     bool set_attr = false;
 
-
     if (data_point_model[DP_IDX_MAX].divisor == 1) {
         divisor = 100;
     } else if (data_point_model[DP_IDX_MAX].divisor == 10) {
@@ -610,7 +609,7 @@ void local_cmd_max_setpoint(void *args) {
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&absMinHeatSet);
     zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_ABS_MAX_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&absMaxHeatSet);
 
-//    printf("temp: %d, absMinHeatSet: %d, absMaxHeatSet: %d\r\n", temp, absMinHeatSet, absMaxHeatSet);
+//    printf("temp: %d, absMinHeatSet: %d, absMaxHeatSet: %d\r\n", *temp, absMinHeatSet, absMaxHeatSet);
 
     if (*temp > absMaxHeatSet) {
         *temp = absMaxHeatSet;
@@ -621,7 +620,9 @@ void local_cmd_max_setpoint(void *args) {
         set_attr = true;
     }
 
-    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&old_max);
+    zcl_getAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, &len, (uint8_t*)&old_max);
+
+    printf("old_max: %d, temp: %d\r\n", old_max, *temp);
 
     if (old_max != *temp) {
         zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT, (uint8_t*)temp);
