@@ -139,8 +139,15 @@ extern void (*answer_weekly_schedule[MANUF_NAME_MAX])(void *args);
  * common functions remote_cmd
  */
 
-data_point_st_t* init_datapoint_model(manuf_name_t manuf_name);
+//data_point_st_t* init_datapoint_model(manuf_name_t manuf_name);
 data_point_st_t *init_datapoint_model1();
+data_point_st_t *init_datapoint_model2();
+data_point_st_t *init_datapoint_model3();
+data_point_st_t *init_datapoint_model4();
+data_point_st_t *init_datapoint_model5();
+data_point_st_t *init_datapoint_model6();
+data_point_st_t *init_datapoint_model7();
+data_point_st_t *init_datapoint_model8();
 data_point_st_t *init_datapoint_model0A();
 data_point_st_t *init_datapoint_model0B();
 

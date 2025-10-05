@@ -513,22 +513,28 @@ void uart_cmd_handler() {
                                             break;
                                         case MANUF_NAME_2:
                                             uart_timeout = TIMEOUT_8SEC;
+                                            init_datapoint_model2();
                                             break;
                                         case MANUF_NAME_3:
+                                            init_datapoint_model3();
                                             uart_timeout = TIMEOUT_15SEC;
                                             break;
                                         case MANUF_NAME_4:
+                                            init_datapoint_model4();
                                             uart_timeout = TIMEOUT_15SEC;
                                             break;
                                         case MANUF_NAME_5:
+                                            init_datapoint_model5();
                                             uart_timeout = TIMEOUT_1MIN30SEC;
                                             set_command(COMMAND28, seq_num, true);
                                             break;
                                         case MANUF_NAME_6:
+                                            init_datapoint_model6();
                                             uart_timeout = TIMEOUT_30SEC;
                                             set_command(COMMAND28, seq_num, true);
                                             break;
                                         case MANUF_NAME_7:
+                                            init_datapoint_model7();
                                             uart_timeout = TIMEOUT_25SEC;
                                             break;
                                         case MANUF_NAME_8:

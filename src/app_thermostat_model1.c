@@ -109,7 +109,6 @@ data_point_st_t *init_datapoint_model1() {
     data_point_model1[DP_IDX_SCHEDULE].local_cmd = local_cmd_set_schedule_1;
 
     return data_point_model1;
-
 }
 
 //data_point_st_t data_point_model1[DP_IDX_MAXNUM] = {

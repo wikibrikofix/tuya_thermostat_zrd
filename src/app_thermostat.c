@@ -61,42 +61,42 @@ void (*answer_weekly_schedule[MANUF_NAME_MAX])(void *args) = {
  *
  */
 
-data_point_st_t* init_datapoint_model(manuf_name_t manuf_name) {
-
-    data_point_st_t *dp_model = NULL;
-
-    switch(manuf_name) {
-        case MANUF_NAME_1:
-            dp_model = init_datapoint_model1();
-            break;
-        case MANUF_NAME_2:
-            break;
-        case MANUF_NAME_3:
-            break;
-        case MANUF_NAME_4:
-            break;
-        case MANUF_NAME_5:
-            break;
-        case MANUF_NAME_6:
-            break;
-        case MANUF_NAME_7:
-            break;
-        case MANUF_NAME_8:
-            break;
-        case MANUF_NAME_9:
-            break;
-        case MANUF_NAME_0A:
-            dp_model = init_datapoint_model0A();
-            break;
-        case MANUF_NAME_0B:
-            dp_model = init_datapoint_model0B();
-            break;
-        default:
-            break;
-    }
-
-    return dp_model;
-}
+//data_point_st_t* init_datapoint_model(manuf_name_t manuf_name) {
+//
+//    data_point_st_t *dp_model = NULL;
+//
+//    switch(manuf_name) {
+//        case MANUF_NAME_1:
+//            dp_model = init_datapoint_model1();
+//            break;
+//        case MANUF_NAME_2:
+//            break;
+//        case MANUF_NAME_3:
+//            break;
+//        case MANUF_NAME_4:
+//            break;
+//        case MANUF_NAME_5:
+//            break;
+//        case MANUF_NAME_6:
+//            break;
+//        case MANUF_NAME_7:
+//            break;
+//        case MANUF_NAME_8:
+//            break;
+//        case MANUF_NAME_9:
+//            break;
+//        case MANUF_NAME_0A:
+//            dp_model = init_datapoint_model0A();
+//            break;
+//        case MANUF_NAME_0B:
+//            dp_model = init_datapoint_model0B();
+//            break;
+//        default:
+//            break;
+//    }
+//
+//    return dp_model;
+//}
 
 void remote_cmd_sys_mode(void *args) {
 
