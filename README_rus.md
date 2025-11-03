@@ -41,6 +41,7 @@
 <img src="doc/images/model7.png"/>
 <img src="doc/images/model8.png"/>
 <img src="doc/images/model9.png"/>
+<img src="doc/images/model0b.png"/>
 
 **Автор не несет никакой отвественности, если вы, воспользовавшись этим проектом, превратите свой умный термостат в полоумный.**
 

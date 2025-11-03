@@ -44,6 +44,7 @@
 <img src="doc/images/model7.png"/>
 <img src="doc/images/model8.png"/>
 <img src="doc/images/model9.png"/>
+<img src="doc/images/model0b.png"/>
 
 **The author assumes no responsibility if you turn your smart thermostat into a half-witted thermostat by using this project.**
 
