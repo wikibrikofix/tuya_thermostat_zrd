@@ -89,7 +89,7 @@ And add local storage to the z2m config (configuration.yaml)
 
 ```
 ota:
-zigbee_ota_override_index_location: local_ota_index.json
+  zigbee_ota_override_index_location: local_ota_index.json
 ```
 
 Then reboot z2m and see a new device (if the thermostat was already in the network and visible in z2m).
