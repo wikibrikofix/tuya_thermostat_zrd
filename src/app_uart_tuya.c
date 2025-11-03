@@ -776,27 +776,33 @@ void uart_cmd_handler() {
                 pkt->seq_num = reverse16(pkt->seq_num);
 
                 if (pkt->command == COMMAND03) {
-                    /* Reset Factory */
+                    if (pkt->data[0] == 0x01) {
+                        /* Reset Factory */
 #if UART_PRINTF_MODE // && DEBUG_CMD
-                    printf("command 0x03. Factory Reset. net_steer_start: %d\r\n", g_appCtx.net_steer_start);
+                        printf("command 0x03. Factory Reset. net_steer_start: %d\r\n", g_appCtx.net_steer_start);
 #endif
-                    if (!g_appCtx.net_steer_start) {
+                        if (!g_appCtx.net_steer_start) {
 
-                        set_status_net(STATUS_NET_FREE);
+                            set_status_net(STATUS_NET_FREE);
 
-                        zb_factoryReset();
+                            zb_factoryReset();
 
-                        g_appCtx.net_steer_start = true;
+                            g_appCtx.net_steer_start = true;
 
-                        if (g_appCtx.factory_resetTimerEvt) {
-                            TL_ZB_TIMER_CANCEL(&g_appCtx.factory_resetTimerEvt);
+                            if (g_appCtx.factory_resetTimerEvt) {
+                                TL_ZB_TIMER_CANCEL(&g_appCtx.factory_resetTimerEvt);
+                            }
+                            g_appCtx.factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(net_steer_start_offCb, NULL, TIMEOUT_1MIN30SEC);
+
                         }
-                        g_appCtx.factory_resetTimerEvt = TL_ZB_TIMER_SCHEDULE(net_steer_start_offCb, NULL, TIMEOUT_1MIN30SEC);
 
+                        set_command(pkt->command, pkt->seq_num, false);
+
+                    } else {
+#if UART_PRINTF_MODE // && DEBUG_CMD
+                        printf("command 0x03. Reset ZTU. Not support\r\n");
+#endif
                     }
-
-                    set_command(pkt->command, pkt->seq_num, false);
-
 //                } else if (pkt->command == COMMAND02) {
 //                    printf("input COMMAND02\r\n");
                 } else if (pkt->command == COMMAND20) {
