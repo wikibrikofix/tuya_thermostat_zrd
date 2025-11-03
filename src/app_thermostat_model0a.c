@@ -12,8 +12,8 @@
 #define R0A_HEAT_MIN_MAX            2000        // * 100
 #define R0A_HEAT_MAX_MIN            2000        // * 100
 #define R0A_HEAT_MAX_MAX            5000        // * 100
-#define R0A_DEADZONE_MIN            10          // * 10
-#define R0A_DEADZONE_MAX            50          // * 10
+#define R0A_DEADZONE_MIN            1
+#define R0A_DEADZONE_MAX            5
 #define R0A_CALIBRATION_MIN        -90          // * 10
 #define R0A_CALIBRATION_MAX         90          // * 10
 #define R0A_HEAT_PROTECT_MIN        2500        // * 100
