@@ -418,7 +418,7 @@ typedef struct {
     uint8_t         id;             // datapoint id
     uint8_t         type;           // dp_type_t
     uint16_t        len;            // length of datapoint
-    uint16_t        divisor;        // divisor
+    int16_t         divisor;        // divisor: -100 => /100; -10 => /10; 1 = > *1; 10 => *10; 100 => *100
     remote_cmd_t    remote_cmd;     // remote function of command
     local_cmd_t     local_cmd;      // local function of command
     int32_t         arg1;           // argument1, e.g. - MIN setpoint. If not used must be -1

@@ -169,7 +169,7 @@ void remote_cmd_heating_set(void *args) {
 //        return;
 //    }
 
-    printf("2. temp: %d, minHeatSet: %d, maxHeatSet: %d\r\n", temp, minHeatSet, maxHeatSet);
+//    printf("2. temp: %d, minHeatSet: %d, maxHeatSet: %d\r\n", temp, minHeatSet, maxHeatSet);
 
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
@@ -231,12 +231,12 @@ void remote_cmd_temp_calibration(void *args) {
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    temp /= 10; // 90 -> 9, -90 -> -9
-    if (data_point_model[DP_IDX_CALIBRATION].divisor == 10) {
+    if (data_point_model[DP_IDX_CALIBRATION].divisor == -10) {
+        temp /= 10;
+    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 10) {
         temp *= 10;
-    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 100) {
-        temp *= 100;
     }
+//    temp /= 10; // 90 -> 9, -90 -> -9
 
     set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
 
@@ -654,11 +654,17 @@ void local_cmd_temp_calibration(void *args) {
 
     int8_t *temp = (int8_t*)args;
 
-    if (data_point_model[DP_IDX_CALIBRATION].divisor == 1) {
+    if (data_point_model[DP_IDX_CALIBRATION].divisor == -10) {
         *temp *= 10;
-    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 100) {
+    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 10) {
         *temp /= 10;
     }
+
+//    if (data_point_model[DP_IDX_CALIBRATION].divisor == 1) {
+//        *temp *= 10;
+//    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 100) {
+//        *temp /= 10;
+//    }
 
     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION, (uint8_t*)temp);
 

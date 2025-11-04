@@ -260,14 +260,14 @@ void remote_cmd_level_4(void *args);
  *
  *  model5 - name_5
  */
-#define remote_cmd_sys_mode_5           remote_cmd_sys_mode_2
-#define remote_cmd_heating_set_5        remote_cmd_heating_set_2
-#define remote_cmd_temp_calibration_5   remote_cmd_temp_calibration_2
-#define remote_cmd_sensor_used_5        remote_cmd_sensor_used_2
-#define remote_cmd_keylock_5            remote_cmd_keylock_2
-#define remote_cmd_deadband_5           remote_cmd_deadband_2
-#define remote_cmd_min_setpoint_5       remote_cmd_min_setpoint_2
-#define remote_cmd_max_setpoint_5       remote_cmd_max_setpoint_2
+#define remote_cmd_sys_mode_5           remote_cmd_sys_mode
+#define remote_cmd_heating_set_5        remote_cmd_heating_set
+#define remote_cmd_temp_calibration_5   remote_cmd_temp_calibration
+#define remote_cmd_sensor_used_5        remote_cmd_sensor_used
+#define remote_cmd_keylock_5            remote_cmd_keylock
+#define remote_cmd_deadband_5           remote_cmd_deadband
+#define remote_cmd_min_setpoint_5       remote_cmd_min_setpoint
+#define remote_cmd_max_setpoint_5       remote_cmd_max_setpoint
 #define remote_cmd_oper_mode_5          remote_cmd_oper_mode_2
 #define remote_cmd_frost_protect_5      remote_cmd_frost_protect_2
 #define remote_cmd_heat_protect_5       remote_cmd_heat_protect_2
@@ -284,12 +284,13 @@ void remote_cmd_level_4(void *args);
  *  model6 - name_6
  */
 #define remote_cmd_sys_mode_6           remote_cmd_sys_mode
+#define remote_cmd_temp_calibration_6   remote_cmd_temp_calibration
 #define remote_cmd_heating_set_6        remote_cmd_heating_set
 #define remote_cmd_keylock_6            remote_cmd_keylock
 #define remote_cmd_oper_mode_6          remote_cmd_oper_mode_1
 
 void remote_cmd_sensor_used_6(void *args);
-void remote_cmd_temp_calibration_6(void *args);
+//void remote_cmd_temp_calibration_6(void *args);
 void remote_cmd_deadband_6(void *args);
 void remote_cmd_max_setpoint_6(void *args);
 void remote_cmd_frost_protect_6(void *args);
@@ -382,14 +383,14 @@ void remote_cmd_deadband_9(void *args);
  *  model0A - name_0A
  */
 
-#define remote_cmd_sys_mode_0A          remote_cmd_sys_mode_1
-#define remote_cmd_heating_set_0A       remote_cmd_heating_set_1
-#define remote_cmd_temp_calibration_0A  remote_cmd_temp_calibration_1
+#define remote_cmd_sys_mode_0A          remote_cmd_sys_mode
+#define remote_cmd_heating_set_0A       remote_cmd_heating_set
+#define remote_cmd_temp_calibration_0A  remote_cmd_temp_calibration
 #define remote_cmd_sensor_used_0A       remote_cmd_sensor_used_6
-#define remote_cmd_keylock_0A           remote_cmd_keylock_1
-#define remote_cmd_deadband_0A          remote_cmd_deadband_1
+#define remote_cmd_keylock_0A           remote_cmd_keylock
+#define remote_cmd_deadband_0A          remote_cmd_deadband
 #define remote_cmd_min_setpoint_0A      remote_cmd_min_setpoint
-#define remote_cmd_max_setpoint_0A      remote_cmd_max_setpoint_1
+#define remote_cmd_max_setpoint_0A      remote_cmd_max_setpoint
 #define remote_cmd_heat_protect_0A      remote_cmd_heat_protect_2
 #define remote_cmd_oper_mode_0A         remote_cmd_oper_mode_2
 #define remote_cmd_get_schedule_0A      remote_cmd_get_schedule_1
@@ -404,14 +405,14 @@ void remote_cmd_set_schedule_0A(void *args);
  *  model0B - name_0B
  */
 
-#define remote_cmd_sys_mode_0B          remote_cmd_sys_mode_1
-#define remote_cmd_heating_set_0B       remote_cmd_heating_set_1
-#define remote_cmd_temp_calibration_0B  remote_cmd_temp_calibration_1
+#define remote_cmd_sys_mode_0B          remote_cmd_sys_mode
+#define remote_cmd_heating_set_0B       remote_cmd_heating_set
+#define remote_cmd_temp_calibration_0B  remote_cmd_temp_calibration
 #define remote_cmd_sensor_used_0B       remote_cmd_sensor_used
-#define remote_cmd_keylock_0B           remote_cmd_keylock_1
+#define remote_cmd_keylock_0B           remote_cmd_keylock
 #define remote_cmd_deadband_0B          remote_cmd_deadband_6
 #define remote_cmd_min_setpoint_0B      remote_cmd_min_setpoint
-#define remote_cmd_max_setpoint_0B      remote_cmd_max_setpoint_1
+#define remote_cmd_max_setpoint_0B      remote_cmd_max_setpoint
 #define remote_cmd_oper_mode_0B         remote_cmd_oper_mode_2
 #define remote_cmd_get_schedule_0B      remote_cmd_get_schedule_1
 
@@ -537,16 +538,16 @@ void local_cmd_level_night_3(void *args);
  *
  *  model5 - name_5
  */
-#define local_cmd_inner_sensor_5        local_cmd_inner_sensor_2
-#define local_cmd_heating_set_5         local_cmd_heating_set_2
-#define local_cmd_temp_calibration_5    local_cmd_temp_calibration_2
-#define local_cmd_min_setpoint_5        local_cmd_min_setpoint_2
-#define local_cmd_max_setpoint_5        local_cmd_max_setpoint_2
-#define local_cmd_deadband_5            local_cmd_deadband_2
-#define local_cmd_keylock_5             local_cmd_keylock_2
-#define local_cmd_sensor_used_5         local_cmd_sensor_used_2
-#define local_cmd_set_run_state_5       local_cmd_set_run_state_2
-#define local_cmd_onoff_state_5         local_cmd_onoff_state_2
+#define local_cmd_inner_sensor_5        local_cmd_inner_sensor
+#define local_cmd_heating_set_5         local_cmd_heating_set
+#define local_cmd_temp_calibration_5    local_cmd_temp_calibration
+#define local_cmd_min_setpoint_5        local_cmd_min_setpoint
+#define local_cmd_max_setpoint_5        local_cmd_max_setpoint
+#define local_cmd_deadband_5            local_cmd_deadband
+#define local_cmd_keylock_5             local_cmd_keylock
+#define local_cmd_sensor_used_5         local_cmd_sensor_used
+#define local_cmd_set_run_state_5       local_cmd_set_run_state
+#define local_cmd_onoff_state_5         local_cmd_onoff_state
 #define local_cmd_oper_mode_5           local_cmd_oper_mode_2
 #define local_cmd_frost_protect_5       local_cmd_frost_protect_2
 #define local_cmd_heat_protect_5        local_cmd_heat_protect_2
@@ -563,6 +564,7 @@ void local_cmd_level_night_3(void *args);
 #define local_cmd_heating_set_6         local_cmd_heating_set
 #define local_cmd_max_setpoint_6        local_cmd_max_setpoint
 #define local_cmd_deadband_6            local_cmd_deadband
+#define local_cmd_temp_calibration_6    local_cmd_temp_calibration
 #define local_cmd_keylock_6             local_cmd_keylock
 #define local_cmd_set_run_state_6       local_cmd_set_run_state
 #define local_cmd_onoff_state_6         local_cmd_onoff_state
@@ -570,7 +572,7 @@ void local_cmd_level_night_3(void *args);
 #define local_cmd_heat_protect_6        local_cmd_heat_protect_2
 
 void local_cmd_sensor_used_6(void *args);
-void local_cmd_temp_calibration_6(void *args);
+//void local_cmd_temp_calibration_6(void *args);
 void local_cmd_frost_protect_6(void *args);
 void local_cmd_inversion_6(void *args);
 void local_cmd_level_6(void *args);

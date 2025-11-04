@@ -14,8 +14,8 @@
 #define R06_HEAT_PROTECT_MAX        6000        // * 100
 #define R06_DEADZONE_MIN            5           // 0.5
 #define R06_DEADZONE_MAX            100         // 10
-#define R06_CALIBRATION_MIN        -99          // * 10
-#define R06_CALIBRATION_MAX         99          // * 10
+#define R06_CALIBRATION_MIN        -99          // * 1
+#define R06_CALIBRATION_MAX         99          // * 1
 
 #define DP_IDX_SCHEDULE_MODE        DP_IDX_SCHEDULE_MON
 
@@ -277,20 +277,20 @@ void local_cmd_sensor_used_6(void *args) {
     thermostat_settings_save();
 }
 
-void local_cmd_temp_calibration_6(void *args) {
-
-    int8_t *temp = (int8_t*)args;
-
-    if (data_point_model[DP_IDX_CALIBRATION].divisor == 10) {
-        *temp /= 10;
-    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 100) {
-        *temp /= 100;
-    }
-
-    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION, (uint8_t*)temp);
-
-    thermostat_settings_save();
-}
+//void local_cmd_temp_calibration_6(void *args) {
+//
+//    int8_t *temp = (int8_t*)args;
+//
+//    if (data_point_model[DP_IDX_CALIBRATION].divisor == 10) {
+//        *temp /= 10;
+//    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 100) {
+//        *temp /= 100;
+//    }
+//
+//    zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_LOCAL_TEMP_CALIBRATION, (uint8_t*)temp);
+//
+//    thermostat_settings_save();
+//}
 
 void local_cmd_frost_protect_6(void *args) {
 
@@ -457,57 +457,57 @@ void remote_cmd_sensor_used_6(void *args) {
 }
 
 
-void remote_cmd_temp_calibration_6(void *args) {
-
-    int8_t *arg = (int8_t*)args;
-    int8_t temp = *arg;
-
-    if(data_point_model[DP_IDX_CALIBRATION].id == 0) return;
-
-    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1) temp = data_point_model[DP_IDX_CALIBRATION].arg1;
-    if (temp > data_point_model[DP_IDX_CALIBRATION].arg2) temp = data_point_model[DP_IDX_CALIBRATION].arg2;
-
-//    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1 || temp > data_point_model[DP_IDX_CALIBRATION].arg2) {
-//        return;
+//void remote_cmd_temp_calibration_6(void *args) {
+//
+//    int8_t *arg = (int8_t*)args;
+//    int8_t temp = *arg;
+//
+//    if(data_point_model[DP_IDX_CALIBRATION].id == 0) return;
+//
+//    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1) temp = data_point_model[DP_IDX_CALIBRATION].arg1;
+//    if (temp > data_point_model[DP_IDX_CALIBRATION].arg2) temp = data_point_model[DP_IDX_CALIBRATION].arg2;
+//
+////    if (temp < data_point_model[DP_IDX_CALIBRATION].arg1 || temp > data_point_model[DP_IDX_CALIBRATION].arg2) {
+////        return;
+////    }
+//
+//    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
+//    uint16_t seq_num = get_seq_num();
+//    seq_num++;
+//
+//    if (data_point_model[DP_IDX_CALIBRATION].divisor == 10) {
+//        temp *= 10;
+//    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 100) {
+//        temp *= 100;
 //    }
-
-    pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
-    uint16_t seq_num = get_seq_num();
-    seq_num++;
-
-    if (data_point_model[DP_IDX_CALIBRATION].divisor == 10) {
-        temp *= 10;
-    } else if (data_point_model[DP_IDX_CALIBRATION].divisor == 100) {
-        temp *= 100;
-    }
-
-    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
-
-    out_pkt->len = reverse16(8);
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-
-    data_point_t *data_point = (data_point_t*)out_pkt->data;
-    data_point->dp_id = data_point_model[DP_IDX_CALIBRATION].id;
-    out_pkt->pkt_len++;
-    data_point->dp_type = data_point_model[DP_IDX_CALIBRATION].type;
-    out_pkt->pkt_len++;
-    data_point->dp_len = (reverse16(4));
-    out_pkt->pkt_len++;
-    out_pkt->pkt_len++;
-    int32_t dev_temp = temp;
-    data_point->data[0] = (dev_temp >> 24) & 0xFF;
-    data_point->data[1] = (dev_temp >> 16) & 0xFF;
-    data_point->data[2] = (dev_temp >> 8)  & 0xFF;
-    data_point->data[3] = dev_temp & 0xFF;
-    out_pkt->pkt_len += 4;
-    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
-    add_to_ring_cmd(out_pkt, true);
-
-    set_seq_num(seq_num);
-
-    thermostat_settings_save();
-}
+//
+//    set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
+//
+//    out_pkt->len = reverse16(8);
+//    out_pkt->pkt_len++;
+//    out_pkt->pkt_len++;
+//
+//    data_point_t *data_point = (data_point_t*)out_pkt->data;
+//    data_point->dp_id = data_point_model[DP_IDX_CALIBRATION].id;
+//    out_pkt->pkt_len++;
+//    data_point->dp_type = data_point_model[DP_IDX_CALIBRATION].type;
+//    out_pkt->pkt_len++;
+//    data_point->dp_len = (reverse16(4));
+//    out_pkt->pkt_len++;
+//    out_pkt->pkt_len++;
+//    int32_t dev_temp = temp;
+//    data_point->data[0] = (dev_temp >> 24) & 0xFF;
+//    data_point->data[1] = (dev_temp >> 16) & 0xFF;
+//    data_point->data[2] = (dev_temp >> 8)  & 0xFF;
+//    data_point->data[3] = dev_temp & 0xFF;
+//    out_pkt->pkt_len += 4;
+//    data_point->data[4] = checksum((uint8_t*)out_pkt, out_pkt->pkt_len++);
+//    add_to_ring_cmd(out_pkt, true);
+//
+//    set_seq_num(seq_num);
+//
+//    thermostat_settings_save();
+//}
 
 void remote_cmd_deadband_6(void *args) {
 

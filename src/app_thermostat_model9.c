@@ -83,7 +83,7 @@ data_point_st_t *init_datapoint_model9() {
     data_point_model_common[DP_IDX_CALIBRATION].id = DP_TYPE9_ID_1B;
     data_point_model_common[DP_IDX_CALIBRATION].type = DP_VAL;
     data_point_model_common[DP_IDX_CALIBRATION].len = 4;
-    data_point_model_common[DP_IDX_CALIBRATION].divisor = 1;
+    data_point_model_common[DP_IDX_CALIBRATION].divisor = -10;
     data_point_model_common[DP_IDX_CALIBRATION].remote_cmd = remote_cmd_temp_calibration_9;
     data_point_model_common[DP_IDX_CALIBRATION].local_cmd = local_cmd_temp_calibration_9;
     data_point_model_common[DP_IDX_CALIBRATION].arg1 = R09_CALIBRATION_MIN;
@@ -222,7 +222,7 @@ data_point_st_t *init_datapoint_model9() {
     data_point_model_common[DP_IDX_EXT_CALIBRATION].id = DP_TYPE9_ID_73;
     data_point_model_common[DP_IDX_EXT_CALIBRATION].type = DP_VAL;
     data_point_model_common[DP_IDX_EXT_CALIBRATION].len = 4;
-    data_point_model_common[DP_IDX_EXT_CALIBRATION].divisor = 1;
+    data_point_model_common[DP_IDX_EXT_CALIBRATION].divisor = -10;
     data_point_model_common[DP_IDX_EXT_CALIBRATION].remote_cmd = remote_cmd_ext_temp_calibration_9;
     data_point_model_common[DP_IDX_EXT_CALIBRATION].local_cmd = local_cmd_ext_temp_calibration_9;
     data_point_model_common[DP_IDX_EXT_CALIBRATION].arg1 = R09_CALIBRATION_MIN;

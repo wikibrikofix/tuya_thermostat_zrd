@@ -79,7 +79,7 @@ data_point_st_t *init_datapoint_model0B() {
     data_point_model_common[DP_IDX_CALIBRATION].id = DP_TYPE0B_ID_1B;
     data_point_model_common[DP_IDX_CALIBRATION].type = DP_VAL;
     data_point_model_common[DP_IDX_CALIBRATION].len = 4;
-    data_point_model_common[DP_IDX_CALIBRATION].divisor = 1;
+    data_point_model_common[DP_IDX_CALIBRATION].divisor = -10;
     data_point_model_common[DP_IDX_CALIBRATION].remote_cmd = remote_cmd_temp_calibration_0B;
     data_point_model_common[DP_IDX_CALIBRATION].local_cmd = local_cmd_temp_calibration_0B;
     data_point_model_common[DP_IDX_CALIBRATION].arg1 = R0B_CALIBRATION_MIN;

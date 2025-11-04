@@ -72,7 +72,7 @@ data_point_st_t *init_datapoint_model8() {
     data_point_model_common[DP_IDX_CALIBRATION].id = DP_TYPE8_ID_13;
     data_point_model_common[DP_IDX_CALIBRATION].type = DP_VAL;
     data_point_model_common[DP_IDX_CALIBRATION].len = 4;
-    data_point_model_common[DP_IDX_CALIBRATION].divisor = 1;
+    data_point_model_common[DP_IDX_CALIBRATION].divisor = -10;
     data_point_model_common[DP_IDX_CALIBRATION].remote_cmd = remote_cmd_temp_calibration_8;
     data_point_model_common[DP_IDX_CALIBRATION].local_cmd = local_cmd_temp_calibration_8;
     data_point_model_common[DP_IDX_CALIBRATION].arg1 = R08_CALIBRATION_MIN;
@@ -141,7 +141,7 @@ data_point_st_t *init_datapoint_model8() {
     data_point_model_common[DP_IDX_EXT_CALIBRATION].id = DP_TYPE8_ID_65;
     data_point_model_common[DP_IDX_EXT_CALIBRATION].type = DP_VAL;
     data_point_model_common[DP_IDX_EXT_CALIBRATION].len = 4;
-    data_point_model_common[DP_IDX_EXT_CALIBRATION].divisor = 1;
+    data_point_model_common[DP_IDX_EXT_CALIBRATION].divisor = -10;
     data_point_model_common[DP_IDX_EXT_CALIBRATION].remote_cmd = remote_cmd_ext_temp_calibration_8;
     data_point_model_common[DP_IDX_EXT_CALIBRATION].local_cmd = local_cmd_ext_temp_calibration_8;
     data_point_model_common[DP_IDX_EXT_CALIBRATION].arg1 = R08_CALIBRATION_MIN;
@@ -704,11 +704,17 @@ void local_cmd_ext_temp_calibration_8(void *args) {
 
     int8_t *temp = (int8_t*)args;
 
-    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 1) {
+    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == -10) {
         *temp *= 10;
-    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 100) {
+    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 10) {
         *temp /= 10;
     }
+
+//    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 1) {
+//        *temp *= 10;
+//    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 100) {
+//        *temp /= 10;
+//    }
 
     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_EXT_TEMP_CALIBRATION, (uint8_t*)temp);
 
@@ -818,11 +824,17 @@ void remote_cmd_ext_temp_calibration_8(void *args) {
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    temp /= 10; // 90 -> 9, -90 -> -9
-    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 10) {
+//    temp /= 10; // 90 -> 9, -90 -> -9
+//    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 10) {
+//        temp *= 10;
+//    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 100) {
+//        temp *= 100;
+//    }
+
+    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == -10) {
+        temp /= 10;
+    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 10) {
         temp *= 10;
-    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 100) {
-        temp *= 100;
     }
 
     set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
