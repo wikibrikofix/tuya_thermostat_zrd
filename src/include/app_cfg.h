@@ -39,9 +39,7 @@ extern "C" {
 #define MCU_CORE_8258   1
 #endif
 
-//#define ZB_DEFAULT_TX_POWER_IDX RF_POWER_P0p04dBm
-#define MY_RF_POWER_INDEX   RF_POWER_N5p03dBm   //RF_POWER_N0p14dBm   //RF_POWER_P0p04dBm   //
-
+#define MY_RF_POWER_INDEX   RF_POWER_INDEX_P10p46dBm
 
 /* for reporting */
 #define REPORTING_MIN       300             /* 5 min            */

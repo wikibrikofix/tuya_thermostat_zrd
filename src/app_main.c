@@ -4,8 +4,7 @@
 
 app_ctx_t g_appCtx = {
         .bdbFBTimerEvt = NULL,
-        .short_poll = POLL_RATE * 3,
-        .long_poll = POLL_RATE * LONG_POLL,
+        .factory_resetTimerEvt = NULL,
 };
 
 //uint32_t count_restart = 0;
@@ -268,5 +267,7 @@ void user_init(bool isRetention) {
 
     /* Initialize BDB */
     bdb_init((af_simple_descriptor_t *)&app_ep1Desc, &g_bdbCommissionSetting, &g_zbBdbCb, 1);
+
+    rf_setTxPower(MY_RF_POWER_INDEX);
 }
 

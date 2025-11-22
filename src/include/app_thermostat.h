@@ -78,6 +78,7 @@ typedef struct __attribute__((packed)) {
     uint8_t     fanMode;
     uint8_t     fanControl;
     uint8_t     extTemperatureCalibration;
+    uint8_t     manuf_name;
     uint8_t     crc;
 } thermostat_settings_t;
 
@@ -93,33 +94,66 @@ typedef struct {
     uint8_t         w_day;
 } schedule_args_model2_t;
 
-extern uint8_t w_mon;
-extern uint8_t w_tue;
-extern uint8_t w_wed;
-extern uint8_t w_thu;
-extern uint8_t w_fri;
-extern uint8_t w_sat;
-extern uint8_t w_sun;
-extern uint8_t w_day;
+typedef struct {
+    uint8_t day;
+    uint8_t seqNum;
+    bool    rsp;
+} args_get_schedule_t;
 
-extern data_point_st_t data_point_model1[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model2[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model3[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model4[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model5[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model6[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model7[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model8[DP_IDX_MAXNUM];
-extern data_point_st_t data_point_model9[DP_IDX_MAXNUM];
+extern args_get_schedule_t args_get_schedule_mon;
+extern args_get_schedule_t args_get_schedule_tue;
+extern args_get_schedule_t args_get_schedule_wed;
+extern args_get_schedule_t args_get_schedule_thu;
+extern args_get_schedule_t args_get_schedule_fri;
+extern args_get_schedule_t args_get_schedule_sat;
+extern args_get_schedule_t args_get_schedule_sun;
+extern args_get_schedule_t args_get_schedule_any;
+
+//extern uint8_t w_mon;
+//extern uint8_t w_tue;
+//extern uint8_t w_wed;
+//extern uint8_t w_thu;
+//extern uint8_t w_fri;
+//extern uint8_t w_sat;
+//extern uint8_t w_sun;
+//extern uint8_t w_day;
+
+extern data_point_st_t data_point_model_common[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model1[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model2[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model3[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model4[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model5[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model6[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model7[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model8[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model9[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model0A[DP_IDX_MAXNUM];
+//extern data_point_st_t data_point_model0B[DP_IDX_MAXNUM];
 extern uint8_t remote_cmd_pkt_buff[DATA_MAX_LEN+12];
-extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
+extern uint8_t zb_modelId[ZB_MODELID_FULL_SIZE];
+//extern uint8_t zb_modelId_arr[ZB_MODELID_ARR_NUM][ZB_MODELID_FULL_SIZE];
 
 extern uint8_t dev_therm_mode;
 
-extern void (*answer_weekly_schedule[MANUF_NAME_MAX])(void);
+extern void (*answer_weekly_schedule[MANUF_NAME_MAX])(void *args);
 /*
  * common functions remote_cmd
  */
+
+//data_point_st_t* init_datapoint_model(manuf_name_t manuf_name);
+data_point_st_t *init_datapoint_model1();
+data_point_st_t *init_datapoint_model2();
+data_point_st_t *init_datapoint_model3();
+data_point_st_t *init_datapoint_model4();
+data_point_st_t *init_datapoint_model5();
+data_point_st_t *init_datapoint_model6();
+data_point_st_t *init_datapoint_model7();
+data_point_st_t *init_datapoint_model8();
+data_point_st_t *init_datapoint_model9();
+data_point_st_t *init_datapoint_model0A();
+data_point_st_t *init_datapoint_model0B();
+
 void remote_cmd_sys_mode(void *args);
 void remote_cmd_heating_set(void *args);
 void remote_cmd_temp_calibration(void *args);
@@ -226,14 +260,14 @@ void remote_cmd_level_4(void *args);
  *
  *  model5 - name_5
  */
-#define remote_cmd_sys_mode_5           remote_cmd_sys_mode_2
-#define remote_cmd_heating_set_5        remote_cmd_heating_set_2
-#define remote_cmd_temp_calibration_5   remote_cmd_temp_calibration_2
-#define remote_cmd_sensor_used_5        remote_cmd_sensor_used_2
-#define remote_cmd_keylock_5            remote_cmd_keylock_2
-#define remote_cmd_deadband_5           remote_cmd_deadband_2
-#define remote_cmd_min_setpoint_5       remote_cmd_min_setpoint_2
-#define remote_cmd_max_setpoint_5       remote_cmd_max_setpoint_2
+#define remote_cmd_sys_mode_5           remote_cmd_sys_mode
+#define remote_cmd_heating_set_5        remote_cmd_heating_set
+#define remote_cmd_temp_calibration_5   remote_cmd_temp_calibration
+#define remote_cmd_sensor_used_5        remote_cmd_sensor_used
+#define remote_cmd_keylock_5            remote_cmd_keylock
+#define remote_cmd_deadband_5           remote_cmd_deadband
+#define remote_cmd_min_setpoint_5       remote_cmd_min_setpoint
+#define remote_cmd_max_setpoint_5       remote_cmd_max_setpoint
 #define remote_cmd_oper_mode_5          remote_cmd_oper_mode_2
 #define remote_cmd_frost_protect_5      remote_cmd_frost_protect_2
 #define remote_cmd_heat_protect_5       remote_cmd_heat_protect_2
@@ -243,16 +277,20 @@ void remote_cmd_level_4(void *args);
 /*
  *  remote_cmd for signarure
  *  "lzriup1j"
+ *  "oh8y8pv8",
+ *  "gops3slb",
+ *  "cvub6xbb",
  *
  *  model6 - name_6
  */
 #define remote_cmd_sys_mode_6           remote_cmd_sys_mode
+#define remote_cmd_temp_calibration_6   remote_cmd_temp_calibration
 #define remote_cmd_heating_set_6        remote_cmd_heating_set
 #define remote_cmd_keylock_6            remote_cmd_keylock
 #define remote_cmd_oper_mode_6          remote_cmd_oper_mode_1
 
 void remote_cmd_sensor_used_6(void *args);
-void remote_cmd_temp_calibration_6(void *args);
+//void remote_cmd_temp_calibration_6(void *args);
 void remote_cmd_deadband_6(void *args);
 void remote_cmd_max_setpoint_6(void *args);
 void remote_cmd_frost_protect_6(void *args);
@@ -337,6 +375,49 @@ void remote_cmd_set_schedule_8(void *args);
 
 void remote_cmd_mode_keylock_9(void *args);
 void remote_cmd_deadband_9(void *args);
+
+/*
+ *  remote_cmd for signarure
+ *  "xalsoe3m"
+ *
+ *  model0A - name_0A
+ */
+
+#define remote_cmd_sys_mode_0A          remote_cmd_sys_mode
+#define remote_cmd_heating_set_0A       remote_cmd_heating_set
+#define remote_cmd_temp_calibration_0A  remote_cmd_temp_calibration
+#define remote_cmd_sensor_used_0A       remote_cmd_sensor_used_6
+#define remote_cmd_keylock_0A           remote_cmd_keylock
+#define remote_cmd_deadband_0A          remote_cmd_deadband
+#define remote_cmd_min_setpoint_0A      remote_cmd_min_setpoint
+#define remote_cmd_max_setpoint_0A      remote_cmd_max_setpoint
+#define remote_cmd_heat_protect_0A      remote_cmd_heat_protect_2
+#define remote_cmd_oper_mode_0A         remote_cmd_oper_mode_2
+#define remote_cmd_get_schedule_0A      remote_cmd_get_schedule_1
+#define remote_cmd_eco_mode_0A          remote_cmd_eco_mode_3
+
+void remote_cmd_set_schedule_0A(void *args);
+
+/*
+ *  remote_cmd for signarure
+ *  "8byfmxdv"
+ *
+ *  model0B - name_0B
+ */
+
+#define remote_cmd_sys_mode_0B          remote_cmd_sys_mode
+#define remote_cmd_heating_set_0B       remote_cmd_heating_set
+#define remote_cmd_temp_calibration_0B  remote_cmd_temp_calibration
+#define remote_cmd_sensor_used_0B       remote_cmd_sensor_used
+#define remote_cmd_keylock_0B           remote_cmd_keylock
+#define remote_cmd_deadband_0B          remote_cmd_deadband_6
+#define remote_cmd_min_setpoint_0B      remote_cmd_min_setpoint
+#define remote_cmd_max_setpoint_0B      remote_cmd_max_setpoint
+#define remote_cmd_oper_mode_0B         remote_cmd_oper_mode_2
+#define remote_cmd_get_schedule_0B      remote_cmd_get_schedule_1
+
+void remote_cmd_level_0B(void *args);
+void remote_cmd_set_schedule_0B(void *args);
 
 /*
  * common functions local_cmd
@@ -457,16 +538,16 @@ void local_cmd_level_night_3(void *args);
  *
  *  model5 - name_5
  */
-#define local_cmd_inner_sensor_5        local_cmd_inner_sensor_2
-#define local_cmd_heating_set_5         local_cmd_heating_set_2
-#define local_cmd_temp_calibration_5    local_cmd_temp_calibration_2
-#define local_cmd_min_setpoint_5        local_cmd_min_setpoint_2
-#define local_cmd_max_setpoint_5        local_cmd_max_setpoint_2
-#define local_cmd_deadband_5            local_cmd_deadband_2
-#define local_cmd_keylock_5             local_cmd_keylock_2
-#define local_cmd_sensor_used_5         local_cmd_sensor_used_2
-#define local_cmd_set_run_state_5       local_cmd_set_run_state_2
-#define local_cmd_onoff_state_5         local_cmd_onoff_state_2
+#define local_cmd_inner_sensor_5        local_cmd_inner_sensor
+#define local_cmd_heating_set_5         local_cmd_heating_set
+#define local_cmd_temp_calibration_5    local_cmd_temp_calibration
+#define local_cmd_min_setpoint_5        local_cmd_min_setpoint
+#define local_cmd_max_setpoint_5        local_cmd_max_setpoint
+#define local_cmd_deadband_5            local_cmd_deadband
+#define local_cmd_keylock_5             local_cmd_keylock
+#define local_cmd_sensor_used_5         local_cmd_sensor_used
+#define local_cmd_set_run_state_5       local_cmd_set_run_state
+#define local_cmd_onoff_state_5         local_cmd_onoff_state
 #define local_cmd_oper_mode_5           local_cmd_oper_mode_2
 #define local_cmd_frost_protect_5       local_cmd_frost_protect_2
 #define local_cmd_heat_protect_5        local_cmd_heat_protect_2
@@ -483,6 +564,7 @@ void local_cmd_level_night_3(void *args);
 #define local_cmd_heating_set_6         local_cmd_heating_set
 #define local_cmd_max_setpoint_6        local_cmd_max_setpoint
 #define local_cmd_deadband_6            local_cmd_deadband
+#define local_cmd_temp_calibration_6    local_cmd_temp_calibration
 #define local_cmd_keylock_6             local_cmd_keylock
 #define local_cmd_set_run_state_6       local_cmd_set_run_state
 #define local_cmd_onoff_state_6         local_cmd_onoff_state
@@ -490,7 +572,7 @@ void local_cmd_level_night_3(void *args);
 #define local_cmd_heat_protect_6        local_cmd_heat_protect_2
 
 void local_cmd_sensor_used_6(void *args);
-void local_cmd_temp_calibration_6(void *args);
+//void local_cmd_temp_calibration_6(void *args);
 void local_cmd_frost_protect_6(void *args);
 void local_cmd_inversion_6(void *args);
 void local_cmd_level_6(void *args);
@@ -580,5 +662,48 @@ int32_t check_schedule8Cb(void *arg);
 #define local_cmd_keylock_9                 local_cmd_keylock
 
 void local_cmd_mode_keylock_9(void *args);
+
+/*
+ *  remote_cmd for signarure
+ *  "xalsoe3m"
+ *
+ *  model0A - name_0A
+ */
+#define local_cmd_inner_sensor_0A       local_cmd_inner_sensor
+#define local_cmd_heating_set_0A        local_cmd_heating_set
+#define local_cmd_temp_calibration_0A   local_cmd_temp_calibration
+#define local_cmd_min_setpoint_0A       local_cmd_min_setpoint
+#define local_cmd_max_setpoint_0A       local_cmd_max_setpoint
+#define local_cmd_heat_protect_0A       local_cmd_heat_protect_2
+#define local_cmd_deadband_0A           local_cmd_deadband
+#define local_cmd_keylock_0A            local_cmd_keylock
+#define local_cmd_sensor_used_0A        local_cmd_sensor_used_6
+#define local_cmd_set_run_state_0A      local_cmd_set_run_state
+#define local_cmd_onoff_state_0A        local_cmd_onoff_state
+#define local_cmd_eco_mode_0A           local_cmd_eco_mode_3
+#define local_cmd_oper_mode_0A          local_cmd_oper_mode_2
+
+void local_cmd_set_schedule_0A(void *args);
+
+/*
+ *  remote_cmd for signarure
+ *  "8byfmxdv"
+ *
+ *  model0B - name_0B
+ */
+#define local_cmd_inner_sensor_0B       local_cmd_inner_sensor
+#define local_cmd_heating_set_0B        local_cmd_heating_set
+#define local_cmd_temp_calibration_0B   local_cmd_temp_calibration
+#define local_cmd_min_setpoint_0B       local_cmd_min_setpoint
+#define local_cmd_max_setpoint_0B       local_cmd_max_setpoint
+#define local_cmd_deadband_0B           local_cmd_deadband
+#define local_cmd_keylock_0B            local_cmd_keylock
+#define local_cmd_sensor_used_0B        local_cmd_sensor_used
+#define local_cmd_set_run_state_0B      local_cmd_set_run_state
+#define local_cmd_onoff_state_0B        local_cmd_onoff_state
+#define local_cmd_oper_mode_0B          local_cmd_oper_mode_2
+#define local_cmd_level_0B              local_cmd_level_6
+
+void local_cmd_set_schedule_0B(void *args);
 
 #endif /* SRC_INCLUDE_APP_THERMOSTAT_H_ */

@@ -8,18 +8,18 @@
  * type1 (model1)
 */
 typedef enum {
-    DP_TYPE1_ID_00    = 0x00,     // heat min  - if 0 - not support
+    DP_TYPE1_ID_00    = 0x00,     // 0 - not support
     DP_TYPE1_ID_01    = 0x01,     // on off
     DP_TYPE1_ID_02    = 0x02,     // manual / programming
     DP_TYPE1_ID_03    = 0x03,     // unknown
     DP_TYPE1_ID_10    = 0x10,     // heat setpoint
-    DP_TYPE1_ID_13    = 0x13,     // max heat
+    DP_TYPE1_ID_13    = 0x13,     // max (protection max temperature (+45°C ... +70°C))
     DP_TYPE1_ID_18    = 0x18,     // local temperature
-    DP_TYPE1_ID_1A    = 0x1A,     // hysteresis
+    DP_TYPE1_ID_1A    = 0x1A,     // hysteresis (1°C ... 5°C)
     DP_TYPE1_ID_1B    = 0x1B,     // calibration
     DP_TYPE1_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
     DP_TYPE1_ID_28    = 0x28,     // lock / unlock keys
-    DP_TYPE1_ID_2B    = 0x2B,     // Sensor IN/AL/OU
+    DP_TYPE1_ID_2B    = 0x2B,     // Sensor IN - 0 / AL - 1 / OU - 2
     DP_TYPE1_ID_65    = 0x65,     // schedule
 } data_point_id_type1_t;
 
@@ -34,16 +34,16 @@ typedef enum {
     DP_TYPE2_ID_01    = 0x01,     // on off
     DP_TYPE2_ID_02    = 0x02,     // manual / programming
     DP_TYPE2_ID_10    = 0x10,     // heat setpoint
-    DP_TYPE2_ID_13    = 0x13,     // max heat
+    DP_TYPE2_ID_13    = 0x13,     // max heat (+35°C ... +45°C step 1°C)
     DP_TYPE2_ID_18    = 0x18,     // local temperature
-    DP_TYPE2_ID_1A    = 0x1A,     // min heat
+    DP_TYPE2_ID_1A    = 0x1A,     // min heat (+5°C ... +15°C step 1°C)
     DP_TYPE2_ID_1B    = 0x1B,     // calibration
     DP_TYPE2_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
     DP_TYPE2_ID_28    = 0x28,     // lock / unlock keys
     DP_TYPE2_ID_2B    = 0x2B,     // Sensor IN/AL/OU
-    DP_TYPE2_ID_67    = 0x67,     // hysteresis
-    DP_TYPE2_ID_68    = 0x68,     // protection max temperature
-    DP_TYPE2_ID_6F    = 0x6F,     // protection min temperature
+    DP_TYPE2_ID_67    = 0x67,     // hysteresis (0°C ... 5°C step 1°C)
+    DP_TYPE2_ID_68    = 0x68,     // protection max temperature (+25°C ... +70°C step 1°C)
+    DP_TYPE2_ID_6F    = 0x6F,     // protection min temperature (0°C ... +10°C step 1°C)
     DP_TYPE2_ID_65    = 0x65,     // schedule sun
     DP_TYPE2_ID_66    = 0x66,     // temperature of outer sensor (if AL or OU)
     DP_TYPE2_ID_69    = 0x69,     // schedule sat
@@ -154,6 +154,9 @@ typedef data_point_id_type2_t data_point_id_type5_t;
 
 /* data point for manufacturer id -
  * "lzriup1j"
+ * "oh8y8pv8",
+ * "gops3slb",
+ * "cvub6xbb",
  *
  * type6 (model6)
 */
@@ -190,9 +193,9 @@ typedef enum {
     DP_TYPE7_ID_02    = 0x02,     // thermostat local mode (cold, heat, fan)
     DP_TYPE7_ID_04    = 0x04,     // eco mode
     DP_TYPE7_ID_10    = 0x10,     // heat setpoint
-    DP_TYPE7_ID_13    = 0x13,     // max heat
+    DP_TYPE7_ID_13    = 0x13,     // max heat (+15°C ... +35°C stepe 1°C)
     DP_TYPE7_ID_18    = 0x18,     // local temperature
-    DP_TYPE7_ID_1A    = 0x1A,     // min heat
+    DP_TYPE7_ID_1A    = 0x1A,     // min heat (+5°C ... +15°C step 1°C)
     DP_TYPE7_ID_1B    = 0x1B,     // calibration
     DP_TYPE7_ID_1C    = 0x1C,     // fan mode 0x00 - low, 0x01 - mid, 0x02 - high, 0x03 - auto
     DP_TYPE7_ID_24    = 0x24,     // 0x00 - valve open, 0x01 - valve close
@@ -200,8 +203,8 @@ typedef enum {
     DP_TYPE7_ID_65    = 0x65,     // manual / programming
     DP_TYPE7_ID_66    = 0x66,     // fan control 0x00 - off, 0x01 - on
     DP_TYPE7_ID_67    = 0x67,     // hysteresis
-    DP_TYPE7_ID_68    = 0x68,     // eco mode's cool temperature
-    DP_TYPE7_ID_69    = 0x69,     // eco mode's heat temperature
+    DP_TYPE7_ID_68    = 0x68,     // eco mode's cool temperature (+10°C ... +30°C step 1°C)
+    DP_TYPE7_ID_69    = 0x69,     // eco mode's heat temperature (+10°C ... +30°C step 1°C)
     DP_TYPE7_ID_6A    = 0x6A,     // schedule sun
     DP_TYPE7_ID_6B    = 0x6B,     // schedule sat
     DP_TYPE7_ID_6C    = 0x6C,     // schedule fri
@@ -275,6 +278,52 @@ typedef enum {
     DP_TYPE9_ID_75    = 0x75,     // mode lock / unlock keys (all - 0x01, partial - 0x00)
 } data_point_id_type9_t;
 
+/* data point for manufacturer id -
+ * "_TZE284_xalsoe3m"
+ *
+ * typeA (modelA)
+*/
+typedef enum {
+    DP_TYPE0A_ID_00     = 0x00,     // not support
+    DP_TYPE0A_ID_01     = 0x01,     // on off
+    DP_TYPE0A_ID_02     = 0x02,     // manual - 1 / programming - 0
+    DP_TYPE0A_ID_10     = 0x10,     // local temperature
+    DP_TYPE0A_ID_12     = 0x12,     // min heat (0°C ... +20°C, step 1°C)
+    DP_TYPE0A_ID_13     = 0x13,     // calibration (-9°C ... +9°C step 1°C)
+    DP_TYPE0A_ID_17     = 0x17,     // ???? not used. temperature of outer sensor (if AL or OU)
+    DP_TYPE0A_ID_20     = 0x20,     // Sensor IN - 0/OUT - 1/ALL - 2
+    DP_TYPE0A_ID_22     = 0x22,     // max heat (+20°C ... 50°C, step 1°С)
+    DP_TYPE0A_ID_27     = 0x27,     // lock - 1 / unlock keys - 0
+    DP_TYPE0A_ID_28     = 0x28,     // eco mode
+    DP_TYPE0A_ID_2F     = 0x2F,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE0A_ID_32     = 0x32,     // heat setpoint
+    DP_TYPE0A_ID_44     = 0x44,     // schedule
+    DP_TYPE0A_ID_65     = 0x65,     // protection max temperature (+25°C ... +70°C step 1°C)
+    DP_TYPE0A_ID_66     = 0x66,     // hysteresis (1°C ... 5°C step 1°C)
+} data_point_id_type0A_t;
+
+/* data point for manufacturer id -
+ * "_TZE204_8byfmxdv"
+ *
+ * type6 (model0B)
+*/
+typedef enum {
+    DP_TYPE0B_ID_00    = 0x00,     // 0 - not support
+    DP_TYPE0B_ID_01    = 0x01,     // on off
+    DP_TYPE0B_ID_02    = 0x02,     // programming - 0 / manual - 1
+    DP_TYPE0B_ID_10    = 0x10,     // heat setpoint *10
+    DP_TYPE0B_ID_13    = 0x13,     // max heat +35°C ... +50°C step 0.5, *10
+    DP_TYPE0B_ID_18    = 0x18,     // local temperature (0x011D - 285 / 10 = 28.5°C)
+    DP_TYPE0B_ID_1A    = 0x1A,     // min heat 1°C ... +5°C, step 0.5 * 10
+    DP_TYPE0B_ID_1B    = 0x1B,     // calibration -9°C ... +9°C step 1
+    DP_TYPE0B_ID_2B    = 0x2B,     // Sensor IN - 0 / OUT - 1
+    DP_TYPE0B_ID_24    = 0x24,     // 0x00 - heat, 0x01 - idle
+    DP_TYPE0B_ID_28    = 0x28,     // keys lock - 1 / unlock  - 0
+    DP_TYPE0A_ID_30    = 0x30,     // schedule len 48
+    DP_TYPE0B_ID_34    = 0x34,     // level brightness of screen (off, 50%, 100%)
+    DP_TYPE0B_ID_65    = 0x65,     // hysteresis 0.5° ... 5°C step 0.5 *10
+} data_point_id_type0B_t;
+
 typedef enum {
     SCHEDULE8_MON = 0,
     SCHEDULE8_SAT,
@@ -291,6 +340,8 @@ typedef enum {
     MANUF_NAME_7,
     MANUF_NAME_8,
     MANUF_NAME_9,
+    MANUF_NAME_0A,
+    MANUF_NAME_0B,
     MANUF_NAME_MAX
 } manuf_name_t;
 
@@ -364,12 +415,14 @@ typedef void (*remote_cmd_t)(void *args);
 typedef void (*local_cmd_t)(void *args);
 
 typedef struct {
-    uint8_t         id;
-    uint8_t         type;
-    uint16_t        len;
-    uint16_t        divisor;
-    remote_cmd_t    remote_cmd;
-    local_cmd_t     local_cmd;
+    uint8_t         id;             // datapoint id
+    uint8_t         type;           // dp_type_t
+    uint16_t        len;            // length of datapoint
+    int16_t         divisor;        // divisor: -100 => /100; -10 => /10; 1 = > *1; 10 => *10; 100 => *100
+    remote_cmd_t    remote_cmd;     // remote function of command
+    local_cmd_t     local_cmd;      // local function of command
+    int32_t         arg1;           // argument1, e.g. - MIN setpoint. If not used must be -1
+    int32_t         arg2;           // argument2, e.g. - MAX setpoint. If not used must be -1
 } data_point_st_t;
 
 typedef struct {
@@ -420,7 +473,7 @@ extern uint8_t manuf_name;
 extern data_point_st_t *data_point_model;
 extern const char8_t **tuya_manuf_names[];
 
-void data_point_model_init();
-data_point_st_t *data_point_model_arr[DP_IDX_MAXNUM];
+//void data_point_model_init();
+//data_point_st_t *data_point_model_arr[DP_IDX_MAXNUM];
 
 #endif /* SRC_INCLUDE_APP_TUYA_DATAPOINT_H_ */

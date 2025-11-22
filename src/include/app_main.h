@@ -29,34 +29,14 @@ typedef struct {
 
 typedef struct {
     ev_timer_event_t *bdbFBTimerEvt;
-//    ev_timer_event_t *timerAliveEvt;
-//    ev_timer_event_t *timerForcedReportEvt;
-//    ev_timer_event_t *timerStopReportEvt;
-//    ev_timer_event_t *timerPollRateEvt;
-//    ev_timer_event_t *timerBatteryEvt;
-//    ev_timer_event_t *timerLedEvt;
-//    ev_timer_event_t *timerNoJoinedEvt;
+    ev_timer_event_t *factory_resetTimerEvt;
 
-    uint32_t short_poll;
-    uint32_t long_poll;
-    uint32_t current_poll;
+//    uint32_t timeout;
 
-    uint32_t timeout;
+//    u32 keyPressedTime;
+//    u8  keyPressed;
 
-    u32 keyPressedTime;
-    u8  keyPressed;
-
-//    uint8_t status_onoff1;
-//    uint8_t status_onoff2;
-
-//    uint16_t ledOnTime;
-//    uint16_t ledOffTime;
-//    uint8_t  oriSta;     //original state before blink
-//    uint8_t  sta;        //current state in blink
-//    uint8_t  times;      //blink times
-//    uint8_t  state;
-
-//    uint32_t time_without_joined;
+    bool net_steer_start;
 
     app_linkKey_info_t tcLinkKey;
 } app_ctx_t;

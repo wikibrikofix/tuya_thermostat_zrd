@@ -298,6 +298,7 @@ zcl_thermostatAttr_t g_zcl_thermostatAttrs = {
     .level = 3,
     .settings_reset = 0,
     .extTemperatureCalibration = 0,
+    .manuf_name = 0,
 };
 
 
@@ -332,6 +333,7 @@ const zclAttrInfo_t thermostat_attrTbl[] = {
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_LEVEL,                  ZCL_ENUM8,      RWR,    (uint8_t*)&g_zcl_thermostatAttrs.level                      },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_EXT_TEMP_CALIBRATION,   ZCL_INT8,       RWR,    (uint8_t*)&g_zcl_thermostatAttrs.extTemperatureCalibration  },
         { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_MODE_KEYLOCK,           ZCL_BOOLEAN,    RWR,    (uint8_t*)&g_zcl_thermostatAttrs.modeKeyLock                },
+        { ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_MANUF_NAME,             ZCL_ENUM8,      RW,     (uint8_t*)&g_zcl_thermostatAttrs.manuf_name                 },
 
         { ZCL_ATTRID_GLOBAL_CLUSTER_REVISION,                       ZCL_UINT16,     R,      (uint8_t*)&zcl_attr_global_clusterRevision                  },
 };
@@ -718,6 +720,12 @@ nv_sts_t thermostat_settings_save() {
 //            printf("extTemperatureCalibration changed: 0x%x\r\n", thermostat_settings.extTemperatureCalibration);
         }
 
+        if (thermostat_settings.manuf_name != g_zcl_thermostatAttrs.manuf_name) {
+            thermostat_settings.manuf_name = g_zcl_thermostatAttrs.manuf_name;
+            save = true;
+//            printf("manuf_name changed: 0x%02x\r\n", thermostat_settings.manuf_name);
+        }
+
         if (thermostat_settings.dev_therm_mode != dev_therm_mode) {
             thermostat_settings.dev_therm_mode = dev_therm_mode;
             save = true;
@@ -778,6 +786,7 @@ nv_sts_t thermostat_settings_save() {
         thermostat_settings.schedule_mode = g_zcl_thermostatAttrs.schedule_mode;
         thermostat_settings.sound = g_zcl_thermostatAttrs.sound;
         thermostat_settings.extTemperatureCalibration = g_zcl_thermostatAttrs.extTemperatureCalibration;
+        thermostat_settings.manuf_name = g_zcl_thermostatAttrs.manuf_name;
         thermostat_settings.dev_therm_mode = dev_therm_mode;
         thermostat_settings.fanMode = g_zcl_fancontrolAttrs.fanMode;
         thermostat_settings.fanControl = g_zcl_fancontrolAttrs.fanControl;
@@ -836,6 +845,7 @@ nv_sts_t thermostat_settings_restore() {
         g_zcl_thermostatAttrs.schedule_mode = thermostat_settings.schedule_mode;
         g_zcl_thermostatAttrs.sound = thermostat_settings.sound;
         g_zcl_thermostatAttrs.extTemperatureCalibration = thermostat_settings.extTemperatureCalibration;
+        g_zcl_thermostatAttrs.manuf_name = thermostat_settings.manuf_name;
         dev_therm_mode = thermostat_settings.dev_therm_mode;
         g_zcl_fancontrolAttrs.fanControl = thermostat_settings.fanControl;
         g_zcl_fancontrolAttrs.fanMode = thermostat_settings.fanMode;

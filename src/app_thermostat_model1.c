@@ -7,39 +7,124 @@
  * id, type, len, divisor, remote_commands_functionCb, local_commands_functionCb
 */
 
-data_point_st_t data_point_model1[DP_IDX_MAXNUM] = {
-        {DP_TYPE1_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_1, local_cmd_onoff_state_1},                // on off
-        {DP_TYPE1_ID_18, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_1},                                // local temperature
-        {DP_TYPE1_ID_10, DP_VAL,  4,    1,  remote_cmd_heating_set_1, local_cmd_heating_set_1},             // heat setpoint
-        {DP_TYPE1_ID_00, DP_VAL,  0,    0,  NULL, NULL},                                                    // heat min - not support
-        {DP_TYPE1_ID_13, DP_VAL,  4,    1,  remote_cmd_max_setpoint_1, local_cmd_max_setpoint_1},           // max heat setpoint
-        {DP_TYPE1_ID_1A, DP_VAL,  4,    1,  remote_cmd_deadband_1, local_cmd_deadband_1},                   // hysteresis
-        {DP_TYPE1_ID_1B, DP_VAL,  4,    1,  remote_cmd_temp_calibration_1, local_cmd_temp_calibration_1},   // local temperature calibration
-        {DP_TYPE1_ID_24, DP_ENUM, 1,    1,  NULL, local_cmd_set_run_state_1},                               // 0x00 - heat, 0x01 - idle
-        {DP_TYPE1_ID_2B, DP_ENUM, 1,    1,  remote_cmd_sensor_used_1, local_cmd_sensor_used_1},             // sensor IN/AL/OU
-        {DP_TYPE1_ID_02, DP_ENUM, 1,    1,  remote_cmd_oper_mode_1, local_cmd_oper_mode_1},                 // manual (setpoint) / programming (schedule)
-        {DP_TYPE1_ID_28, DP_BOOL, 1,    1,  remote_cmd_keylock_1, local_cmd_keylock_1},                     // lock / unlock keys (child lock)
-        {DP_TYPE1_ID_65, DP_RAW,  0x24, 1,  remote_cmd_set_schedule_1, local_cmd_set_schedule_1},           // schedule
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-        {DP_TYPE1_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                                    //
-};
+#define R01_ABS_HEAT_MIN            500
+#define R01_ABS_HEAT_MAX            4500
+#define R01_HEAT_MIN_MIN            500         // * 100
+#define R01_HEAT_MAX_MAX            4500        // * 100
+#define R01_HEAT_PROTECT_MIN        4500        // * 100
+#define R01_HEAT_PROTECT_MAX        7000        // * 100
+#define R01_DEADZONE_MIN            1
+#define R01_DEADZONE_MAX            5
+#define R01_CALIBRATION_MIN        -90          // * 10
+#define R01_CALIBRATION_MAX         90          // * 10
+
+//data_point_st_t data_point_model1[DP_IDX_MAXNUM];
+
+data_point_st_t *init_datapoint_model1() {
+
+    memset(data_point_model_common, 0, sizeof(data_point_model_common));
+
+    g_zcl_thermostatAttrs.absMinHeatSetpointLimit = R01_ABS_HEAT_MIN;       // min +5°C
+    g_zcl_thermostatAttrs.absMaxHeatSetpointLimit = R01_ABS_HEAT_MAX;       // max +45°C
+
+    data_point_model_common[DP_IDX_ONOFF].id = DP_TYPE1_ID_01;
+    data_point_model_common[DP_IDX_ONOFF].type = DP_BOOL;
+    data_point_model_common[DP_IDX_ONOFF].len = 1;
+    data_point_model_common[DP_IDX_ONOFF].divisor = 1;
+    data_point_model_common[DP_IDX_ONOFF].remote_cmd = remote_cmd_sys_mode_1;
+    data_point_model_common[DP_IDX_ONOFF].local_cmd = local_cmd_onoff_state_1;
+
+    data_point_model_common[DP_IDX_TEMP].id = DP_TYPE1_ID_18;
+    data_point_model_common[DP_IDX_TEMP].type = DP_VAL;
+    data_point_model_common[DP_IDX_TEMP].len = 4;
+    data_point_model_common[DP_IDX_TEMP].divisor = 10;
+    data_point_model_common[DP_IDX_TEMP].local_cmd = local_cmd_inner_sensor_1;
+
+    data_point_model_common[DP_IDX_SETPOINT].id = DP_TYPE1_ID_10;
+    data_point_model_common[DP_IDX_SETPOINT].type = DP_VAL;
+    data_point_model_common[DP_IDX_SETPOINT].len = 4;
+    data_point_model_common[DP_IDX_SETPOINT].divisor = 1;
+    data_point_model_common[DP_IDX_SETPOINT].remote_cmd = remote_cmd_heating_set_1;
+    data_point_model_common[DP_IDX_SETPOINT].local_cmd = local_cmd_heating_set_1;
+
+    data_point_model_common[DP_IDX_MAX].id = DP_TYPE1_ID_13;
+    data_point_model_common[DP_IDX_MAX].type = DP_VAL;
+    data_point_model_common[DP_IDX_MAX].len = 4;
+    data_point_model_common[DP_IDX_MAX].divisor = 1;
+    data_point_model_common[DP_IDX_MAX].remote_cmd = remote_cmd_max_setpoint_1;
+    data_point_model_common[DP_IDX_MAX].local_cmd = local_cmd_max_setpoint_1;
+    data_point_model_common[DP_IDX_MAX].arg1 = R01_HEAT_MIN_MIN;
+    data_point_model_common[DP_IDX_MAX].arg2 = R01_HEAT_MAX_MAX;
+
+    data_point_model_common[DP_IDX_DEADZONE].id = DP_TYPE1_ID_1A;
+    data_point_model_common[DP_IDX_DEADZONE].type = DP_VAL;
+    data_point_model_common[DP_IDX_DEADZONE].len = 4;
+    data_point_model_common[DP_IDX_DEADZONE].divisor = 1;
+    data_point_model_common[DP_IDX_DEADZONE].remote_cmd = remote_cmd_deadband_1;
+    data_point_model_common[DP_IDX_DEADZONE].local_cmd = local_cmd_deadband_1;
+    data_point_model_common[DP_IDX_DEADZONE].arg1 = R01_DEADZONE_MIN;
+    data_point_model_common[DP_IDX_DEADZONE].arg2 = R01_DEADZONE_MAX;
+
+    data_point_model_common[DP_IDX_CALIBRATION].id = DP_TYPE1_ID_1B;
+    data_point_model_common[DP_IDX_CALIBRATION].type = DP_VAL;
+    data_point_model_common[DP_IDX_CALIBRATION].len = 4;
+    data_point_model_common[DP_IDX_CALIBRATION].divisor = -10;
+    data_point_model_common[DP_IDX_CALIBRATION].remote_cmd = remote_cmd_temp_calibration_1;
+    data_point_model_common[DP_IDX_CALIBRATION].local_cmd = local_cmd_temp_calibration_1;
+    data_point_model_common[DP_IDX_CALIBRATION].arg1 = R01_CALIBRATION_MIN;
+    data_point_model_common[DP_IDX_CALIBRATION].arg2 = R01_CALIBRATION_MAX;
+
+    data_point_model_common[DP_IDX_RUNSTATE].id = DP_TYPE1_ID_24;
+    data_point_model_common[DP_IDX_RUNSTATE].type = DP_ENUM;
+    data_point_model_common[DP_IDX_RUNSTATE].len = 1;
+    data_point_model_common[DP_IDX_RUNSTATE].divisor = 1;
+    data_point_model_common[DP_IDX_RUNSTATE].local_cmd = local_cmd_set_run_state_1;
+
+    data_point_model_common[DP_IDX_SENSOR].id = DP_TYPE1_ID_2B;
+    data_point_model_common[DP_IDX_SENSOR].type = DP_ENUM;
+    data_point_model_common[DP_IDX_SENSOR].len = 1;
+    data_point_model_common[DP_IDX_SENSOR].divisor = 1;
+    data_point_model_common[DP_IDX_SENSOR].remote_cmd = remote_cmd_sensor_used_1;
+    data_point_model_common[DP_IDX_SENSOR].local_cmd = local_cmd_sensor_used_1;
+
+    data_point_model_common[DP_IDX_PROG].id = DP_TYPE1_ID_02;
+    data_point_model_common[DP_IDX_PROG].type = DP_ENUM;
+    data_point_model_common[DP_IDX_PROG].len = 1;
+    data_point_model_common[DP_IDX_PROG].divisor = 1;
+    data_point_model_common[DP_IDX_PROG].remote_cmd = remote_cmd_oper_mode_1;
+    data_point_model_common[DP_IDX_PROG].local_cmd = local_cmd_oper_mode_1;
+
+    data_point_model_common[DP_IDX_LOCKUNLOCK].id = DP_TYPE1_ID_28;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].type = DP_BOOL;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].len = 1;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].divisor = 1;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].remote_cmd = remote_cmd_keylock_1;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].local_cmd = local_cmd_keylock_1;
+
+    data_point_model_common[DP_IDX_SCHEDULE].id = DP_TYPE1_ID_65;
+    data_point_model_common[DP_IDX_SCHEDULE].type = DP_RAW;
+    data_point_model_common[DP_IDX_SCHEDULE].len = 0x24;
+    data_point_model_common[DP_IDX_SCHEDULE].divisor = 1;
+    data_point_model_common[DP_IDX_SCHEDULE].remote_cmd = remote_cmd_set_schedule_1;
+    data_point_model_common[DP_IDX_SCHEDULE].local_cmd = local_cmd_set_schedule_1;
+
+    return data_point_model_common;
+}
+
+//data_point_st_t data_point_model1[DP_IDX_MAXNUM] = {
+//        {DP_TYPE1_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_1, local_cmd_onoff_state_1},                // on off
+//        {DP_TYPE1_ID_18, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_1},                                // local temperature
+//        {DP_TYPE1_ID_10, DP_VAL,  4,    1,  remote_cmd_heating_set_1, local_cmd_heating_set_1},             // heat setpoint
+//        {DP_TYPE1_ID_00, DP_VAL,  0,    0,  NULL, NULL},                                                    // heat min - not support
+//        {DP_TYPE1_ID_13, DP_VAL,  4,    1,  remote_cmd_max_setpoint_1, local_cmd_max_setpoint_1},           // max heat setpoint
+//        {DP_TYPE1_ID_1A, DP_VAL,  4,    1,  remote_cmd_deadband_1, local_cmd_deadband_1},                   // hysteresis
+//        {DP_TYPE1_ID_1B, DP_VAL,  4,    1,  remote_cmd_temp_calibration_1, local_cmd_temp_calibration_1},   // local temperature calibration
+//        {DP_TYPE1_ID_24, DP_ENUM, 1,    1,  NULL, local_cmd_set_run_state_1},                               // 0x00 - heat, 0x01 - idle
+//        {DP_TYPE1_ID_2B, DP_ENUM, 1,    1,  remote_cmd_sensor_used_1, local_cmd_sensor_used_1},             // sensor IN/AL/OU
+//        {DP_TYPE1_ID_02, DP_ENUM, 1,    1,  remote_cmd_oper_mode_1, local_cmd_oper_mode_1},                 // manual (setpoint) / programming (schedule)
+//        {DP_TYPE1_ID_28, DP_BOOL, 1,    1,  remote_cmd_keylock_1, local_cmd_keylock_1},                     // lock / unlock keys (child lock)
+//        {DP_TYPE1_ID_65, DP_RAW,  0x24, 1,  remote_cmd_set_schedule_1, local_cmd_set_schedule_1},           // schedule
+//};
 
 /*
  *
@@ -52,7 +137,7 @@ static void get_schedule(void *args) {
 
     if(!zb_isDeviceJoinedNwk()) return;
 
-    uint8_t *day = (uint8_t*)args;
+    args_get_schedule_t *args_get_schedule = (args_get_schedule_t*)args;
 
     epInfo_t dstEpInfo;
     TL_SETSTRUCTCONTENT(dstEpInfo, 0);
@@ -71,15 +156,15 @@ static void get_schedule(void *args) {
 
     cmd.dayOfWeekForSequence = 0;
 
-    if (*day & DAY_MON) {
+    if (args_get_schedule->day & DAY_MON) {
         //mon
         heat_mode =  g_zcl_scheduleData.schedule_mon;
         cmd.dayOfWeekForSequence = DAY_MON;
-    } else if (*day & DAY_SAT) {
+    } else if (args_get_schedule->day & DAY_SAT) {
         //sat
         heat_mode =  g_zcl_scheduleData.schedule_sat;
         cmd.dayOfWeekForSequence = DAY_SAT;
-    } else  if (*day & DAY_SUN){
+    } else  if (args_get_schedule->day & DAY_SUN){
         //sun
         heat_mode =  g_zcl_scheduleData.schedule_sun;
         cmd.dayOfWeekForSequence = DAY_SUN;
@@ -95,9 +180,11 @@ static void get_schedule(void *args) {
 //            printf("i: %d, time: %d, temp: %d\r\n", i, cmd.sequenceMode.pHeatMode[i].transTime, cmd.sequenceMode.pHeatMode[i].heatSetpoint);
 //        }
 
-
-    zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
-
+    if (args_get_schedule->rsp) {
+        zcl_thermostat_getWeeklyScheduleRspCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, args_get_schedule->seqNum, &cmd);
+    } else {
+        zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
+    }
 }
 
 
@@ -159,9 +246,17 @@ void local_cmd_set_schedule_1(void *args) {
 
     thermostat_settings_save();
 
-    TL_SCHEDULE_TASK(get_schedule, &w_mon);
-    TL_SCHEDULE_TASK(get_schedule, &w_sat);
-    TL_SCHEDULE_TASK(get_schedule, &w_sun);
+    args_get_schedule_mon.day = DAY_MON;
+    args_get_schedule_mon.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_mon);
+
+    args_get_schedule_sat.day = DAY_SAT;
+    args_get_schedule_sat.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sat);
+
+    args_get_schedule_sun.day = DAY_SUN;
+    args_get_schedule_sun.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sun);
 }
 
 /*
@@ -209,9 +304,10 @@ void remote_cmd_oper_mode_1(void *args) {
 
 void remote_cmd_set_schedule_1(void *args) {
 
-    uint8_t *arg = (uint8_t*)args;
+    args_get_schedule_any.day = *(uint8_t*)args;
+    args_get_schedule_any.rsp = false;
 
-    w_day = *arg;
+    printf("day: %d\r\n", args_get_schedule_any.day);
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
 
@@ -261,12 +357,23 @@ void remote_cmd_set_schedule_1(void *args) {
 
     thermostat_settings_save();
 
-    TL_SCHEDULE_TASK(get_schedule, &w_day);
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_any);
 }
 
-void remote_cmd_get_schedule_1() {
+void remote_cmd_get_schedule_1(void *args) {
 
-    TL_SCHEDULE_TASK(get_schedule, &w_mon);
-    TL_SCHEDULE_TASK(get_schedule, &w_sat);
-    TL_SCHEDULE_TASK(get_schedule, &w_sun);
+    uint8_t *seqNum = (uint8_t*)args;
+
+    args_get_schedule_mon.day = DAY_MON;
+    args_get_schedule_mon.seqNum = *seqNum;
+    args_get_schedule_mon.rsp = true;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_mon);
+
+    args_get_schedule_sat.day = DAY_SAT;
+    args_get_schedule_sat.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sat);
+
+    args_get_schedule_sun.day = DAY_SUN;
+    args_get_schedule_sun.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sun);
 }

@@ -29,6 +29,10 @@
 	- ["_TZE200_7rghpoxo"](doc/thermostats/tuya_thermostat_r08/README.md)
 9. Model r09
 	- ["_TZE204_6a4vxfnv"](doc/thermostats/tuya_thermostat_r09/README.md)
+9. Model r0A
+	- ["_TZE284_xalsoe3m"](doc/thermostats/tuya_thermostat_r0a/README.md)
+10. Model r0B
+	- ["_TZE204_8byfmxdv"](doc/thermostats/tuya_thermostat_r0b/README.md)
 
 <img src="doc/images/model1.png"/>
 <img src="doc/images/model1_2.png"/>
@@ -40,6 +44,7 @@
 <img src="doc/images/model7.png"/>
 <img src="doc/images/model8.png"/>
 <img src="doc/images/model9.png"/>
+<img src="doc/images/model0b.png"/>
 
 **The author assumes no responsibility if you turn your smart thermostat into a half-witted thermostat by using this project.**
 
@@ -87,7 +92,7 @@ And add local storage to the z2m config (configuration.yaml)
 
 ```
 ota:
-zigbee_ota_override_index_location: local_ota_index.json
+  zigbee_ota_override_index_location: local_ota_index.json
 ```
 
 Then reboot z2m and see a new device (if the thermostat was already in the network and visible in z2m).
@@ -282,6 +287,11 @@ Thanks :))))
 	- Fixed SDK bug with reporting.
 - 1.0.18
 	- Added thermostat with signature `_TZE284_cvub6xbb`.
+- 1.0.19
+	- Added thermostat with signature `_TZE284_xalsoe3m`.
+	- Added thermostat with signature `_TZE204_8byfmxdv`.
+	- Modified `Factory Reset` procedure.
+	- Added the ability to change the thermostat's `ZigBee model` via the `mqtt` topic.
 	
 [Top](#Top)
 

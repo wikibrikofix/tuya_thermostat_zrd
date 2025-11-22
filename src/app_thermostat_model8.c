@@ -5,43 +5,15 @@
  *
  * id, type, len, divisor, remote_commands_functionCb, local_commands_functionCb
  */
-data_point_st_t data_point_model8[DP_IDX_MAXNUM] = {
-        {DP_TYPE8_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_8, local_cmd_onoff_state_8},        // onoff
-        {DP_TYPE8_ID_03, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_8},                        // local temperature
-        {DP_TYPE8_ID_02, DP_VAL,  4,    10, remote_cmd_heating_set_8, local_cmd_heating_set_8},     // heat setpoint
-        {DP_TYPE8_ID_10, DP_VAL,  4,    10, remote_cmd_min_setpoint_8, local_cmd_min_setpoint_8},   // min heat setpoint
-        {DP_TYPE8_ID_0F, DP_VAL,  4,    10, remote_cmd_max_setpoint_8, local_cmd_max_setpoint_8},   // max heat setpoint
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // hysteresis
-        {DP_TYPE8_ID_13, DP_VAL,  4,    1,  remote_cmd_temp_calibration_8, local_cmd_temp_calibration_8}, // local temperature calibration
-        {DP_TYPE8_ID_66, DP_ENUM, 1,    1,  NULL, local_cmd_set_run_state_8},                       // 0x00 - heat, 0x01 - idle
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // sensor IN/AL/OU
-        {DP_TYPE8_ID_68, DP_ENUM, 1,    1,  remote_cmd_oper_mode_8, local_cmd_oper_mode_8},         // manual (setpoint) / programming (schedule)
-        {DP_TYPE8_ID_09, DP_BOOL, 1,    1,  remote_cmd_keylock_8, local_cmd_keylock_8},             // lock / unlock keys (child lock)
-        {DP_TYPE8_ID_6D, DP_RAW,  0x20, 1,  remote_cmd_set_schedule_8, NULL},                       // schedule
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // unknown
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // temperature of outer sensor
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // frost protected
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // heat protected
-        {DP_TYPE8_ID_69, DP_ENUM, 1,    1,  NULL,NULL},                                             // schedule mon (mode)
-        {DP_TYPE8_ID_6A, DP_VAL,  4,    1,  NULL, NULL},                                            // schedule tue (hour)
-        {DP_TYPE8_ID_6B, DP_VAL,  4,    1,  NULL, NULL},                                            // schedule wed (minute)
-        {DP_TYPE8_ID_6C, DP_VAL,  4,    1,  NULL, NULL},                                            // schedule thu (temperature)
-        {DP_TYPE8_ID_6D, DP_ENUM, 1,    1,  NULL, local_cmd_set_period_8},                          // schedule fri (period)
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // schedule sat
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // schedule sun
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // level brightness of screen
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE8_ID_67, DP_BOOL, 1,    1,  remote_cmd_eco_mode_8, local_cmd_eco_mode_8},           // sleep (eco) mode
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // sound on-off
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // settings reset
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // inversion of output
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
-        {DP_TYPE8_ID_65, DP_VAL,  4,    1,  remote_cmd_ext_temp_calibration_8, local_cmd_ext_temp_calibration_8}, // external calibration
-};
+
+#define R08_ABS_HEAT_MIN            500
+#define R08_ABS_HEAT_MAX            6000
+#define R08_HEAT_MIN_MIN            500         // * 100
+#define R08_HEAT_MIN_MAX            3500        // * 100
+#define R08_HEAT_MAX_MIN            3500        // * 100
+#define R08_HEAT_MAX_MAX            6000        // * 100
+#define R08_CALIBRATION_MIN        -90          // * 10
+#define R08_CALIBRATION_MAX         90          // * 10
 
 #define DP_IDX_SCHEDULE_MODE    DP_IDX_SCHEDULE_MON
 #define DP_IDX_SCHEDULE_HOUR    DP_IDX_SCHEDULE_TUE
@@ -49,13 +21,181 @@ data_point_st_t data_point_model8[DP_IDX_MAXNUM] = {
 #define DP_IDX_SCHEDULE_TEMP    DP_IDX_SCHEDULE_THU
 #define DP_IDX_SCHEDULE_PERIOD  DP_IDX_SCHEDULE_FRI
 
-ev_timer_event_t *check_schedule8TimerEvt = NULL;
+
+//data_point_st_t data_point_model8[DP_IDX_MAXNUM];
+
+data_point_st_t *init_datapoint_model8() {
+
+    memset(data_point_model_common, 0, sizeof(data_point_model_common));
+
+    g_zcl_thermostatAttrs.absMinHeatSetpointLimit = R08_ABS_HEAT_MIN;       // min +5°C
+    g_zcl_thermostatAttrs.absMaxHeatSetpointLimit = R08_ABS_HEAT_MAX;       // max +45°C
+
+    data_point_model_common[DP_IDX_ONOFF].id = DP_TYPE8_ID_01;
+    data_point_model_common[DP_IDX_ONOFF].type = DP_BOOL;
+    data_point_model_common[DP_IDX_ONOFF].len = 1;
+    data_point_model_common[DP_IDX_ONOFF].divisor = 1;
+    data_point_model_common[DP_IDX_ONOFF].remote_cmd = remote_cmd_sys_mode_8;
+    data_point_model_common[DP_IDX_ONOFF].local_cmd = local_cmd_onoff_state_8;
+
+    data_point_model_common[DP_IDX_TEMP].id = DP_TYPE8_ID_03;
+    data_point_model_common[DP_IDX_TEMP].type = DP_VAL;
+    data_point_model_common[DP_IDX_TEMP].len = 4;
+    data_point_model_common[DP_IDX_TEMP].divisor = 10;
+    data_point_model_common[DP_IDX_TEMP].local_cmd = local_cmd_inner_sensor_8;
+
+    data_point_model_common[DP_IDX_SETPOINT].id = DP_TYPE8_ID_02;
+    data_point_model_common[DP_IDX_SETPOINT].type = DP_VAL;
+    data_point_model_common[DP_IDX_SETPOINT].len = 4;
+    data_point_model_common[DP_IDX_SETPOINT].divisor = 10;
+    data_point_model_common[DP_IDX_SETPOINT].remote_cmd = remote_cmd_heating_set_8;
+    data_point_model_common[DP_IDX_SETPOINT].local_cmd = local_cmd_heating_set_8;
+
+    data_point_model_common[DP_IDX_MIN].id = DP_TYPE8_ID_10;
+    data_point_model_common[DP_IDX_MIN].type = DP_VAL;
+    data_point_model_common[DP_IDX_MIN].len = 4;
+    data_point_model_common[DP_IDX_MIN].divisor = 10;
+    data_point_model_common[DP_IDX_MIN].remote_cmd = remote_cmd_min_setpoint_8;
+    data_point_model_common[DP_IDX_MIN].local_cmd = local_cmd_min_setpoint_8;
+    data_point_model_common[DP_IDX_MIN].arg1 = R08_HEAT_MIN_MIN;
+    data_point_model_common[DP_IDX_MIN].arg2 = R08_HEAT_MIN_MAX;
+
+    data_point_model_common[DP_IDX_MAX].id = DP_TYPE8_ID_0F;
+    data_point_model_common[DP_IDX_MAX].type = DP_VAL;
+    data_point_model_common[DP_IDX_MAX].len = 4;
+    data_point_model_common[DP_IDX_MAX].divisor = 10;
+    data_point_model_common[DP_IDX_MAX].remote_cmd = remote_cmd_max_setpoint_8;
+    data_point_model_common[DP_IDX_MAX].local_cmd = local_cmd_max_setpoint_8;
+    data_point_model_common[DP_IDX_MAX].arg1 = R08_HEAT_MAX_MIN;
+    data_point_model_common[DP_IDX_MAX].arg2 = R08_HEAT_MAX_MAX;
+
+    data_point_model_common[DP_IDX_CALIBRATION].id = DP_TYPE8_ID_13;
+    data_point_model_common[DP_IDX_CALIBRATION].type = DP_VAL;
+    data_point_model_common[DP_IDX_CALIBRATION].len = 4;
+    data_point_model_common[DP_IDX_CALIBRATION].divisor = -10;
+    data_point_model_common[DP_IDX_CALIBRATION].remote_cmd = remote_cmd_temp_calibration_8;
+    data_point_model_common[DP_IDX_CALIBRATION].local_cmd = local_cmd_temp_calibration_8;
+    data_point_model_common[DP_IDX_CALIBRATION].arg1 = R08_CALIBRATION_MIN;
+    data_point_model_common[DP_IDX_CALIBRATION].arg2 = R08_CALIBRATION_MAX;
+
+    data_point_model_common[DP_IDX_RUNSTATE].id = DP_TYPE8_ID_66;
+    data_point_model_common[DP_IDX_RUNSTATE].type = DP_ENUM;
+    data_point_model_common[DP_IDX_RUNSTATE].len = 1;
+    data_point_model_common[DP_IDX_RUNSTATE].divisor = 1;
+    data_point_model_common[DP_IDX_RUNSTATE].local_cmd = local_cmd_set_run_state_8;
+
+    data_point_model_common[DP_IDX_PROG].id = DP_TYPE8_ID_68;
+    data_point_model_common[DP_IDX_PROG].type = DP_ENUM;
+    data_point_model_common[DP_IDX_PROG].len = 1;
+    data_point_model_common[DP_IDX_PROG].divisor = 1;
+    data_point_model_common[DP_IDX_PROG].remote_cmd = remote_cmd_oper_mode_8;
+    data_point_model_common[DP_IDX_PROG].local_cmd = local_cmd_oper_mode_8;
+
+    data_point_model_common[DP_IDX_LOCKUNLOCK].id = DP_TYPE8_ID_09;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].type = DP_BOOL;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].len = 1;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].divisor = 1;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].remote_cmd = remote_cmd_keylock_8;
+    data_point_model_common[DP_IDX_LOCKUNLOCK].local_cmd = local_cmd_keylock_8;
+
+    data_point_model_common[DP_IDX_SCHEDULE].id = DP_TYPE8_ID_6D;
+    data_point_model_common[DP_IDX_SCHEDULE].type = DP_RAW;
+    data_point_model_common[DP_IDX_SCHEDULE].len = 0x20;
+    data_point_model_common[DP_IDX_SCHEDULE].remote_cmd = remote_cmd_set_schedule_8;
+
+    // Mode
+    data_point_model_common[DP_IDX_SCHEDULE_MODE].id = DP_TYPE8_ID_69;
+    data_point_model_common[DP_IDX_SCHEDULE_MODE].type = DP_ENUM;
+    data_point_model_common[DP_IDX_SCHEDULE_MODE].len = 1;
+
+    // Hour
+    data_point_model_common[DP_IDX_SCHEDULE_HOUR].id = DP_TYPE8_ID_6A;
+    data_point_model_common[DP_IDX_SCHEDULE_HOUR].type = DP_VAL;
+    data_point_model_common[DP_IDX_SCHEDULE_HOUR].len = 4;
+    data_point_model_common[DP_IDX_SCHEDULE_HOUR].divisor = 1;
+
+    // Minute
+    data_point_model_common[DP_IDX_SCHEDULE_MINUTE].id = DP_TYPE8_ID_6B;
+    data_point_model_common[DP_IDX_SCHEDULE_MINUTE].type = DP_VAL;
+    data_point_model_common[DP_IDX_SCHEDULE_MINUTE].len = 4;
+    data_point_model_common[DP_IDX_SCHEDULE_MINUTE].divisor = 1;
+
+    // Temperature
+    data_point_model_common[DP_IDX_SCHEDULE_TEMP].id = DP_TYPE8_ID_6C;
+    data_point_model_common[DP_IDX_SCHEDULE_TEMP].type = DP_VAL;
+    data_point_model_common[DP_IDX_SCHEDULE_TEMP].len = 4;
+    data_point_model_common[DP_IDX_SCHEDULE_TEMP].divisor = 1;
+
+    // Period
+    data_point_model_common[DP_IDX_SCHEDULE_PERIOD].id = DP_TYPE8_ID_6D;
+    data_point_model_common[DP_IDX_SCHEDULE_PERIOD].type = DP_ENUM;
+    data_point_model_common[DP_IDX_SCHEDULE_PERIOD].len = 1;
+    data_point_model_common[DP_IDX_SCHEDULE_PERIOD].local_cmd = local_cmd_set_period_8;
+
+    data_point_model_common[DP_IDX_ECO_MODE].id = DP_TYPE8_ID_67;
+    data_point_model_common[DP_IDX_ECO_MODE].type = DP_BOOL;
+    data_point_model_common[DP_IDX_ECO_MODE].len = 1;
+    data_point_model_common[DP_IDX_ECO_MODE].remote_cmd = remote_cmd_eco_mode_8;
+    data_point_model_common[DP_IDX_ECO_MODE].local_cmd = local_cmd_eco_mode_8;
+
+    data_point_model_common[DP_IDX_EXT_CALIBRATION].id = DP_TYPE8_ID_65;
+    data_point_model_common[DP_IDX_EXT_CALIBRATION].type = DP_VAL;
+    data_point_model_common[DP_IDX_EXT_CALIBRATION].len = 4;
+    data_point_model_common[DP_IDX_EXT_CALIBRATION].divisor = -10;
+    data_point_model_common[DP_IDX_EXT_CALIBRATION].remote_cmd = remote_cmd_ext_temp_calibration_8;
+    data_point_model_common[DP_IDX_EXT_CALIBRATION].local_cmd = local_cmd_ext_temp_calibration_8;
+    data_point_model_common[DP_IDX_EXT_CALIBRATION].arg1 = R08_CALIBRATION_MIN;
+    data_point_model_common[DP_IDX_EXT_CALIBRATION].arg2 = R08_CALIBRATION_MAX;
+
+    return data_point_model_common;
+}
+
+//data_point_st_t data_point_model8[DP_IDX_MAXNUM] = {
+//        {DP_TYPE8_ID_01, DP_BOOL, 1,    1,  remote_cmd_sys_mode_8, local_cmd_onoff_state_8},        // onoff
+//        {DP_TYPE8_ID_03, DP_VAL,  4,    10, NULL, local_cmd_inner_sensor_8},                        // local temperature
+//        {DP_TYPE8_ID_02, DP_VAL,  4,    10, remote_cmd_heating_set_8, local_cmd_heating_set_8},     // heat setpoint
+//        {DP_TYPE8_ID_10, DP_VAL,  4,    10, remote_cmd_min_setpoint_8, local_cmd_min_setpoint_8},   // min heat setpoint
+//        {DP_TYPE8_ID_0F, DP_VAL,  4,    10, remote_cmd_max_setpoint_8, local_cmd_max_setpoint_8},   // max heat setpoint
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // hysteresis
+//        {DP_TYPE8_ID_13, DP_VAL,  4,    1,  remote_cmd_temp_calibration_8, local_cmd_temp_calibration_8}, // local temperature calibration
+//        {DP_TYPE8_ID_66, DP_ENUM, 1,    1,  NULL, local_cmd_set_run_state_8},                       // 0x00 - heat, 0x01 - idle
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // sensor IN/AL/OU
+//        {DP_TYPE8_ID_68, DP_ENUM, 1,    1,  remote_cmd_oper_mode_8, local_cmd_oper_mode_8},         // manual (setpoint) / programming (schedule)
+//        {DP_TYPE8_ID_09, DP_BOOL, 1,    1,  remote_cmd_keylock_8, local_cmd_keylock_8},             // lock / unlock keys (child lock)
+//        {DP_TYPE8_ID_6D, DP_RAW,  0x20, 1,  remote_cmd_set_schedule_8, NULL},                       // schedule
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // unknown
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // temperature of outer sensor
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // frost protected
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // heat protected
+//        {DP_TYPE8_ID_69, DP_ENUM, 1,    1,  NULL,NULL},                                             // schedule mon (mode)
+//        {DP_TYPE8_ID_6A, DP_VAL,  4,    1,  NULL, NULL},                                            // schedule tue (hour)
+//        {DP_TYPE8_ID_6B, DP_VAL,  4,    1,  NULL, NULL},                                            // schedule wed (minute)
+//        {DP_TYPE8_ID_6C, DP_VAL,  4,    1,  NULL, NULL},                                            // schedule thu (temperature)
+//        {DP_TYPE8_ID_6D, DP_ENUM, 1,    1,  NULL, local_cmd_set_period_8},                          // schedule fri (period)
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // schedule sat
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // schedule sun
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // level brightness of screen
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+//        {DP_TYPE8_ID_67, DP_BOOL, 1,    1,  remote_cmd_eco_mode_8, local_cmd_eco_mode_8},           // sleep (eco) mode
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // sound on-off
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // settings reset
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},                                            // inversion of output
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+//        {DP_TYPE8_ID_00, DP_RAW,  0,    0,  NULL, NULL},
+//        {DP_TYPE8_ID_65, DP_VAL,  4,    1,  remote_cmd_ext_temp_calibration_8, local_cmd_ext_temp_calibration_8}, // external calibration
+//};
+
 
 /*
  *
  * Local variables and functions
  *
  */
+
+ev_timer_event_t *check_schedule8TimerEvt = NULL;
 
 enum read_schedule_counter_t {
     READ_SCHEDULE_WW = 0,
@@ -168,7 +308,7 @@ static void get_schedule(void *args) {
 
     if(!zb_isDeviceJoinedNwk()) return;
 
-    uint8_t *day = (uint8_t*)args;
+    args_get_schedule_t *args_get_schedule = (args_get_schedule_t*)args;
 
     epInfo_t dstEpInfo;
     TL_SETSTRUCTCONTENT(dstEpInfo, 0);
@@ -187,15 +327,15 @@ static void get_schedule(void *args) {
 
     cmd.dayOfWeekForSequence = 0;
 
-    if (*day & DAY_MON) {
+    if (args_get_schedule->day & DAY_MON) {
         //mon
         heat_mode =  g_zcl_scheduleData.schedule_mon;
         cmd.dayOfWeekForSequence = DAY_MON;
-    } else if (*day & DAY_SAT) {
+    } else if (args_get_schedule->day & DAY_SAT) {
         //sat
         heat_mode =  g_zcl_scheduleData.schedule_sat;
         cmd.dayOfWeekForSequence = DAY_SAT;
-    } else  if (*day & DAY_SUN){
+    } else  if (args_get_schedule->day & DAY_SUN){
         //sun
         heat_mode =  g_zcl_scheduleData.schedule_sun;
         cmd.dayOfWeekForSequence = DAY_SUN;
@@ -211,9 +351,11 @@ static void get_schedule(void *args) {
 //            printf("i: %d, time: %d, temp: %d\r\n", i, cmd.sequenceMode.pHeatMode[i].transTime, cmd.sequenceMode.pHeatMode[i].heatSetpoint);
 //        }
 
-
-    zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
-
+    if (args_get_schedule->rsp) {
+        zcl_thermostat_getWeeklyScheduleRspCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, args_get_schedule->seqNum, &cmd);
+    } else {
+        zcl_thermostat_setWeeklyScheduleCmdSend(APP_ENDPOINT1, &dstEpInfo, 0, &cmd);
+    }
 }
 
 static void set_week_day(uint8_t day) {
@@ -562,11 +704,17 @@ void local_cmd_ext_temp_calibration_8(void *args) {
 
     int8_t *temp = (int8_t*)args;
 
-    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 1) {
+    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == -10) {
         *temp *= 10;
-    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 100) {
+    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 10) {
         *temp /= 10;
     }
+
+//    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 1) {
+//        *temp *= 10;
+//    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 100) {
+//        *temp /= 10;
+//    }
 
     zcl_setAttrVal(APP_ENDPOINT1, ZCL_CLUSTER_HAVC_THERMOSTAT, ZCL_ATTRID_HVAC_THERMOSTAT_CUSTOM_EXT_TEMP_CALIBRATION, (uint8_t*)temp);
 
@@ -665,19 +813,28 @@ void remote_cmd_ext_temp_calibration_8(void *args) {
 
     if(data_point_model[DP_IDX_EXT_CALIBRATION].id == 0) return;
 
-    if (temp < CLIENT_TEMP_CALIBRATION_MIN || temp > CLIENT_TEMP_CALIBRATION_MAX) {
-        return;
-    }
+    if (temp < data_point_model[DP_IDX_EXT_CALIBRATION].arg1) temp = data_point_model[DP_IDX_EXT_CALIBRATION].arg1;
+    if (temp > data_point_model[DP_IDX_EXT_CALIBRATION].arg2) temp = data_point_model[DP_IDX_EXT_CALIBRATION].arg2;
+
+//    if (temp < data_point_model[DP_IDX_EXT_CALIBRATION].arg1 || temp > data_point_model[DP_IDX_EXT_CALIBRATION].arg2) {
+//        return;
+//    }
 
     pkt_tuya_t *out_pkt = (pkt_tuya_t*)remote_cmd_pkt_buff;
     uint16_t seq_num = get_seq_num();
     seq_num++;
 
-    temp /= 10; // 90 -> 9, -90 -> -9
-    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 10) {
+//    temp /= 10; // 90 -> 9, -90 -> -9
+//    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 10) {
+//        temp *= 10;
+//    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 100) {
+//        temp *= 100;
+//    }
+
+    if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == -10) {
+        temp /= 10;
+    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 10) {
         temp *= 10;
-    } else if (data_point_model[DP_IDX_EXT_CALIBRATION].divisor == 100) {
-        temp *= 100;
     }
 
     set_header_pkt(remote_cmd_pkt_buff, sizeof(remote_cmd_pkt_buff), seq_num, COMMAND04);
@@ -792,8 +949,18 @@ void remote_cmd_set_schedule_8(void *args) {
 }
 
 
-void remote_cmd_get_schedule_8() {
-    TL_SCHEDULE_TASK(get_schedule, &w_mon);
-    TL_SCHEDULE_TASK(get_schedule, &w_sat);
-    TL_SCHEDULE_TASK(get_schedule, &w_sun);
+void remote_cmd_get_schedule_8(void *args) {
+
+    uint8_t *seqNum = (uint8_t*)args;
+
+    args_get_schedule_mon.day = DAY_MON;
+    args_get_schedule_mon.seqNum = *seqNum;
+    args_get_schedule_mon.rsp = true;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_mon);
+    args_get_schedule_sat.day = DAY_SAT;
+    args_get_schedule_sat.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sat);
+    args_get_schedule_sun.day = DAY_SUN;
+    args_get_schedule_sun.rsp = false;
+    TL_SCHEDULE_TASK(get_schedule, &args_get_schedule_sun);
 }
