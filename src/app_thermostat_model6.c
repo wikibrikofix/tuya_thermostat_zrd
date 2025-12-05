@@ -2,6 +2,10 @@
 
 /* data point for manufacturer id -
  * "lzriup1j"
+ * "oh8y8pv8",
+ * "gops3slb",
+ * "cvub6xbb",
+ * "mwomyz5n",
  *
  * id, type, len, divisor, remote_commands_functionCb, local_commands_functionCb
  */
@@ -257,7 +261,7 @@ static void get_schedule(void *args) {
 
 /*
  *
- * For models   "lzriup1j"
+ * For models   "lzriup1j", "oh8y8pv8", "gops3slb", "cvub6xbb", "mwomyz5n"
  *
  * Funstions for local commands. MCU -> ZT3L -> Zegbee
  */

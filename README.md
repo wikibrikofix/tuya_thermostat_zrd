@@ -22,6 +22,8 @@
 	- ["_TZE204_oh8y8pv8"](doc/thermostats/tuya_thermostat_r06/README.md)
 	- ["_TZE204_gops3slb"](doc/thermostats/tuya_thermostat_r06/README.md)
 	- ["_TZE284_cvub6xbb"](doc/thermostats/tuya_thermostat_r06/README.md)
+	- ["_TZE204_cvub6xbb"](doc/thermostats/tuya_thermostat_r06/README.md)
+	- ["_TZE204_mwomyz5n"](doc/thermostats/tuya_thermostat_r06/README.md)
 7. Model r07
 	- ["_TZE204_mpbki2zm"](doc/thermostats/tuya_thermostat_r07/README.md)
 8. Model r08

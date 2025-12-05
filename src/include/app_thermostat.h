@@ -280,6 +280,7 @@ void remote_cmd_level_4(void *args);
  *  "oh8y8pv8",
  *  "gops3slb",
  *  "cvub6xbb",
+ *  "mwomyz5n",
  *
  *  model6 - name_6
  */
@@ -557,6 +558,10 @@ void local_cmd_level_night_3(void *args);
 /*
  *  local_cmd for signarure
  *  "lzriup1j"
+ *  "oh8y8pv8",
+ *  "gops3slb",
+ *  "cvub6xbb",
+ *  "mwomyz5n",
  *
  *  model6 - name_6
  */
