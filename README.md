@@ -80,6 +80,55 @@ To keep it from spamming the network. The first instance (see above) sent 25 pac
 <img src="https://raw.githubusercontent.com/slacky1965/tuya_thermostat_zrd/refs/heads/main/doc/images/z2m_reporting.jpg"/>
 
 
+## Building from source
+
+### Prerequisites
+
+**Telink TC32 Toolchain Installation:**
+
+1. Download the toolchain:
+```bash
+wget http://shyboy.oss-cn-shenzhen.aliyuncs.com/readonly/tc32_gcc_v2.0.tar.bz2
+```
+
+2. Extract to `/opt/tc32/`:
+```bash
+sudo mkdir -p /opt/tc32
+sudo tar -xjf tc32_gcc_v2.0.tar.bz2 -C /opt/tc32/
+```
+
+3. Build the firmware:
+```bash
+cd tuya_thermostat_zrd
+make clean
+make
+```
+
+The compiled firmware will be in:
+- `out/tuya_thermostat_zrd.bin` - Main firmware binary
+- `bin/6565-0391-10193001-tuya_thermostat_zrd.zigbee` - OTA update file
+
+### Flashing via Serial Adapter
+
+To flash firmware directly using a USB-UART adapter (3.3V):
+
+1. Install [TlsrComSwireWriter](https://github.com/pvvx/TlsrComProg825x):
+```bash
+git clone https://github.com/pvvx/TlsrComProg825x.git
+cd TlsrComProg825x
+pip3 install pyserial
+```
+
+2. Connect the adapter to the thermostat:
+   - GND → GND
+   - TX → SWS pin
+   - RX → SWM pin (if available)
+
+3. Flash the firmware:
+```bash
+python3 TlsrComSwireWriter.py -p /dev/ttyUSB0 -t 50 -s 1000000 we 0 path/to/tuya_thermostat_zrd.bin
+```
+
 ## How to update.
 
 First, add external [converter](https://github.com/slacky1965/tuya_thermostat_zrd/tree/main/zigbee2mqtt/convertors) `tuya_thermostat_orig.js` to z2m. He activates OTA in z2m for thermostat with Tuya firmware. Put the converter in the directory ` external_converters` , which should be created in the root of z2m.

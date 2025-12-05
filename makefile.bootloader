@@ -42,6 +42,7 @@ INCLUDE_PATHS := \
 -I$(SDK_PATH)/proj \
 -I$(SRC_PATH)/common \
 -I$(SRC_PATH)/bootloader \
+-I$(SRC_PATH)/bootLoader \
 -I$(SRC_PATH)/include/boards
 
 

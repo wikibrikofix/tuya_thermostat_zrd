@@ -4,7 +4,7 @@ PROJECT_NAME := tuya_thermostat_zrd
 # Set the serial port number for downloading the firmware
 DOWNLOAD_PORT := COM3
 
-COMPILE_PREFIX = C:/TelinkSDK/opt/tc32/bin/tc32
+COMPILE_PREFIX = /opt/tc32/bin/tc32
 
 AS      = $(COMPILE_PREFIX)-elf-as
 CC      = $(COMPILE_PREFIX)-elf-gcc
@@ -31,7 +31,7 @@ TOOLS_PATH := ./tools
 BOOT_FILE := $(OUT_PATH)/bootloader.bin
 VERSION_RELEASE := V$(shell awk -F " " '/APP_RELEASE/ {gsub("0x",""); printf "%.1f", $$3/10.0; exit}' $(SRC_PATH)/include/version_cfg.h)
 VERSION_BUILD := $(shell awk -F " " '/APP_BUILD/ {gsub("0x",""); printf "%02d", $$3; exit}' ./src/include/version_cfg.h)
-ZCL_VERSION_FILE := $(shell git log -1 --format=%cd --date=format:%Y%m%d -- src |  sed -e "'s/./\'&\',/g'" -e "'s/.$$//'")
+ZCL_VERSION_FILE := $(shell git log -1 --format=%cd --date=format:%Y%m%d -- src 2>/dev/null || echo "20251205")
 BOOT_SIZE := $(shell ls -l $(BOOT_FILE) | awk '{print $$5}')
 
 
@@ -223,8 +223,8 @@ $(BIN_FILE): $(ELF_FILE)
 	@echo ' '
 endif
 
-$(OBJ_DIR)/bin_updater.o: $(OBJ_DIR)
-    @objcopy -I binary --output-target elf32-littlearm --rename-section .data=.bin_files ./updater.bin $@	 
+#$(OBJ_DIR)/bin_updater.o: $(OBJ_DIR)
+#	@objcopy -I binary --output-target elf32-littlearm --rename-section .data=.bin_files ./updater.bin $@
 
 sizedummy: $(ELF_FILE)
 	@echo 'Invoking: Print Size'
